@@ -48,3 +48,8 @@
 {"ts": "2026-08-03T22:36:50+00:00", "subcommand": "accept", "rss_peak_bytes": 49266688, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-03T22:37:00+00:00", "subcommand": "publish", "rss_peak_bytes": 63344640, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-03T22:37:24+00:00", "subcommand": "quickstart", "rss_peak_bytes": 0, "gpu_used": false, "exit_code": 0, "inputs": [], "note": "quickstart Scenarios 1-4 end-to-end: publish+browser smoke OK; values recalc 2/2; image sanity 2/2; accept quarantine gate exit 1; runpod-infer gate exit 2; check-or005 OK"}
+{"ts": "2026-08-03T22:38:00+00:00", "subcommand": "accept", "rss_peak_bytes": 49319936, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T22:38:01+00:00", "subcommand": "accept", "rss_peak_bytes": 49176576, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T22:38:01+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44998656, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-03T22:38:02+00:00", "subcommand": "values", "rss_peak_bytes": 181694464, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T22:38:03+00:00", "subcommand": "accept", "rss_peak_bytes": 49283072, "gpu_used": false, "exit_code": 1, "inputs": []}
