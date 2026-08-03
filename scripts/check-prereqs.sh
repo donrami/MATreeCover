@@ -18,7 +18,7 @@ if ! command -v tippecanoe >/dev/null 2>&1; then
     echo "FAIL: tippecanoe not found on PATH (needs >= 2.x)"
     fail=1
 else
-    v=$(tippecanoe --version 2>&1 | awk '{print $2}')
+    v=$(tippecanoe --version 2>&1 | awk '{print $2}' | sed 's/^v//')
     major=$(echo "$v" | cut -d. -f1)
     echo "OK: tippecanoe $v"
     if [ "${major:-0}" -lt 2 ]; then
