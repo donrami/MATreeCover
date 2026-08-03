@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org">
+  <title>Baumfläche</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="map" role="application" aria-label="Karte der Baumflächen in Mannheim"></div>
+
+  <aside id="legend" aria-label="Legende">
+    <h1>Baumfläche</h1>
+    <p class="legend-desc">Durchschnittlicher Baumanteil im 60-m-Umkreis</p>
+    <ol class="legend-stops">
+      <li><span class="swatch" style="background:#ffd524"></span>0</li>
+      <li><span class="swatch" style="background:#e6854a"></span>15</li>
+      <li><span class="swatch" style="background:#a97e65"></span>30</li>
+      <li><span class="swatch" style="background:#1db6ff"></span>50</li>
+      <li><span class="swatch" style="background:#6ad4ff"></span>100</li>
+    </ol>
+    <p class="legend-units">Prozent</p>
+  </aside>
+
+  <div id="controls">
+    <button id="baeume" type="button" aria-pressed="false">Bäume</button>
+  </div>
+
+  <div id="attribution"></div>
+
+  <script src="vendor/maplibre-gl.js"></script>
+  <script src="vendor/pmtiles.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

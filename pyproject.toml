@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matreecover"
+version = "2026.01"
+description = "Mannheim Tree-Cover Parity: static dark map of Mannheim buildings colored by mean 60 m-radius tree-cover percentage"
+requires-python = ">=3.11"
+dependencies = [
+    "rasterio>=1.3",
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "shapely>=2.0",
+    "pyproj>=3.6",
+    "pyogrio>=0.7",
+    "pmtiles>=3.0",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+tree-cover = "src.pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

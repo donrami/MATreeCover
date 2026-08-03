@@ -1,0 +1,26 @@
+# OR-005 / R-012: large data files never enter git.
+# > 50 MiB GeoJSON is enforced by `make check-or005` (git can't size-filter);
+# small GeoJSON test fixtures under tests/ stay tracked.
+*.tif
+*.pmtiles
+dist/
+data/
+mosaic/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Logs
+*.log

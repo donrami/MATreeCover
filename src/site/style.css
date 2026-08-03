@@ -1,0 +1,154 @@
+/* Mannheim Tree Cover — dark theme (FR-018, static-bundle contract) */
+:root {
+  --page-bg: #0e0e0e;
+  --map-bg: #000000;
+  --text: #ffffff;
+  --subtle: #888888;
+  --panel-bg: rgba(14, 14, 14, 0.9);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  background: var(--map-bg);
+}
+
+/* Legend — top-left card */
+#legend {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: var(--panel-bg);
+  border: 1px solid var(--subtle);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 220px;
+  color: var(--text);
+}
+
+#legend h1 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+
+#legend .legend-desc {
+  font-size: 0.8rem;
+  color: var(--subtle);
+  margin-bottom: 8px;
+}
+
+.legend-stops {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.78rem;
+}
+
+.legend-stops li { display: flex; align-items: center; gap: 3px; }
+
+.legend-stops .swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legend-units { margin-top: 6px; font-size: 0.7rem; color: var(--subtle); }
+
+/* Controls — top-right below the navigation control */
+#controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+#baeume {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--subtle);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#baeume.active {
+  border-color: #39C43D;
+  color: #39C43D;
+}
+
+/* Attribution slot (buildings-load failure surface, pmtiles-sources contract) */
+#attribution {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  z-index: 10;
+  font-size: 0.72rem;
+  color: var(--subtle);
+  background: rgba(14, 14, 14, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#attribution a { color: var(--subtle); }
+
+/* Popup */
+.building-popup .maplibregl-popup-content {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--subtle);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+
+.building-popup .popup-label {
+  font-size: 0.72rem;
+  color: var(--subtle);
+  margin-bottom: 2px;
+}
+
+.building-popup .popup-value { font-weight: 600; }
+
+/* Narrow screens: legend collapses to a bottom strip, controls stack (FR-018) */
+@media (max-width: 480px) {
+  #legend {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+
+  #legend h1 { font-size: 0.95rem; margin-bottom: 0; }
+  #legend .legend-desc,
+  #legend .legend-units { display: none; }
+
+  .legend-stops { font-size: 0.7rem; margin-left: auto; }
+
+  #controls {
+    top: auto;
+    bottom: 76px;
+    right: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}

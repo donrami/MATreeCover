@@ -1,0 +1,83 @@
+SHELL := /bin/bash
+PY := .venv/bin/python
+PIP := .venv/bin/pip
+WORKSPACE ?= /home/mainuser/Desktop/mannheim/workspace/mannheim
+CLI := $(PY) -m src.pipeline.cli
+MSG ?=
+
+.PHONY: bootstrap check-prereqs commit-spec commit-plan commit-slice commit-milestone \
+	accept publish values runpod-infer pmtiles-buildings pmtiles-trees check-or005
+
+## Setup ------------------------------------------------------------------
+
+bootstrap: ## create venv, install deps, run acceptance suite once
+	@bash scripts/check-prereqs.sh
+	@git rev-parse --verify --quiet refs/heads/001-replicate-mannheim-tree-cover >/dev/null \
+		|| { echo "error: checkout branch 001-replicate-mannheim-tree-cover first"; exit 1; }
+	python3.11 -m venv .venv
+	$(PIP) install --quiet -e ".[dev]"
+	@echo "== running acceptance suite =="
+	-$(PY) -m pytest tests/acceptance -q
+	@echo "bootstrap done (canopy-mask fail expected while quarantined)"
+
+check-prereqs: ## Python 3.11, tippecanoe >= 2.x, mannheim workspace readable
+	@bash scripts/check-prereqs.sh
+
+## Commit discipline (OR-004 / R-013) --------------------------------------
+
+define require_msg
+	@test -n "$(MSG)" || { echo "error: pass MSG=\"commit message\""; exit 1; }
+endef
+
+commit-spec: ## one commit per accepted specification
+	$(call require_msg)
+	@bash scripts/commit-check.sh Spec
+	git add specs/ && git commit -m "$(MSG)" -m "Spec-$$(bash scripts/next-tag.sh Spec)"
+
+commit-plan: ## one commit per accepted plan
+	$(call require_msg)
+	@bash scripts/commit-check.sh Plan
+	git add specs/ && git commit -m "$(MSG)" -m "Plan-$$(bash scripts/next-tag.sh Plan)"
+
+commit-slice: ## one commit per implementation slice
+	$(call require_msg)
+	@bash scripts/commit-check.sh Slice
+	git add -A && git commit -m "$(MSG)" -m "Slice-$$(bash scripts/next-tag.sh Slice)"
+
+commit-milestone: ## one commit per validation milestone
+	$(call require_msg)
+	@bash scripts/commit-check.sh Milestone
+	git add -A && git commit -m "$(MSG)" -m "Milestone-$$(bash scripts/next-tag.sh Milestone)"
+
+## Pipeline subcommands (contracts/cli.md) ----------------------------------
+
+accept: ## re-validate every artifact in artifacts.manifest.json
+	$(CLI) accept
+
+publish: ## emit dist/ static bundle (refuses on pending/fail required inputs)
+	$(CLI) publish
+
+values: ## compute per-building 60 m values from accepted canopy mask
+	$(CLI) values
+
+runpod-infer: ## gated: refuses unless MANNHEIM_RUNPOD_ENDPOINT is set
+	$(CLI) runpod-infer
+
+## PMTiles recipes (contracts/pmtiles-sources.md) ---------------------------
+
+pmtiles-buildings:
+	@test -f "$(WORKSPACE)/buildings.geojson" || { echo "error: $(WORKSPACE)/buildings.geojson missing (run values)"; exit 1; }
+	tippecanoe --name buildings --layer buildings --minimum-zoom 12 --maximum-zoom 18 \
+		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
+		--read-parallel --output="$(WORKSPACE)/buildings.pmtiles" "$(WORKSPACE)/buildings.geojson"
+
+pmtiles-trees:
+	@test -f "$(WORKSPACE)/trees_polygons.geojson" || { echo "error: $(WORKSPACE)/trees_polygons.geojson missing (run trees)"; exit 1; }
+	tippecanoe --name trees --layer trees --minimum-zoom 12 --maximum-zoom 18 \
+		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
+		--read-parallel --output="$(WORKSPACE)/trees.pmtiles" "$(WORKSPACE)/trees_polygons.geojson"
+
+## Governance (OR-005) ------------------------------------------------------
+
+check-or005: ## no *.tif / *.pmtiles / >50 MiB *.geojson tracked; excluded files recorded in manifest
+	@$(PY) scripts/check_or005.py "$(WORKSPACE)"

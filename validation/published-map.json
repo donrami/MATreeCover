@@ -1,0 +1,35 @@
+{
+  "release_id": "2026.01",
+  "generated_at": "2026-08-03T22:36:50+00:00",
+  "index_html": "index.html",
+  "style": "style.json",
+  "buildings": null,
+  "trees": null,
+  "boundary": "boundary.geojson",
+  "boundary_bbox": [
+    8.414253000885362,
+    49.41033906556488,
+    8.58995592642506,
+    49.59047006993572
+  ],
+  "legend": {
+    "labels": [
+      "0",
+      "15",
+      "30",
+      "50",
+      "100"
+    ]
+  },
+  "controls": [
+    "zoom-in",
+    "zoom-out",
+    "compass",
+    "baeume-toggle"
+  ],
+  "attribution": [
+    "Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0",
+    "basemap.de",
+    "CityTreeCover (MIT)"
+  ]
+}
