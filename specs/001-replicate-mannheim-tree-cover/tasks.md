@@ -32,12 +32,12 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 **Purpose**: Project initialization and basic structure.
 
-- [ ] T001 Create project structure per `plan.md`: `src/pipeline/` (with `__init__.py`), `src/site/`, `src/site/vendor/`, `tests/acceptance/`, `tests/pipeline/`, `tests/frontend/`, `validation/`, `dist/` at repo root
-- [ ] T002 Initialize Python 3.11 project in `pyproject.toml` (deps: rasterio, numpy, scipy, shapely, pyproj, pyogrio, pmtiles, click; dev: pytest) and add `make bootstrap` target (create venv, install deps, ensure branch `001-replicate-mannheim-tree-cover`, run the acceptance suite once)
-- [ ] T003 [P] Create `.gitignore` per OR-005/R-012 (exclude `*.tif`, `*.pmtiles`, `*.geojson` > 50 MiB, `dist/`, `.venv/`, `__pycache__/`)
-- [ ] T004 [P] Create Makefile commit targets per R-013/OR-004 in `Makefile` (`commit-spec`, `commit-plan`, `commit-slice`, `commit-milestone`: add expected files only, refuse unstaged changes, append `Spec-NN:` / `Plan-NN:` / `Slice-NN:` / `Milestone-NN:` tag)
-- [ ] T005 [P] Vendor pinned ESM builds `maplibre-gl.js` and `pmtiles.js` into `src/site/vendor/` (no build tool, no framework; record versions in repo README)
-- [ ] T006 [P] Add `make check-prereqs` target (Python 3.11, `tippecanoe` ≥ 2.x on PATH, mannheim workspace readable)
+- [X] T001 Create project structure per `plan.md`: `src/pipeline/` (with `__init__.py`), `src/site/`, `src/site/vendor/`, `tests/acceptance/`, `tests/pipeline/`, `tests/frontend/`, `validation/`, `dist/` at repo root
+- [X] T002 Initialize Python 3.11 project in `pyproject.toml` (deps: rasterio, numpy, scipy, shapely, pyproj, pyogrio, pmtiles, click; dev: pytest) and add `make bootstrap` target (create venv, install deps, ensure branch `001-replicate-mannheim-tree-cover`, run the acceptance suite once)
+- [X] T003 [P] Create `.gitignore` per OR-005/R-012 (exclude `*.tif`, `*.pmtiles`, `*.geojson` > 50 MiB, `dist/`, `.venv/`, `__pycache__/`)
+- [X] T004 [P] Create Makefile commit targets per R-013/OR-004 in `Makefile` (`commit-spec`, `commit-plan`, `commit-slice`, `commit-milestone`: add expected files only, refuse unstaged changes, append `Spec-NN:` / `Plan-NN:` / `Slice-NN:` / `Milestone-NN:` tag)
+- [X] T005 [P] Vendor pinned ESM builds `maplibre-gl.js` and `pmtiles.js` into `src/site/vendor/` (no build tool, no framework; record versions in repo README)
+- [X] T006 [P] Add `make check-prereqs` target (Python 3.11, `tippecanoe` ≥ 2.x on PATH, mannheim workspace readable)
 
 ---
 
@@ -45,11 +45,11 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 **Purpose**: Core infrastructure that MUST be complete before any user story starts.
 
-- [ ] T007 Create CLI skeleton in `src/pipeline/cli.py` (click entrypoint; subcommands `accept`, `publish`, `values`, `runpod-infer`; exit codes per `contracts/cli.md`: 0 success, 1 acceptance/input failure, 2 RunPod gate, 3 RSS > 12 GiB, 4 GPU attempted)
-- [ ] T008 Implement common subcommand behavior in `src/pipeline/cli.py` (per-invocation row in `validation/event.log.jsonl` with ts, subcommand, rss_peak_bytes, gpu_used, exit_code, inputs; `/usr/bin/time -v` RSS wrapper exits 3 on > 12 GiB; input acceptance short-circuit on `pending`/`fail` (OR-001/OR-002)
-- [ ] T009 [P] Implement `artifact_manifest.py` in `src/pipeline/artifact_manifest.py` (read/write `artifacts.manifest.json` per `contracts/manifest.md`: path, size_bytes, sha256, source, license, extent, resolution, completeness, lineage, acceptance, checks, invalidates; pass/fail/pending state machine; `fail` cascades to `invalidates`)
-- [ ] T010 [P] Implement `io.py` in `src/pipeline/io.py` (windowed raster reads via rasterio, GeoJSON writer, PMTiles writer; never loads a full city raster (OR-002)
-- [ ] T011 [P] Implement `boundary.py` in `src/pipeline/boundary.py` (load official boundary E-001: bbox + area, EPSG:25832; derive buffered boundary E-002 = boundary ∪ 60 m exterior, marked analysis-only, never published (FR-006/FR-007)
+- [X] T007 Create CLI skeleton in `src/pipeline/cli.py` (click entrypoint; subcommands `accept`, `publish`, `values`, `runpod-infer`; exit codes per `contracts/cli.md`: 0 success, 1 acceptance/input failure, 2 RunPod gate, 3 RSS > 12 GiB, 4 GPU attempted)
+- [X] T008 Implement common subcommand behavior in `src/pipeline/cli.py` (per-invocation row in `validation/event.log.jsonl` with ts, subcommand, rss_peak_bytes, gpu_used, exit_code, inputs; `/usr/bin/time -v` RSS wrapper exits 3 on > 12 GiB; input acceptance short-circuit on `pending`/`fail` (OR-001/OR-002)
+- [X] T009 [P] Implement `artifact_manifest.py` in `src/pipeline/artifact_manifest.py` (read/write `artifacts.manifest.json` per `contracts/manifest.md`: path, size_bytes, sha256, source, license, extent, resolution, completeness, lineage, acceptance, checks, invalidates; pass/fail/pending state machine; `fail` cascades to `invalidates`)
+- [X] T010 [P] Implement `io.py` in `src/pipeline/io.py` (windowed raster reads via rasterio, GeoJSON writer, PMTiles writer; never loads a full city raster (OR-002)
+- [X] T011 [P] Implement `boundary.py` in `src/pipeline/boundary.py` (load official boundary E-001: bbox + area, EPSG:25832; derive buffered boundary E-002 = boundary ∪ 60 m exterior, marked analysis-only, never published (FR-006/FR-007)
 
 **Checkpoint**: Foundation ready. User story implementation can begin in parallel.
 
@@ -65,20 +65,20 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 ⚠️ **NOTE: Write tests FIRST, FAIL before implementation**
 
-- [ ] T012 [P] [US1] Write style contract test in `tests/acceptance/test_style.py` (load `src/site/style.json` with a MapLibre style parser; assert the five layers, verbatim palette stops 0/12/24/24.08/32/40/48/80, legend labels, JSON round-trip (per `contracts/map-style.md`)
-- [ ] T013 [P] [US1] Write US1 frontend smoke checklist in `tests/frontend/smoke_us1.md` (quickstart Scenario 1 pass criteria: title `Baumfläche`, boundary fitBounds, dark outside-mask, palette/outlines, controls, attribution, 360 px layout)
+- [X] T012 [P] [US1] Write style contract test in `tests/acceptance/test_style.py` (load `src/site/style.json` with a MapLibre style parser; assert the five layers, verbatim palette stops 0/12/24/24.08/32/40/48/80, legend labels, JSON round-trip (per `contracts/map-style.md`)
+- [X] T013 [P] [US1] Write US1 frontend smoke checklist in `tests/frontend/smoke_us1.md` (quickstart Scenario 1 pass criteria: title `Baumfläche`, boundary fitBounds, dark outside-mask, palette/outlines, controls, attribution, 360 px layout)
 
 ### Implementation User Story 1
 
-- [ ] T014 [P] [US1] Create `index.html` in `src/site/index.html` (`<title>Baumfläche</title>`; `#map` fills viewport; `#legend` with German description and labels `0`, `15`, `30`, `50`, `100`; `#baeume` button labelled `Bäume`; `#attribution`; loads `style.css` then ESM `main.js` (FR-012/FR-013)
-- [ ] T015 [P] [US1] Create `style.css` in `src/site/style.css` (dark theme: page `#0e0e0e`, map `#000`, text `#fff`, outlines `#888`; `@media (max-width: 480px)` collapses legend to a bottom strip and stacks controls (FR-018)
-- [ ] T016 [P] [US1] Create `style.json` in `src/site/style.json` per `contracts/map-style.md` (sources: basemap.de raster, `pmtiles://buildings.pmtiles`, `pmtiles://trees.pmtiles`, boundary geojson; layers bottom→top: basemap, outside-mask `#000` opacity 1, buildings-fill `interpolate(linear, ['get','value'], 0 '#ffd524', 12 '#e6854a', 24 '#a97e65', 24.08 '#0674aa', 32 '#1db6ff', 40 '#39c2ff', 48 '#56ceff', 80 '#6ad4ff')` opacity 0.75 with `case` fallback `#444`/0.4 for `has_value == false`, buildings-line `#555` width 0.5, trees-fill `#39C43D` opacity 0.75 `visibility: 'none'` (FR-003/FR-009/FR-010/FR-011/FR-015)
-- [ ] T017 [US1] Implement `buildings.py` in `src/pipeline/buildings.py` (assert source `LGL ALKIS Hausumringe`, CRS EPSG:25832, feature_count 93024; clip to buffered boundary; drop duplicates by stable id; emit only `in_boundary == true` (FR-004/SC-003; reads the accepted `tables/buildings.geojson`, never regenerates it (FR-022)
-- [ ] T018 [US1] Implement `values.py` in `src/pipeline/values.py` (per-building value = mean canopy fraction in a 60 m disc: `scipy.signal.fftconvolve` with a 300 px circular kernel over the binary canopy mask, chunked 1000 px tiles with reflective padding, footprint rasterized to the mask grid; `value` in [0,100] or `null`; `value_str` two decimals; `has_value`; `completeness` (FR-005/FR-008/FR-009/OR-002, R-001/R-006; depends on T017)
-- [ ] T019 [US1] Add `pmtiles-buildings` target to `Makefile` (tippecanoe recipe per `contracts/pmtiles-sources.md`: `--name buildings --layer buildings --minimum-zoom 12 --maximum-zoom 18 --base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping --read-parallel --output=buildings.pmtiles buildings.geojson`)
-- [ ] T020 [US1] Implement `publish.py` in `src/pipeline/publish.py` (refuse if any required artifact is `pending`/`fail`; clip every accepted layer to the official boundary (FR-007; emit `dist/` bundle per `contracts/static-bundle.md`: index.html, style.css, main.js, vendor/, style.json, PMTiles, boundary.geojson, public manifest.json, attribution.html; stream inputs, never a full raster (OR-002; write the PublishedMap record)
-- [ ] T021 [US1] Implement `main.js` bootstrap in `src/site/main.js` (ESM; register the `pmtiles` protocol; `fitBounds` on the boundary bbox with `padding: 24, bearing: 0, pitch: 0, duration: 0`; add `NavigationControl` with `showCompass: true`; load outside-mask + buildings layers (FR-001/FR-002/FR-003/FR-017; depends on T016)
-- [ ] T022 [US1] Create `attribution.html` in `src/site/attribution.html` and wire the `AttributionControl` in `main.js` (LGL `Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0`, basemap.de, CityTreeCover MIT (FR-019; depends on T021)
+- [X] T014 [P] [US1] Create `index.html` in `src/site/index.html` (`<title>Baumfläche</title>`; `#map` fills viewport; `#legend` with German description and labels `0`, `15`, `30`, `50`, `100`; `#baeume` button labelled `Bäume`; `#attribution`; loads `style.css` then ESM `main.js` (FR-012/FR-013)
+- [X] T015 [P] [US1] Create `style.css` in `src/site/style.css` (dark theme: page `#0e0e0e`, map `#000`, text `#fff`, outlines `#888`; `@media (max-width: 480px)` collapses legend to a bottom strip and stacks controls (FR-018)
+- [X] T016 [P] [US1] Create `style.json` in `src/site/style.json` per `contracts/map-style.md` (sources: basemap.de raster, `pmtiles://buildings.pmtiles`, `pmtiles://trees.pmtiles`, boundary geojson; layers bottom→top: basemap, outside-mask `#000` opacity 1, buildings-fill `interpolate(linear, ['get','value'], 0 '#ffd524', 12 '#e6854a', 24 '#a97e65', 24.08 '#0674aa', 32 '#1db6ff', 40 '#39c2ff', 48 '#56ceff', 80 '#6ad4ff')` opacity 0.75 with `case` fallback `#444`/0.4 for `has_value == false`, buildings-line `#555` width 0.5, trees-fill `#39C43D` opacity 0.75 `visibility: 'none'` (FR-003/FR-009/FR-010/FR-011/FR-015)
+- [X] T017 [US1] Implement `buildings.py` in `src/pipeline/buildings.py` (assert source `LGL ALKIS Hausumringe`, CRS EPSG:25832, feature_count 93024; clip to buffered boundary; drop duplicates by stable id; emit only `in_boundary == true` (FR-004/SC-003; reads the accepted `tables/buildings.geojson`, never regenerates it (FR-022)
+- [X] T018 [US1] Implement `values.py` in `src/pipeline/values.py` (per-building value = mean canopy fraction in a 60 m disc: `scipy.signal.fftconvolve` with a 300 px circular kernel over the binary canopy mask, chunked 1000 px tiles with reflective padding, footprint rasterized to the mask grid; `value` in [0,100] or `null`; `value_str` two decimals; `has_value`; `completeness` (FR-005/FR-008/FR-009/OR-002, R-001/R-006; depends on T017)
+- [X] T019 [US1] Add `pmtiles-buildings` target to `Makefile` (tippecanoe recipe per `contracts/pmtiles-sources.md`: `--name buildings --layer buildings --minimum-zoom 12 --maximum-zoom 18 --base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping --read-parallel --output=buildings.pmtiles buildings.geojson`)
+- [X] T020 [US1] Implement `publish.py` in `src/pipeline/publish.py` (refuse if any required artifact is `pending`/`fail`; clip every accepted layer to the official boundary (FR-007; emit `dist/` bundle per `contracts/static-bundle.md`: index.html, style.css, main.js, vendor/, style.json, PMTiles, boundary.geojson, public manifest.json, attribution.html; stream inputs, never a full raster (OR-002; write the PublishedMap record)
+- [X] T021 [US1] Implement `main.js` bootstrap in `src/site/main.js` (ESM; register the `pmtiles` protocol; `fitBounds` on the boundary bbox with `padding: 24, bearing: 0, pitch: 0, duration: 0`; add `NavigationControl` with `showCompass: true`; load outside-mask + buildings layers (FR-001/FR-002/FR-003/FR-017; depends on T016)
+- [X] T022 [US1] Create `attribution.html` in `src/site/attribution.html` and wire the `AttributionControl` in `main.js` (LGL `Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0`, basemap.de, CityTreeCover MIT (FR-019; depends on T021)
 
 **Checkpoint**: US1 complete. Run `make publish`, then `tests/frontend/smoke_us1.md`. Full-color rendering additionally requires an accepted canopy mask (see US4 / RunPod gate). The quarantine of the failed prior mask is the intended FR-021/FR-023 behavior, not a defect.
 
@@ -94,13 +94,13 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 ⚠️ **NOTE: Write tests FIRST, FAIL before implementation**
 
-- [ ] T023 [P] [US2] Write value recalculation test in `tests/pipeline/test_values_recalc.py` (sample 100 random buildings, recompute the 60 m mean independently, assert ≤ 1 percentage point disagreement (SC-004)
-- [ ] T024 [P] [US2] Write US2 frontend smoke checklist in `tests/frontend/smoke_us2.md` (pointer cursor on hover; popup shows two decimals; unavailable popup reads `–`; quickstart Scenario 2 pass criteria)
+- [X] T023 [P] [US2] Write value recalculation test in `tests/pipeline/test_values_recalc.py` (sample 100 random buildings, recompute the 60 m mean independently, assert ≤ 1 percentage point disagreement (SC-004)
+- [X] T024 [P] [US2] Write US2 frontend smoke checklist in `tests/frontend/smoke_us2.md` (pointer cursor on hover; popup shows two decimals; unavailable popup reads `–`; quickstart Scenario 2 pass criteria)
 
 ### Implementation User Story 2
 
-- [ ] T025 [US2] Implement building popup in `src/site/main.js` (`click` on buildings-fill opens a compact MapLibre `Popup` with the feature's `value_str`; a null `value_str` shows `–` (FR-008/FR-009/FR-014)
-- [ ] T026 [US2] Implement hover pointer in `src/site/main.js` (`mousemove` over buildings-fill sets `canvas.style.cursor = 'pointer'` (FR-014; depends on T025, same file)
+- [X] T025 [US2] Implement building popup in `src/site/main.js` (`click` on buildings-fill opens a compact MapLibre `Popup` with the feature's `value_str`; a null `value_str` shows `–` (FR-008/FR-009/FR-014)
+- [X] T026 [US2] Implement hover pointer in `src/site/main.js` (`mousemove` over buildings-fill sets `canvas.style.cursor = 'pointer'` (FR-014; depends on T025, same file)
 
 **Checkpoint**: US2 complete and independently testable.
 
@@ -116,14 +116,14 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 ⚠️ **NOTE: Write tests FIRST, FAIL before implementation**
 
-- [ ] T027 [P] [US3] Write image sanity test in `tests/pipeline/test_image_sanity.py` (20 distributed crops of the accepted canopy mask; ≥ 17/20 distinguish canopy from roofs/roads/water (SC-005)
-- [ ] T028 [P] [US3] Write US3 frontend smoke checklist in `tests/frontend/smoke_us3.md` (hidden on load; flat green `#39C43D` on toggle; camera unchanged; quickstart Scenario 3 pass criteria)
+- [X] T027 [P] [US3] Write image sanity test in `tests/pipeline/test_image_sanity.py` (20 distributed crops of the accepted canopy mask; ≥ 17/20 distinguish canopy from roofs/roads/water (SC-005)
+- [X] T028 [P] [US3] Write US3 frontend smoke checklist in `tests/frontend/smoke_us3.md` (hidden on load; flat green `#39C43D` on toggle; camera unchanged; quickstart Scenario 3 pass criteria)
 
 ### Implementation User Story 3
 
-- [ ] T029 [US3] Implement `trees.py` in `src/pipeline/trees.py` (polygonize the accepted canopy mask with `rasterio.features.shapes`; clip to the official boundary (FR-007; stable ids `tree-<n>`; `canopy_pixel_count`; `source: accepted_canopy_mask` (E-004; depends on T011)
-- [ ] T030 [US3] Add `pmtiles-trees` target to `Makefile` (tippecanoe recipe per `contracts/pmtiles-sources.md`: `--name trees --layer trees --minimum-zoom 12 --maximum-zoom 18 --base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping --read-parallel --output=trees.pmtiles canopy_polygons.geojson`)
-- [ ] T031 [US3] Implement `Bäume` toggle in `src/site/main.js` (trees-fill `visibility: 'none'` on load; click flips `setLayoutProperty('visibility', ...)` only (camera untouched, FR-016); wrap the trees PMTiles load in try/catch, console warning on failure, buildings keep rendering (FR-020; depends on T016 style.json)
+- [X] T029 [US3] Implement `trees.py` in `src/pipeline/trees.py` (polygonize the accepted canopy mask with `rasterio.features.shapes`; clip to the official boundary (FR-007; stable ids `tree-<n>`; `canopy_pixel_count`; `source: accepted_canopy_mask` (E-004; depends on T011)
+- [X] T030 [US3] Add `pmtiles-trees` target to `Makefile` (tippecanoe recipe per `contracts/pmtiles-sources.md`: `--name trees --layer trees --minimum-zoom 12 --maximum-zoom 18 --base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping --read-parallel --output=trees.pmtiles canopy_polygons.geojson`)
+- [X] T031 [US3] Implement `Bäume` toggle in `src/site/main.js` (trees-fill `visibility: 'none'` on load; click flips `setLayoutProperty('visibility', ...)` only (camera untouched, FR-016); wrap the trees PMTiles load in try/catch, console warning on failure, buildings keep rendering (FR-020; depends on T016 style.json)
 
 **Checkpoint**: US3 complete and independently testable.
 
@@ -139,24 +139,24 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 ⚠️ **NOTE: Write tests FIRST, FAIL before implementation**
 
-- [ ] T032 [P] [US4] Write boundary acceptance test in `tests/acceptance/test_boundary.py` (five FR-021 checks: source LGL `dl-de/by-2-0`, extent vs boundary, resolution n/a, completeness 1.0, lineage recorded)
-- [ ] T033 [P] [US4] Write buildings acceptance test in `tests/acceptance/test_buildings.py` (source/crs/count assertions; feature count exactly 93,024 (SC-003; no outside, synthetic, or duplicate buildings (FR-004)
-- [ ] T034 [P] [US4] Write imagery acceptance test in `tests/acceptance/test_imagery.py` (460 tiles from `mosaic/extract/dop20rgb_*.tif`; sidecar asserts `Bodenpixelgroesse == 0.2` and CRS 25832; completeness inside the buffered boundary ≥ 0.95 (R-002)
-- [ ] T035 [P] [US4] Write canopy acceptance test in `tests/acceptance/test_canopy.py` (completeness 0.48 < 0.95 threshold → `fail`; `invalidates: ["buildings.geojson", "trees.pmtiles"]`; asserts the baseline failure state per spec evidence)
-- [ ] T036 [P] [US4] Write values acceptance test in `tests/acceptance/test_values.py` (value in [0,100] or null; value_str two decimals; has_value consistency (FR-008/FR-009)
-- [ ] T037 [P] [US4] Write trees acceptance test in `tests/acceptance/test_trees.py` (in-boundary only (FR-007; source `accepted_canopy_mask` lineage)
-- [ ] T038 [P] [US4] Write manifest state-machine test in `tests/acceptance/test_manifest.py` (`pass` terminal; `fail` cascades to `invalidates` → `pending`; independent accepted inputs stay `pass`; no re-generation of `pass` artifacts (FR-022/FR-023/SC-010)
-- [ ] T039 [P] [US4] Write RSS/GPU gate test in `tests/pipeline/test_rss.py` (`/usr/bin/time -v` per subcommand; peak RSS ≤ 12 GiB; `gpu_used` false; local `runpod-infer` without endpoint exits 2 (OR-001/OR-003/SC-009)
+- [X] T032 [P] [US4] Write boundary acceptance test in `tests/acceptance/test_boundary.py` (five FR-021 checks: source LGL `dl-de/by-2-0`, extent vs boundary, resolution n/a, completeness 1.0, lineage recorded)
+- [X] T033 [P] [US4] Write buildings acceptance test in `tests/acceptance/test_buildings.py` (source/crs/count assertions; feature count exactly 93,024 (SC-003; no outside, synthetic, or duplicate buildings (FR-004)
+- [X] T034 [P] [US4] Write imagery acceptance test in `tests/acceptance/test_imagery.py` (460 tiles from `mosaic/extract/dop20rgb_*.tif`; sidecar asserts `Bodenpixelgroesse == 0.2` and CRS 25832; completeness inside the buffered boundary ≥ 0.95 (R-002)
+- [X] T035 [P] [US4] Write canopy acceptance test in `tests/acceptance/test_canopy.py` (completeness 0.48 < 0.95 threshold → `fail`; `invalidates: ["buildings.geojson", "trees.pmtiles"]`; asserts the baseline failure state per spec evidence)
+- [X] T036 [P] [US4] Write values acceptance test in `tests/acceptance/test_values.py` (value in [0,100] or null; value_str two decimals; has_value consistency (FR-008/FR-009)
+- [X] T037 [P] [US4] Write trees acceptance test in `tests/acceptance/test_trees.py` (in-boundary only (FR-007; source `accepted_canopy_mask` lineage)
+- [X] T038 [P] [US4] Write manifest state-machine test in `tests/acceptance/test_manifest.py` (`pass` terminal; `fail` cascades to `invalidates` → `pending`; independent accepted inputs stay `pass`; no re-generation of `pass` artifacts (FR-022/FR-023/SC-010)
+- [X] T039 [P] [US4] Write RSS/GPU gate test in `tests/pipeline/test_rss.py` (`/usr/bin/time -v` per subcommand; peak RSS ≤ 12 GiB; `gpu_used` false; local `runpod-infer` without endpoint exits 2 (OR-001/OR-003/SC-009)
 
 ### Implementation User Story 4
 
-- [ ] T040 [P] [US4] Implement `acceptance.py` in `src/pipeline/acceptance.py` (five FR-021 checks: source attribution, extent vs boundary, resolution/GSD, completeness ≥ 0.95, lineage input-hash; deterministic and idempotent; metadata-only reads, never full rasters (OR-002)
-- [ ] T041 [US4] Implement `accept` subcommand in `src/pipeline/cli.py` (re-validate every artifact in `artifacts.manifest.json`, refresh the manifest, print per-artifact `pass`/`fail`/`pending`, exit 0 if all pass-able artifacts pass else 1; the gate before every `publish`; depends on T040)
-- [ ] T042 [US4] Create `canopy.py` in `src/pipeline/canopy.py` (contract module with `requires_runpod: true` marker; the local pipeline refuses to invoke the model (OR-003); existing `deepLabV3plus-resnet34` weights only, no new labels, no training (FR-024)
-- [ ] T043 [US4] Implement `runpod-infer` subcommand in `src/pipeline/cli.py` (writes `canopy_mask.tif` + `canopy_mask.json`; refuses unless `MANNHEIM_RUNPOD_ENDPOINT` is set, prints `STOP — request RunPod capacity`, exits 2 (FR-025/OR-003; depends on T042)
-- [ ] T044 [P] [US4] Create seed `artifacts.manifest.json` at repo root from the mannheim workspace inventory (boundary/imagery/buildings `pass` with checks ok; canopy-mask `fail` with completeness 0.48 and `invalidates: ["buildings.geojson", "trees.pmtiles"]`; every > 50 MiB file recorded with path, size, sha256, source (OR-005; per `contracts/manifest.md` example)
-- [ ] T045 [P] [US4] Create `tiles.csv` at repo root (460-row tile index derived from `mosaic/extract/`, verified against the `2026.01/meta.json` tile count)
-- [ ] T046 [P] [US4] Add `make check-or005` target to `Makefile` (assert no `*.tif` / `*.pmtiles` / `*.geojson` > 50 MiB tracked in git; assert every excluded file has path, size, sha256, and source in the manifest (OR-005)
+- [X] T040 [P] [US4] Implement `acceptance.py` in `src/pipeline/acceptance.py` (five FR-021 checks: source attribution, extent vs boundary, resolution/GSD, completeness ≥ 0.95, lineage input-hash; deterministic and idempotent; metadata-only reads, never full rasters (OR-002)
+- [X] T041 [US4] Implement `accept` subcommand in `src/pipeline/cli.py` (re-validate every artifact in `artifacts.manifest.json`, refresh the manifest, print per-artifact `pass`/`fail`/`pending`, exit 0 if all pass-able artifacts pass else 1; the gate before every `publish`; depends on T040)
+- [X] T042 [US4] Create `canopy.py` in `src/pipeline/canopy.py` (contract module with `requires_runpod: true` marker; the local pipeline refuses to invoke the model (OR-003); existing `deepLabV3plus-resnet34` weights only, no new labels, no training (FR-024)
+- [X] T043 [US4] Implement `runpod-infer` subcommand in `src/pipeline/cli.py` (writes `canopy_mask.tif` + `canopy_mask.json`; refuses unless `MANNHEIM_RUNPOD_ENDPOINT` is set, prints `STOP — request RunPod capacity`, exits 2 (FR-025/OR-003; depends on T042)
+- [X] T044 [P] [US4] Create seed `artifacts.manifest.json` at repo root from the mannheim workspace inventory (boundary/imagery/buildings `pass` with checks ok; canopy-mask `fail` with completeness 0.48 and `invalidates: ["buildings.geojson", "trees.pmtiles"]`; every > 50 MiB file recorded with path, size, sha256, source (OR-005; per `contracts/manifest.md` example)
+- [X] T045 [P] [US4] Create `tiles.csv` at repo root (460-row tile index derived from `mosaic/extract/`, verified against the `2026.01/meta.json` tile count)
+- [X] T046 [P] [US4] Add `make check-or005` target to `Makefile` (assert no `*.tif` / `*.pmtiles` / `*.geojson` > 50 MiB tracked in git; assert every excluded file has path, size, sha256, and source in the manifest (OR-005)
 
 **Checkpoint**: US4 complete. Acceptance suite green, manifest reflects the quarantine, RunPod gate verified.
 
@@ -166,12 +166,12 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 **Purpose**: Improvements that affect multiple user stories.
 
-- [ ] T047 Run `quickstart.md` end-to-end (Scenarios 1–4), record results in `validation/event.log.jsonl`, and fix any failures found
-- [ ] T048 [P] Write repo `README.md` (setup via `make bootstrap`, pipeline subcommands, publish + static hosting, tippecanoe requirements; preserve the reference CityTreeCover MIT notice per spec Dependencies)
-- [ ] T049 Code cleanup: extract shared validation/IO helpers, remove duplication across `src/pipeline/` modules; re-run the acceptance suite
-- [ ] T050 Verify the performance budget: `dist/` < 50 MiB; initial map usable ≤ 10 s on a 25 Mbps / 50 ms link; ≥ 95% of interactions ≤ 2 s (SC-008); PMTiles sizes recorded in the manifest
-- [ ] T051 [P] Verify the published bundle carries no secrets, analytics, or telemetry and no third-party scripts beyond the vendored libs (FR-001 out-of-scope compliance); add a CSP `meta` tag to `index.html` if not present
-- [ ] T052 Create the final milestone commit via `make commit-milestone` (OR-004)
+- [X] T047 Run `quickstart.md` end-to-end (Scenarios 1–4), record results in `validation/event.log.jsonl`, and fix any failures found
+- [X] T048 [P] Write repo `README.md` (setup via `make bootstrap`, pipeline subcommands, publish + static hosting, tippecanoe requirements; preserve the reference CityTreeCover MIT notice per spec Dependencies)
+- [X] T049 Code cleanup: extract shared validation/IO helpers, remove duplication across `src/pipeline/` modules; re-run the acceptance suite
+- [X] T050 Verify the performance budget: `dist/` < 50 MiB; initial map usable ≤ 10 s on a 25 Mbps / 50 ms link; ≥ 95% of interactions ≤ 2 s (SC-008); PMTiles sizes recorded in the manifest
+- [X] T051 [P] Verify the published bundle carries no secrets, analytics, or telemetry and no third-party scripts beyond the vendored libs (FR-001 out-of-scope compliance); add a CSP `meta` tag to `index.html` if not present
+- [X] T052 Create the final milestone commit via `make commit-milestone` (OR-004)
 
 **Checkpoint**: All user stories complete, quickstart green, milestone committed.
 
