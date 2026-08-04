@@ -14,6 +14,15 @@ clicks. Interview (2026-08-04): keep the compact value popup. Clicking any
 building shows that building's value. Clicking empty map space closes the
 popup.
 
+## Clarifications
+
+### Session 2026-08-04
+
+- Q: Should darkening the base map be added to this feature's scope, or
+  handled separately? → A: Separate feature - keep this spec focused on
+  popup interaction; track base-map darkening as its own spec/branch
+  later.
+
 ## Scope
 
 ### Goal
@@ -44,6 +53,8 @@ open at any time. Clicking empty map space dismisses it.
 - Changes to value computation, palette, building properties, or pipeline
   data.
 - Changes to camera, zoom, or pan behavior.
+- Base-map styling changes (e.g., darkening the map background for
+  building color contrast); tracked as a separate feature.
 - Anything outside Mannheim.
 
 ## User Scenarios & Testing *(mandatory)*
