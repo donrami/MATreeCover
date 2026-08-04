@@ -6,7 +6,7 @@ CLI := $(PY) -m src.pipeline.cli
 MSG ?=
 
 .PHONY: bootstrap check-prereqs commit-spec commit-plan commit-slice commit-milestone \
-	accept publish values runpod-infer pmtiles-buildings pmtiles-trees check-or005
+	accept publish values trees runpod-infer pmtiles-buildings pmtiles-trees check-or005
 
 ## Setup ------------------------------------------------------------------
 
@@ -60,6 +60,9 @@ publish: ## emit dist/ static bundle (refuses on pending/fail required inputs)
 values: ## compute per-building 60 m values from accepted canopy mask
 	$(CLI) values
 
+trees: ## polygonize accepted canopy mask to trees_polygons.geojson
+	$(CLI) trees
+
 runpod-infer: ## gated: refuses unless MANNHEIM_RUNPOD_ENDPOINT is set
 	$(CLI) runpod-infer
 
@@ -69,13 +72,13 @@ pmtiles-buildings:
 	@test -f "$(WORKSPACE)/buildings.geojson" || { echo "error: $(WORKSPACE)/buildings.geojson missing (run values)"; exit 1; }
 	tippecanoe --name buildings --layer buildings --minimum-zoom 12 --maximum-zoom 18 \
 		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
-		--read-parallel --output="$(WORKSPACE)/buildings.pmtiles" "$(WORKSPACE)/buildings.geojson"
+		--read-parallel --force --output="$(WORKSPACE)/buildings.pmtiles" "$(WORKSPACE)/buildings.geojson"
 
 pmtiles-trees:
 	@test -f "$(WORKSPACE)/trees_polygons.geojson" || { echo "error: $(WORKSPACE)/trees_polygons.geojson missing (run trees)"; exit 1; }
 	tippecanoe --name trees --layer trees --minimum-zoom 12 --maximum-zoom 18 \
 		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
-		--read-parallel --output="$(WORKSPACE)/trees.pmtiles" "$(WORKSPACE)/trees_polygons.geojson"
+		--read-parallel --force --output="$(WORKSPACE)/trees.pmtiles" "$(WORKSPACE)/trees_polygons.geojson"
 
 ## Governance (OR-005) ------------------------------------------------------
 

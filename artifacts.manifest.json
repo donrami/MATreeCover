@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-03T22:38:03+00:00",
+  "generated_at": "2026-08-04T02:47:59+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -129,29 +129,29 @@
     {
       "path": "mosaic/canopy_prediction_mask.tif",
       "kind": "canopy-mask",
-      "size_bytes": 232277828,
-      "sha256": "2ffce24f311be3435078bea5b30480c5563ace33dadccf08453e4b7133d48560",
+      "size_bytes": 54536430,
+      "sha256": "b71aa53334f28347c5bb9ac53d0521f8f737e9313dc9f96be2acee12248b11ae",
       "source": "mannheim pipeline, deepLabV3plus-resnet34",
       "license": "MIT",
       "extent": [
-        459900.0,
-        5482900.0,
-        460100.0,
-        5483100.0
+        457000.000001,
+        5472000.0,
+        475000.000001,
+        5497000.0
       ],
       "resolution": "0.2 m",
-      "completeness": 0.48,
+      "completeness": 1.0,
       "lineage": {
         "inputs": [
           "mosaic/extract/dop20rgb_*.tif"
         ]
       },
-      "acceptance": "fail",
+      "acceptance": "pass",
       "checks": {
         "source": "ok",
         "extent": "ok",
         "resolution": "ok",
-        "completeness": "fail",
+        "completeness": "ok",
         "lineage": "ok"
       },
       "invalidates": [
@@ -162,8 +162,8 @@
     {
       "path": "buildings.geojson",
       "kind": "values",
-      "size_bytes": null,
-      "sha256": null,
+      "size_bytes": 56288523,
+      "sha256": "02ca31ac97dc4eb9365aed2460b7fd77c7397d745c223fa19afe3156ca8f8a1c",
       "source": "derived: values.py (60 m fftconvolve)",
       "license": "MIT",
       "extent": [
@@ -173,28 +173,28 @@
         5493245.55
       ],
       "resolution": "n/a",
-      "completeness": null,
+      "completeness": 1.0,
       "lineage": {
         "inputs": [
           "mosaic/canopy_prediction_mask.tif",
           "tables/buildings.geojson"
         ]
       },
-      "acceptance": "pending",
+      "acceptance": "pass",
       "checks": {
-        "source": "pending",
-        "extent": "pending",
-        "resolution": "pending",
-        "completeness": "pending",
-        "lineage": "pending"
+        "source": "ok",
+        "extent": "ok",
+        "resolution": "ok",
+        "completeness": "ok",
+        "lineage": "ok"
       },
       "invalidates": []
     },
     {
       "path": "trees.pmtiles",
       "kind": "trees",
-      "size_bytes": null,
-      "sha256": null,
+      "size_bytes": 78774073,
+      "sha256": "917f6dd85edc8208d011fc64cb12b0b69962cffc60e071dd94476f255806c4ec",
       "source": "derived: trees.py + tippecanoe",
       "license": "MIT",
       "extent": [
@@ -204,19 +204,19 @@
         5493245.55
       ],
       "resolution": "n/a",
-      "completeness": null,
+      "completeness": 1.0,
       "lineage": {
         "inputs": [
           "mosaic/canopy_prediction_mask.tif"
         ]
       },
-      "acceptance": "pending",
+      "acceptance": "pass",
       "checks": {
-        "source": "pending",
-        "extent": "pending",
-        "resolution": "pending",
-        "completeness": "pending",
-        "lineage": "pending"
+        "source": "ok",
+        "extent": "ok",
+        "resolution": "ok",
+        "completeness": "ok",
+        "lineage": "ok"
       },
       "invalidates": []
     },
@@ -9680,6 +9680,14 @@
       },
       "invalidates": [],
       "note": ">50 MiB, recorded per OR-005"
+    },
+    {
+      "path": "trees_polygons.geojson",
+      "kind": "large-file",
+      "size_bytes": 868688823,
+      "sha256": "801d3f9f060585afe20ec1ebccbfbc5cacb33215c7e72ec28f467d1593d7c8c7",
+      "source": "derived: trees.py polygonize of accepted canopy mask",
+      "license": "MIT"
     }
   ]
 }

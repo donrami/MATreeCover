@@ -47,6 +47,7 @@ make bootstrap        # venv + deps + acceptance suite (canopy-mask fail expecte
 ```text
 python -m src.pipeline.cli accept       # re-validate artifacts.manifest.json (FR-021)
 python -m src.pipeline.cli values       # per-building 60 m values from the accepted mask
+python -m src.pipeline.cli trees        # polygonize the mask to trees_polygons.geojson
 python -m src.pipeline.cli publish      # emit the static dist/ bundle
 python -m src.pipeline.cli runpod-infer # gated; needs MANNHEIM_RUNPOD_ENDPOINT
 ```
@@ -64,18 +65,50 @@ python -m http.server -d dist
 ```
 
 `dist/` is a plain static bundle (index.html, style.json, PMTiles,
-boundary mask, attribution). Any static host can serve it. There is no
-application server, no database, and no analytics (FR-001).
+boundary mask, attribution). The PMTiles layers need HTTP byte
+serving (Range requests). `python -m http.server` does not support
+Range; use nginx or another Range-capable host:
 
-## Quarantine state (expected)
+```text
+nginx -c /tmp/nginx-dist.conf   # server { root .../dist; }
+```
 
-The prior canopy mask (`mosaic/canopy_prediction_mask.tif`) fails
-acceptance (0.48% completeness < 0.95). Per FR-023 its dependents
-(`buildings.geojson` values, `trees.pmtiles`) stay `pending` until an
-owner-approved RunPod inference (FR-024/FR-025) produces a replacement
-mask. While quarantined, `publish` emits the structural bundle without
-the buildings and trees layers. The acceptance suite, value recalc,
-image sanity, and smoke checklists all run green.
+There is no application server, no database, and no analytics (FR-001).
+
+## Canopy-mask inference on RunPod (FR-024/FR-025)
+
+The canopy mask is produced on owner-supplied RunPod capacity; the
+local pipeline never runs the model (OR-003). The endpoint contract:
+`POST {"model": "deepLabV3plus-resnet34", "inputs": [...]}` returns the
+mask as GeoTIFF bytes. `src/endpoint/server.py` implements it —
+banded tiled inference replicating the CityTreeCover reference
+(DeepLabV3+ ResNet34, 1024 px patches, 64 px overlap, ImageNet
+normalization, sigmoid threshold 0.5, max-confidence seams).
+
+Prereqs on the pod: the imagery tiles under `mosaic/extract/` and the
+weights `models/best_deeplabv3plus.pth` (from the CityTreeCover repo,
+MIT). Then:
+
+```text
+bash scripts/runpod-deploy.sh [host] [port] [ssh_key]   # install + start
+ssh -p 40092 -i ~/.ssh/id_ed25519 -N -L 8000:localhost:8000 root@HOST
+MANNHEIM_RUNPOD_ENDPOINT=http://127.0.0.1:8000/infer \
+  python -m src.pipeline.cli runpod-infer
+```
+
+`runpod-infer` writes `mosaic/canopy_prediction_mask.tif` and the
+accompanying JSON into the workspace. With the mask accepted, the
+remaining pipeline runs locally:
+
+```text
+python -m src.pipeline.cli values   # per-building 60 m values
+python -m src.pipeline.cli trees    # trees_polygons.geojson (EPSG:4326)
+make pmtiles-buildings pmtiles-trees
+python -m src.pipeline.cli accept && python -m src.pipeline.cli publish
+```
+
+The acceptance suite, value recalc, image sanity, and smoke checklists
+run green with the accepted mask.
 
 ## Tests
 

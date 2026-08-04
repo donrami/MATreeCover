@@ -154,6 +154,24 @@ def values() -> int:
 
 
 @click.command()
+def trees() -> int:
+    """Polygonize the accepted canopy mask to trees_polygons.geojson (FR-015)."""
+    from . import boundary as boundary_mod
+    from . import trees as trees_mod
+
+    workspace = ws.workspace_root()
+    _gate([CANOPY_MASK], workspace)
+    boundary = boundary_mod.load_boundary(workspace / BOUNDARY_INPUT)
+    features = trees_mod.polygonize_canopy(
+        workspace / CANOPY_MASK,
+        workspace / "trees_polygons.geojson",
+        boundary["geometry"],
+    )
+    click.echo(f"trees: wrote {len(features)} features to {workspace / 'trees_polygons.geojson'}")
+    return EXIT_OK
+
+
+@click.command()
 def runpod_infer() -> int:
     """Gated inference on existing weights via RunPod (FR-025/OR-003)."""
     from .canopy import MODEL_ID, STOP_MESSAGE
@@ -168,7 +186,7 @@ def runpod_infer() -> int:
     payload = json.dumps({"model": MODEL_ID, "inputs": tiles}).encode("utf-8")
     request = urllib.request.Request(endpoint, data=payload, headers={"Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(request, timeout=600) as response:
+        with urllib.request.urlopen(request, timeout=3600) as response:
             body = response.read()
     except Exception as exc:
         raise CliError(f"runpod-infer: endpoint request failed: {exc}") from exc
@@ -300,6 +318,7 @@ def cli() -> None:
 cli.add_command(accept)
 cli.add_command(publish)
 cli.add_command(values)
+cli.add_command(trees)
 cli.add_command(runpod_infer)
 
 

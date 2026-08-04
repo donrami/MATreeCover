@@ -83,7 +83,7 @@ def test_no_regeneration_of_pass_artifacts(tmp_path, manifest_copy, repo_root) -
         [str(repo_root / ".venv" / "bin" / "python"), "-m", "src.pipeline.cli", "accept"],
         capture_output=True, text=True, cwd=repo_root, env=env, timeout=600,
     )
-    assert proc.returncode == 1  # canopy mask still fails (quarantine)
+    assert proc.returncode == 0  # all artifacts pass (unblocked)
     before = {
         a["path"]: (a["sha256"], a["size_bytes"])
         for a in am.load_manifest(manifest_copy)["artifacts"]

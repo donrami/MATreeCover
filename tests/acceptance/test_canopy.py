@@ -1,7 +1,7 @@
-"""Canopy mask acceptance (T035): the quarantined baseline failure state.
+"""Canopy mask acceptance (T035): the unblocked state.
 
-Completeness 0.48 < 0.95 → `fail`; `invalidates` lists the two dependent
-derived artifacts per FR-023.
+Completeness 1.0 >= 0.95 → `pass`; `invalidates` lists the two dependent
+derived artifacts per FR-023 (only relevant after a regression).
 """
 
 from __future__ import annotations
@@ -16,17 +16,17 @@ def _canopy_artifact(repo_root) -> dict:
     return next(a for a in manifest["artifacts"] if a["kind"] == "canopy-mask")
 
 
-def test_baseline_failure_state(repo_root) -> None:
+def test_accepted_state(repo_root) -> None:
     artifact = _canopy_artifact(repo_root)
-    assert artifact["acceptance"] == "fail"
-    assert artifact["completeness"] == 0.48  # spec evidence
+    assert artifact["acceptance"] == "pass"
+    assert artifact["completeness"] == 1.0  # full buffered-boundary coverage
 
 
-def test_completeness_below_threshold(workspace, repo_root) -> None:
+def test_completeness_at_or_above_threshold(workspace, repo_root) -> None:
     artifact = _canopy_artifact(repo_root)
     check = acceptance.check_completeness(artifact, workspace)
-    assert check.status == "fail"  # 0.48 < 0.95
-    assert artifact["checks"]["completeness"] == "fail"
+    assert check.status == "ok"  # 1.0 >= 0.95
+    assert artifact["checks"]["completeness"] == "ok"
 
 
 def test_invalidates_dependents(repo_root) -> None:

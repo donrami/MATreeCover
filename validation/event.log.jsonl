@@ -53,3 +53,32 @@
 {"ts": "2026-08-03T22:38:01+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44998656, "gpu_used": false, "exit_code": 2, "inputs": []}
 {"ts": "2026-08-03T22:38:02+00:00", "subcommand": "values", "rss_peak_bytes": 181694464, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-03T22:38:03+00:00", "subcommand": "accept", "rss_peak_bytes": 49283072, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T23:13:15+00:00", "subcommand": "accept", "rss_peak_bytes": 49434624, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T23:13:15+00:00", "subcommand": "accept", "rss_peak_bytes": 49127424, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T23:13:16+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44802048, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-03T23:13:17+00:00", "subcommand": "values", "rss_peak_bytes": 181452800, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T23:13:17+00:00", "subcommand": "accept", "rss_peak_bytes": 49713152, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-03T23:46:43+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 61906944, "gpu_used": false, "exit_code": 0, "inputs": ["boundary.geojson"]}
+{"ts": "2026-08-03T23:57:37+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 100143104, "gpu_used": false, "exit_code": 0, "inputs": ["boundary.geojson"]}
+{"ts": "2026-08-03T23:58:53+00:00", "subcommand": "accept", "rss_peak_bytes": 49426432, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T01:31:06+00:00", "subcommand": "values", "rss_peak_bytes": 2875588608, "gpu_used": false, "exit_code": 0, "inputs": ["mosaic/canopy_prediction_mask.tif", "tables/buildings.geojson"]}
+{"ts": "2026-08-04T01:40:36+00:00", "subcommand": "accept", "rss_peak_bytes": 50290688, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T01:40:43+00:00", "subcommand": "publish", "rss_peak_bytes": 63033344, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:21:40+00:00", "subcommand": "values", "rss_peak_bytes": 2812706816, "gpu_used": false, "exit_code": 0, "inputs": ["mosaic/canopy_prediction_mask.tif", "tables/buildings.geojson"]}
+{"ts": "2026-08-04T02:22:00+00:00", "subcommand": "accept", "rss_peak_bytes": 49229824, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:22:00+00:00", "subcommand": "publish", "rss_peak_bytes": 62967808, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:23:00+00:00", "subcommand": "accept", "rss_peak_bytes": 49831936, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:23:01+00:00", "subcommand": "publish", "rss_peak_bytes": 63225856, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:25:46+00:00", "subcommand": "accept", "rss_peak_bytes": 49745920, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:25:46+00:00", "subcommand": "accept", "rss_peak_bytes": 49664000, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:25:47+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 45084672, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T02:35:47+00:00", "subcommand": "accept", "rss_peak_bytes": 49422336, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:36:24+00:00", "subcommand": "accept", "rss_peak_bytes": 49262592, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:36:25+00:00", "subcommand": "accept", "rss_peak_bytes": 49934336, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:36:25+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44998656, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T02:46:26+00:00", "subcommand": "accept", "rss_peak_bytes": 49639424, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:47:56+00:00", "subcommand": "accept", "rss_peak_bytes": 49651712, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:47:57+00:00", "subcommand": "accept", "rss_peak_bytes": 49668096, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T02:47:57+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44875776, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T02:47:58+00:00", "subcommand": "values", "rss_peak_bytes": 180916224, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T02:47:59+00:00", "subcommand": "accept", "rss_peak_bytes": 49750016, "gpu_used": false, "exit_code": 0, "inputs": []}

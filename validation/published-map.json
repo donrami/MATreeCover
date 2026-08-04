@@ -1,10 +1,10 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-03T22:36:50+00:00",
+  "generated_at": "2026-08-04T02:23:00+00:00",
   "index_html": "index.html",
   "style": "style.json",
-  "buildings": null,
-  "trees": null,
+  "buildings": "buildings.geojson",
+  "trees": "trees.pmtiles",
   "boundary": "boundary.geojson",
   "boundary_bbox": [
     8.414253000885362,

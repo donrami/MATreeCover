@@ -96,3 +96,42 @@ def test_output_is_4326(tmp_path) -> None:
     )
     data = json.loads(out.read_text(encoding="utf-8"))
     assert "EPSG:4326" in data["crs"]["properties"]["name"]
+
+
+def test_chunk_edge_buildings_not_nulled(tmp_path) -> None:
+    """R-006: buildings on a 1000-px chunk border keep full coverage.
+
+    Regression: coverage was measured against the chunk window edge, so
+    every building within one radius of a chunk boundary was nulled
+    (60%+ of the city). Buildings are attributed to the chunk holding
+    their centroid and coverage is measured against the data extent.
+    """
+    mask_path = tmp_path / "mask.tif"
+    px = 300
+    rng = np.random.default_rng(5)
+    mask = np.zeros((px, px), dtype=np.uint8)
+    yy, xx = np.ogrid[:px, :px]
+    mask[(xx - 150) ** 2 + (yy - 150) ** 2 <= 120**2] = 1
+    mask[rng.random((px, px)) < 0.1] = 1
+    with rasterio.open(
+        mask_path, "w", driver="GTiff", height=px, width=px, count=1,
+        dtype="uint8", crs="EPSG:25832",
+        transform=from_origin(0.0, px * GSD, GSD, GSD),
+    ) as dst:
+        dst.write(mask, 1)
+    # buildings straddling the chunk grid lines at 100 px and 200 px
+    # (centroids strictly inside their chunks: 101, 201, 150)
+    buildings = [
+        {"id": "b-edge1", "geometry": box(98 * GSD, 98 * GSD, 104 * GSD, 104 * GSD)},
+        {"id": "b-edge2", "geometry": box(198 * GSD, 198 * GSD, 204 * GSD, 204 * GSD)},
+        {"id": "b-mid", "geometry": box(147 * GSD, 147 * GSD, 153 * GSD, 153 * GSD)},
+    ]
+    out = tmp_path / "buildings.geojson"
+    boundary = box(-10 * GSD, -10 * GSD, (px + 10) * GSD, (px + 10) * GSD)
+    features = values.compute_building_values(
+        mask_path, buildings, out, boundary, radius_m=RADIUS_M, gsd_m=GSD, chunk_px=100
+    )
+    assert len(features) == 3
+    for f in features:
+        assert f["properties"]["has_value"] is True, f["id"]  # FR-008/FR-009
+        assert f["properties"]["value"] is not None

@@ -24,3 +24,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# CLI wrapper internals (per-invocation time/inputs scratch)
+validation/.time.*
+validation/.inputs.*

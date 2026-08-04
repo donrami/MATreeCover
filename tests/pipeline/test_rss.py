@@ -36,7 +36,7 @@ def _last_event_row() -> dict:
 def test_accept_peak_rss_under_12gib(tmp_path, manifest_copy) -> None:
     env = {"MATREECOVER_MANIFEST": str(manifest_copy)}
     proc = _run_cli("accept", env=env)
-    assert proc.returncode == 1  # quarantine: canopy mask fails
+    assert proc.returncode == 0  # all artifacts accepted (unblocked)
     row = _last_event_row()
     assert row["subcommand"] == "accept"
     assert row["rss_peak_bytes"] <= RSS_LIMIT_BYTES  # OR-001
@@ -50,8 +50,16 @@ def test_runpod_infer_exits_2_without_endpoint() -> None:
     assert "STOP" in proc.stdout + proc.stderr
 
 
-def test_values_gate_exits_1_on_fail_input() -> None:
-    proc = _run_cli("values")
+def test_values_gate_exits_1_on_fail_input(tmp_path, manifest_copy) -> None:
+    """OR-001: a pending/fail required input short-circuits values."""
+    import json as _json
+
+    manifest = _json.loads(manifest_copy.read_text(encoding="utf-8"))
+    for artifact in manifest["artifacts"]:
+        if artifact["kind"] == "canopy-mask":
+            artifact["acceptance"] = "fail"
+    manifest_copy.write_text(_json.dumps(manifest), encoding="utf-8")
+    proc = _run_cli("values", env={"MATREECOVER_MANIFEST": str(manifest_copy)})
     assert proc.returncode == 1  # canopy mask fail short-circuits (OR-001)
 
 

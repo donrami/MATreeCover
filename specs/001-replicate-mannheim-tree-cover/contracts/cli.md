@@ -58,6 +58,19 @@ mask. Chunked 1000 px tiles, never a full mosaic in memory
 - **Notes**: `requires_runpod` is `false` because this step
   uses the accepted mask as input, not the model.
 
+### `trees`
+
+Polygonizes the accepted canopy mask into tree-area polygons
+for the `Bäume` layer. Clips to the official boundary
+(FR-007) and reprojects to EPSG:4326.
+
+- **Inputs**: accepted canopy mask, official boundary.
+- **Outputs**: `trees_polygons.geojson` with stable ids
+  `tree-<n>` and `canopy_pixel_count`.
+- **Exit code**: `0` on success; `1` on input failure.
+- **Notes**: the PMTiles step (`make pmtiles-trees`) consumes
+  the output with tippecanoe.
+
 ### `runpod-infer` *(gated)*
 
 Runs the canopy model on the imagery tiles and writes a binary
