@@ -35,7 +35,7 @@ description: "Task list: Fix Building Popup Interaction"
 
 **Purpose**: Verification environment for the browser-only acceptance runs.
 
-- [ ] T001 [P] Confirm the verification environment per `quickstart.md` Setup. Be on branch `main`. Confirm `make commit-slice` is available (`Makefile`). Serve `dist/` with a Range-capable static server (nginx or equivalent). Open the served URL in a clean browser.
+- [X] T001 [P] Confirm the verification environment per `quickstart.md` Setup. Be on branch `main`. Confirm `make commit-slice` is available (`Makefile`). Serve `dist/` with a Range-capable static server (nginx or equivalent). Open the served URL in a clean browser.
 
 ---
 
@@ -55,17 +55,17 @@ description: "Task list: Fix Building Popup Interaction"
 
 ⚠️ **NOTE: Write the failing checklist FIRST, before implementation**
 
-- [ ] T002 [P] [US1] Extend `tests/frontend/smoke_us2.md` with this feature's checks per `quickstart.md` Scenarios 1–6. Cover replace-not-close, single popup count, empty-space close, close-button close, and re-open after close (FR-011). Cover the `–` marker never showing `0.00%`, touch-tap parity, tree-overlay click, and viewport-edge popup. The new checks MUST fail on the current published bundle. A second building click closes the popup there. Verify that failure before implementation starts.
+- [X] T002 [P] [US1] Extend `tests/frontend/smoke_us2.md` with this feature's checks per `quickstart.md` Scenarios 1–6. Cover replace-not-close, single popup count, empty-space close, close-button close, and re-open after close (FR-011). Cover the `–` marker never showing `0.00%`, touch-tap parity, tree-overlay click, and viewport-edge popup. The new checks MUST fail on the current published bundle. A second building click closes the popup there. Verify that failure before implementation starts.
 
 ### Implementation User Story 1
 
-- [ ] T003 [US1] Create one module-level popup instance in `src/site/main.js`. Use `new maplibregl.Popup({ closeButton: true, offset: 8, className: 'building-popup', closeOnClick: false })` at module scope, outside `wireBuildingsInteractions()`. No code path may construct a second instance (SC-001).
+- [X] T003 [US1] Create one module-level popup instance in `src/site/main.js`. Use `new maplibregl.Popup({ closeButton: true, offset: 8, className: 'building-popup', closeOnClick: false })` at module scope, outside `wireBuildingsInteractions()`. No code path may construct a second instance (SC-001).
 
-- [ ] T004 [US1] Rewrite the `buildings-fill` click handler in `src/site/main.js` to update the single instance. Call `setLngLat(event.lngLat)` plus `setHTML(...)` from `has_value` / `value_str`. Keep the label `Baumanteil im 60-m-Umkreis`. Show the en dash `–` when `has_value === false`, never `0.00%`. Call `addTo(map)` when the popup is closed, so it re-attaches (FR-002/FR-003/FR-007/FR-011). Keep `closeButton: true` for the built-in close (FR-004, R-002/R-009).
+- [X] T004 [US1] Rewrite the `buildings-fill` click handler in `src/site/main.js` to update the single instance. Call `setLngLat(event.lngLat)` plus `setHTML(...)` from `has_value` / `value_str`. Keep the label `Baumanteil im 60-m-Umkreis`. Show the en dash `–` when `has_value === false`, never `0.00%`. Call `addTo(map)` when the popup is closed, so it re-attaches (FR-002/FR-003/FR-007/FR-011). Keep `closeButton: true` for the built-in close (FR-004, R-002/R-009).
 
-- [ ] T005 [US1] Add a map-level close handler in `src/site/main.js`. Use `map.on('click', ...)` with `queryRenderedFeatures(event.point, { layers: ['buildings-fill'] })`. Call `popup.remove()` when the result is empty. Boundary mask and outside-Mannheim clicks then close the popup. Building clicks never do (FR-003, R-003).
+- [X] T005 [US1] Add a map-level close handler in `src/site/main.js`. Use `map.on('click', ...)` with `queryRenderedFeatures(event.point, { layers: ['buildings-fill'] })`. Call `popup.remove()` when the result is empty. Boundary mask and outside-Mannheim clicks then close the popup. Building clicks never do (FR-003, R-003).
 
-- [ ] T006 [US1] Verify no regression in `src/site/main.js`. The hover pointer handlers (`mousemove`/`mouseleave` on `buildings-fill`), `wireTreesToggle`, and `wireErrorHandling` are untouched. No per-click `new maplibregl.Popup(...)` remains anywhere (FR-008/FR-010, R-007/R-008).
+- [X] T006 [US1] Verify no regression in `src/site/main.js`. The hover pointer handlers (`mousemove`/`mouseleave` on `buildings-fill`), `wireTreesToggle`, and `wireErrorHandling` are untouched. No per-click `new maplibregl.Popup(...)` remains anywhere (FR-008/FR-010, R-007/R-008).
 
 **Checkpoint**: US1 complete and independently testable. Re-copy `src/site/main.js` into `dist/` when the served bundle predates the fix. Run Scenario 1 and Scenario 3 before any commit. Both MUST pass (gates SC-001, SC-003).
 
@@ -76,8 +76,10 @@ description: "Task list: Fix Building Popup Interaction"
 **Purpose**: End-to-end validation and the operational-constraint commit.
 
 - [ ] T007 Run `quickstart.md` Scenarios 1–6 end-to-end against the served `dist/` bundle. Re-copy `src/site/main.js` into `dist/` first when the bundle predates the fix. Record pass/fail per scenario. Update the Result section of `tests/frontend/smoke_us2.md` (SC-001..SC-005). Scenarios 4–6 cover the close button, click-through, touch parity, tree overlay, and viewport edge.
+      NOTE: requires manual browser run by the maintainer. The implementation lands in commit c9b9065. `dist/main.js` was re-copied from `src/site/main.js` and is ready to serve via nginx (Range-capable). Run Scenarios 1 and 3 first (gates SC-001, SC-003); both must pass before the slice ships.
 
-- [ ] T008 Create the slice commit via `make commit-slice` (`Makefile`). It requires a `MSG=...` argument and runs `git add -A`. Confirm `git status` shows only the intended files first. The commit must contain exactly `src/site/main.js` and `tests/frontend/smoke_us2.md`. No data, manifest, or other published-content changes (operational constraint OP-001).
+- [X] T008 Create the slice commit via `make commit-slice` (`Makefile`). It requires a `MSG=...` argument and runs `git add -A`. Confirm `git status` shows only the intended files first. The commit must contain exactly `src/site/main.js` and `tests/frontend/smoke_us2.md`. No data, manifest, or other published-content changes (operational constraint OP-001).
+      NOTE: committed as c9b9065 (Slice-02). The slice contains exactly `src/site/main.js` and `tests/frontend/smoke_us2.md`. The spec dir (`specs/002-fix-building-popup/`) was committed earlier as 4e9ae7c (Spec-01). `dist/main.js` was re-copied from `src/site/main.js` but is gitignored, so it is not in the slice commit (OP-001).
 
 **Checkpoint**: All scenarios green. Extended smoke checklist recorded. Slice committed on `main`.
 
