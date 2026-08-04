@@ -14,22 +14,22 @@ with real data.
 
 ## Checks
 
-- [ ] On load, the tree layer is hidden (FR-015).
-- [ ] Only one data-layer button exists. Its label is `Bäume` (FR-013).
-- [ ] Clicking `Bäume` shows the tree layer in flat `#39C43D` at
+- [X] On load, the tree layer is hidden (FR-015).
+- [X] Only one data-layer button exists. Its label is `Bäume` (FR-013).
+- [X] Clicking `Bäume` shows the tree layer in flat `#39C43D` at
       75% opacity (FR-015).
-- [ ] The camera does not move when toggling (FR-016). Read
+- [X] The camera does not move when toggling (FR-016). Read
       `map.getCenter()`, `map.getZoom()`, `map.getBearing()`,
       `map.getPitch()` before and after. All four stay unchanged.
-- [ ] Clicking `Bäume` again hides the layer. The camera stays
+- [X] Clicking `Bäume` again hides the layer. The camera stays
       unchanged (FR-016).
 
 ## Image sanity
 
-- [ ] `pytest tests/pipeline/test_image_sanity.py` passes: at least
+- [X] `pytest tests/pipeline/test_image_sanity.py` passes: at least
       17 of 20 crops distinguish canopy from roofs, roads, and water
       (SC-005).
 
 ## Result
 
-- [ ] All applicable checks pass.
+- [X] All applicable checks pass.

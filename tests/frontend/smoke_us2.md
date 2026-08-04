@@ -14,20 +14,20 @@ and must read `–`.
 
 ## Checks
 
-- [ ] Hovering a building changes the cursor to a pointer (FR-014).
-- [ ] Moving away from a building restores the default cursor (FR-014).
-- [ ] Clicking a building opens a compact popup (FR-014).
-- [ ] The popup shows the value with two decimal places (FR-008).
+- [X] Hovering a building changes the cursor to a pointer (FR-014).
+- [X] Moving away from a building restores the default cursor (FR-014).
+- [X] Clicking a building opens a compact popup (FR-014).
+- [X] The popup shows the value with two decimal places (FR-008).
       Example: `12.34%`.
-- [ ] A building without a valid value shows `–` in the popup. It never
+- [X] A building without a valid value shows `–` in the popup. It never
       shows `0.00%` (FR-009).
-- [ ] The popup closes again (close button or clicking the map).
+- [X] The popup closes again (close button or clicking the map).
 
 ## Independent recalculation
 
-- [ ] `pytest tests/pipeline/test_values_recalc.py` passes: 100 sampled
+- [X] `pytest tests/pipeline/test_values_recalc.py` passes: 100 sampled
       buildings agree within one percentage point (SC-004).
 
 ## Result
 
-- [ ] All applicable checks pass.
+- [X] All applicable checks pass.

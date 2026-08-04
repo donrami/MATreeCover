@@ -16,33 +16,33 @@ served URL in a clean browser with WebGL 2.
 
 ## Checks
 
-- [ ] Title bar reads `Baumfläche` (FR-013).
-- [ ] Full Mannheim boundary fills the viewport. Minimal padding.
+- [X] Title bar reads `Baumfläche` (FR-013).
+- [X] Full Mannheim boundary fills the viewport. Minimal padding.
       North up. No camera flight (FR-002).
-- [ ] Base map is dark. Everything outside the boundary is black
+- [X] Base map is dark. Everything outside the boundary is black
       (FR-003).
-- [ ] Legend is visible. German description. Labels `0`, `15`, `30`,
+- [X] Legend is visible. German description. Labels `0`, `15`, `30`,
       `50`, `100` (FR-012).
-- [ ] Only one data-layer control exists. Label `Bäume` (FR-013).
-- [ ] Zoom in, zoom out, and north-reset controls are visible and
+- [X] Only one data-layer control exists. Label `Bäume` (FR-013).
+- [X] Zoom in, zoom out, and north-reset controls are visible and
       functional (FR-017).
-- [ ] Attribution control is reachable. It lists LGL (`dl-de/by-2-0`),
+- [X] Attribution control is reachable. It lists LGL (`dl-de/by-2-0`),
       basemap.de, CityTreeCover (FR-019).
-- [ ] Reload at 360 px viewport width. Legend and controls remain
+- [X] Reload at 360 px viewport width. Legend and controls remain
       readable and usable (FR-018).
-- [ ] No analytics or telemetry (FR-001).
-- [ ] No third-party requests. Only the basemap tiles and the vendored
+- [X] No analytics or telemetry (FR-001).
+- [X] No third-party requests. Only the basemap tiles and the vendored
       libs load.
 
 ## Palette checks
 
 Building values are accepted (`values` pass). All checks apply.
 
-- [ ] Buildings use the reference palette at 75% opacity (FR-010).
-- [ ] Building outlines are thin gray (FR-010).
-- [ ] Colors interpolate continuously between stops. Values above 80%
+- [X] Buildings use the reference palette at 75% opacity (FR-010).
+- [X] Building outlines are thin gray (FR-010).
+- [X] Colors interpolate continuously between stops. Values above 80%
       keep the final reference color (FR-011).
 
 ## Result
 
-- [ ] All applicable checks pass.
+- [X] All applicable checks pass.
