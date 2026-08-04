@@ -41,6 +41,7 @@ validation/.inputs.*
 # Tooling / local harness (never public)
 .omp/
 .specify/
+.spec-workflow/
 
 # Secrets
 .env*
