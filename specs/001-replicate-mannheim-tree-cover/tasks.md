@@ -273,3 +273,15 @@ Task: "Write RSS/GPU gate test in tests/pipeline/test_rss.py"
 - Commit each logical group (OR-004)
 - Stop at every checkpoint and validate the story independently
 - Avoid: vague tasks, same-file conflicts, cross-story dependencies that break independence
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: Close gaps found by the convergence assessment between the spec/plan/tasks and the implemented codebase.
+
+- [X] T053 Verify and record the SC-008 performance budget: serve `dist/` on a throttled 25 Mbps / 50 ms link and measure time-to-first-usable-map and interaction latency; reconcile the 162 MB dist bundle (trees.pmtiles 76 MB, buildings.geojson 54 MB, buildings.pmtiles 32 MB) with the plan's < 50 MiB budget by documenting the PMTiles range-request rationale or trimming the bundle; record PMTiles sizes including `buildings.pmtiles` in the manifest per SC-008, plan: T050 (partial)
+- [X] T054 Refresh `quickstart.md` Scenario 4 and the quarantine notes in `tests/frontend/smoke_us1.md`, `smoke_us2.md`, `smoke_us3.md` to describe the unblocked acceptance state (canopy mask `pass`, buildings and trees published to `dist/`) instead of the lifted quarantine per plan: quickstart Scenario 4, T047 (partial)
+- [X] T055 Add an automated test asserting `tiles.csv` indexes every `mosaic/extract/` tile with correct grid coordinates and matches the manifest `tile_count`; reconcile the plan's 460-tile reference with the accepted 302-tile extract per T045 (partial)
+
+**Convergence record (T053-T055)**: SC-008 measured on a throttled 25 Mbps / 50 ms link (nginx + CDP): first usable map 2.5 s (budget 10 s), interactions 80-211 ms (budget 2 s), record in `validation/perf-budget.json`. Gap found and fixed: MapLibre does not render vector sources below `minzoom`, so `--minimum-zoom 12` left the FR-002 initial fitBounds view (z10.9) without buildings; both PMTiles regenerated at `--minimum-zoom 10` (contract `pmtiles-sources.md` updated). 460-vs-302 tile discrepancy reconciled (meta.json declares the full 460-tile LGL set; the accepted extract holds the 302 tiles intersecting the buffered boundary; `tiles.csv` indexes the 302, asserted by `tests/acceptance/test_tiles_csv.py`). Quarantine notes in `quickstart.md` and the smoke checklists refreshed to the unblocked state (canopy mask `pass`, buildings + trees published in `dist/`).

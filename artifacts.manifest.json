@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-04T02:50:57+00:00",
+  "generated_at": "2026-08-04T05:22:35+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -193,8 +193,8 @@
     {
       "path": "trees.pmtiles",
       "kind": "trees",
-      "size_bytes": 78774073,
-      "sha256": "917f6dd85edc8208d011fc64cb12b0b69962cffc60e071dd94476f255806c4ec",
+      "size_bytes": 80249720,
+      "sha256": "8ce482258c1dff8a5f897215cf85e235895a7d8634ce44b4475cb4d9079a9a96",
       "source": "derived: trees.py + tippecanoe",
       "license": "MIT",
       "extent": [
@@ -208,6 +208,36 @@
       "lineage": {
         "inputs": [
           "mosaic/canopy_prediction_mask.tif"
+        ]
+      },
+      "acceptance": "pass",
+      "checks": {
+        "source": "ok",
+        "extent": "ok",
+        "resolution": "ok",
+        "completeness": "ok",
+        "lineage": "ok"
+      },
+      "invalidates": []
+    },
+    {
+      "path": "buildings.pmtiles",
+      "kind": "buildings-pmtiles",
+      "size_bytes": 34023835,
+      "sha256": "b7fdfadc5a9fd92caeec4afef0c61454042f55f31f8a6b247ae60a011ebb2cdf",
+      "source": "derived: buildings.geojson + tippecanoe",
+      "license": "MIT",
+      "extent": [
+        457637.59,
+        5473179.45,
+        470285.24,
+        5493245.55
+      ],
+      "resolution": "n/a",
+      "completeness": 1.0,
+      "lineage": {
+        "inputs": [
+          "buildings.geojson"
         ]
       },
       "acceptance": "pass",

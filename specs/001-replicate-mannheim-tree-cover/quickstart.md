@@ -26,20 +26,23 @@ make bootstrap    # creates a venv, installs deps, runs the acceptance suite onc
 ```
 
 `make bootstrap` finishes with either `OK — all pass` or
-`FAIL — see artifacts.manifest.json`. The first run on this
-branch must report the canopy mask as `fail` (matches
-`spec.md` evidence statement).
+`FAIL — see artifacts.manifest.json`. Since the owner-approved
+RunPod inference produced an accepted canopy mask
+(completeness 1.0), the acceptance suite is fully green and
+`publish` emits the complete bundle (buildings + trees PMTiles).
 
 ## Scenario 1 — User Story 1: view the Mannheim color map (P1)
 
 Maps to FR-001..FR-004, FR-010/FR-011, FR-017, FR-019, SC-001,
 SC-002, SC-008, SC-009.
 
-1. Serve the published bundle:
+1. Serve the published bundle with a Range-capable static server
+   (PMTiles requires HTTP Range requests; `python -m http.server`
+   does not support them, so use e.g. nginx):
    ```text
-   python -m http.server -d dist
+   nginx -c /tmp/nginx-dist.conf   # root .../dist; Range enabled by default
    ```
-2. Open `http://localhost:8000/` in a clean browser.
+2. Open the served URL in a clean browser.
 3. **Pass criteria**:
    - Title bar reads `Baumfläche` (FR-013).
    - The full Mannheim boundary fills the viewport with minimal
@@ -119,10 +122,12 @@ OR-005, SC-009, SC-010.
    - For each accepted artifact, the pipeline reads it from
      its recorded path; no download or re-extraction occurs
      (FR-022, SC-010).
-3. **Dependent invalidation**:
-   - The canopy mask is `fail`. The buildings and tree
-     artifacts are `pending` until a fresh canopy mask
-     passes (FR-023).
+3. **Dependent invalidation (unblocked state)**:
+   - The canopy mask is `pass` (completeness 1.0). The derived
+     `values`, `trees_polygons.geojson`, `trees.pmtiles`, and
+     `buildings.pmtiles` artifacts are `pass` and published to
+     `dist/` (FR-023). A future `fail` on any derived artifact
+     still flips only its dependents to `pending`.
 4. **Resource gates**:
    - `pytest tests/pipeline/test_rss.py` measures peak RSS
      per subcommand; each ≤ 12 GiB (OR-001, SC-009).

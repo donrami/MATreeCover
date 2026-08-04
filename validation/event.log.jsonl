@@ -92,3 +92,17 @@
 {"ts": "2026-08-04T02:50:55+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 45187072, "gpu_used": false, "exit_code": 2, "inputs": []}
 {"ts": "2026-08-04T02:50:57+00:00", "subcommand": "values", "rss_peak_bytes": 181219328, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-04T02:50:57+00:00", "subcommand": "accept", "rss_peak_bytes": 49664000, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T04:50:47+00:00", "subcommand": "accept", "rss_peak_bytes": 49238016, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T04:50:48+00:00", "subcommand": "accept", "rss_peak_bytes": 49201152, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T04:50:48+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44617728, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T04:50:49+00:00", "subcommand": "values", "rss_peak_bytes": 181084160, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T04:50:50+00:00", "subcommand": "accept", "rss_peak_bytes": 49217536, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T04:50:55+00:00", "subcommand": "accept", "rss_peak_bytes": 49610752, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:02:23+00:00", "subcommand": "accept", "rss_peak_bytes": 49520640, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:02:28+00:00", "subcommand": "publish", "rss_peak_bytes": 62623744, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:18:28+00:00", "subcommand": "publish", "rss_peak_bytes": 62836736, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:22:33+00:00", "subcommand": "accept", "rss_peak_bytes": 49377280, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:22:33+00:00", "subcommand": "accept", "rss_peak_bytes": 49360896, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T05:22:34+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44834816, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T05:22:35+00:00", "subcommand": "values", "rss_peak_bytes": 180301824, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T05:22:35+00:00", "subcommand": "accept", "rss_peak_bytes": 49664000, "gpu_used": false, "exit_code": 0, "inputs": []}

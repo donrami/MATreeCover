@@ -4,13 +4,13 @@
 
 **Maps**: FR-008, FR-009, FR-014, SC-004, SC-006.
 
-**Setup**: Serve the published bundle with
-`python -m http.server -d dist`. Open the page in a clean browser.
+**Setup**: Serve the published bundle with a Range-capable static
+server (`python -m http.server` has no Range support; use nginx or
+equivalent). Open the page in a clean browser.
 
-**Quarantine note**: The popup needs accepted building values. The canopy
-mask fails acceptance. Then values are `pending`. The checks below apply
-once values are accepted (post-RunPod). The interaction wiring is present
-in the bundle already.
+**State note**: The canopy mask is accepted and `values` pass, so the
+popup shows real values. Buildings without a valid value are present
+and must read `–`.
 
 ## Checks
 

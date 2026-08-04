@@ -1,0 +1,41 @@
+{
+  "criterion": "SC-008",
+  "verified_at": "2026-08-04T07:25:00+00:00",
+  "method": "dist/ served by nginx (Range-capable) on 127.0.0.1:8088; Chromium headless 1280x800; CDP Network.emulateNetworkConditions latency=50ms download=25Mbps upload=25Mbps; cold cache (Network.clearBrowserCache) per run; time-to-first-usable = navigation start -> map 'load' + buildings source loaded + buildings rendered.",
+  "link": "25 Mbps down / 50 ms RTT",
+  "bundle_bytes": {
+    "index_html": 1516,
+    "main_js": 4650,
+    "maplibre_gl_js": 941174,
+    "pmtiles_js": 19463,
+    "buildings_geojson": 56288523,
+    "buildings_pmtiles": 34023835,
+    "trees_pmtiles": 80249720,
+    "total_on_disk": 171062607
+  },
+  "first_usable_ms": 2482,
+  "first_usable_budget_ms": 10000,
+  "first_usable_pass": true,
+  "first_usable_runs_ms": [2482, 2746],
+  "rendered_buildings_at_first_usable": 12573,
+  "interaction_latency_ms": {
+    "popup_open": 80,
+    "zoom_in": 101,
+    "zoom_out": 110,
+    "trees_toggle_on": 211,
+    "trees_toggle_off": 205
+  },
+  "interaction_budget_ms": 2000,
+  "interactions_within_budget": "5/5",
+  "interactions_pass": true,
+  "initial_payload_bytes": {
+    "total_page": 1432848,
+    "buildings_pmtiles_range_requests": 443888,
+    "buildings_pmtiles_tile_requests": 4,
+    "trees_pmtiles_range_requests": 16684,
+    "resource_count": 66
+  },
+  "range_request_rationale": "The two vector layers are PMTiles archives (buildings 33 MB, trees 77 MB). The browser fetches only the header/directory plus the viewport's z10-z13 tiles via HTTP Range requests: 434 KB of the buildings archive and 16 KB (header only, layer hidden) of the trees archive at first paint - 2.8% of the bundle. The on-disk bundle exceeds the OR-005 50 MiB git-governance threshold by design; SC-008 is a time budget and passes.",
+  "minzoom_fix_note": "Measured with --minimum-zoom 10 PMTiles (T053 gap fix): MapLibre GL 5.7.1 does not request tiles below a vector source's minzoom, so the previous z12 minimum left the FR-002 initial fitBounds view (z10.9) without buildings. Regenerated buildings.pmtiles and trees.pmtiles at minzoom 10; 12573 buildings render at first paint.",
+  "pass": true
+}

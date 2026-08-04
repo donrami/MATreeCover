@@ -21,7 +21,11 @@ accepted canopy mask, derived per-building values, and detected tree areas.
 Every published artifact either passes an explicit acceptance check against
 FR-021 or is regenerated once. The prior canopy result fails acceptance
 (0.48% canopy pixels) and its downstream dependents are quarantined until
-owner-approved RunPod inference produces a replacement.
+owner-approved RunPod inference produces a replacement. **Status update
+(T053/T054)**: the owner-approved RunPod inference ran and the replacement
+canopy mask passes acceptance (completeness 1.0); `values`, `trees`, and
+`buildings.pmtiles` are accepted and the full bundle is published to
+`dist/`. The quarantine described below is the historical baseline state.
 
 ## Technical Context
 
@@ -90,6 +94,18 @@ data-pipeline (CLI). No backend service.
 - Local pipeline jobs peak resident set ≤ 12 GiB (SC-009 / OR-001).
 - No GPU job ever on the local machine (SC-009 / OR-003).
 
+**Bundle-size budget (T053 reconciliation)**: SC-008 is a time budget,
+not a byte budget. The `dist/` bundle is ~162 MB on disk
+(`buildings.geojson` 54 MB, `buildings.pmtiles` 33 MB,
+`trees.pmtiles` 78 MB, vendored libs ~1 MB), which exceeds the 50 MiB
+figure that OR-005 applies to *git governance* (files > 50 MiB never
+committed). The served payload is far smaller because the two vector
+layers are PMTiles archives: the browser issues HTTP Range requests and
+fetches only the header/directory plus the viewport's z10–13 tiles —
+measured ~33 KB at first paint on a 25 Mbps / 50 ms link
+(`validation/perf-budget.json`). The bundle is therefore not trimmed;
+the range-request rationale is the budget compliance.
+
 **Constraints**:
 - 12 GiB RSS cap on every local job (OR-001).
 - No loading a complete city raster or vector into memory (OR-002).
@@ -109,7 +125,10 @@ data-pipeline (CLI). No backend service.
 **Scale/Scope**:
 - 1 city, 1 release (no historical comparison).
 - 93,024 building footprints (LGL ALKIS, per `2026.01/meta.json`).
-- 460 imagery tiles, 1000 m × 1000 m, 0.2 m GSD (per `2026.01/meta.json`).
+- Imagery: `2026.01/meta.json` declares 460 tiles (full LGL DOP20 set for
+  the region); the accepted workspace extract holds the 302 tiles
+  intersecting the buffered boundary (1000 m × 1000 m, 0.2 m GSD).
+  `tiles.csv` indexes the accepted 302 (T055).
 - 1 static published map; desktop + mobile widths (FR-018).
 - One 60 m-radius mean per building (FR-005); one flat-green tree
   layer (FR-015); one legend (FR-012); one `Bäume` button (FR-013).
@@ -251,7 +270,7 @@ tests/
 └── frontend/                # manual smoke checklist (executed by quickstart.md)
 
 artifacts.manifest.json      # path, size, sha256, source, acceptance state (OR-005)
-tiles.csv                    # 460-row tile index, derived from mosaic/extract (verified)
+tiles.csv                    # 302-row tile index of the accepted extract, verified against manifest tile_count (T055)
 Makefile                     # commit-spec, commit-plan, commit-slice, commit-milestone
 .gitignore                   # *.tif, *.pmtiles, *.geojson > 50 MiB
 ```

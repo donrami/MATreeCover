@@ -18,7 +18,7 @@ bootstrap: ## create venv, install deps, run acceptance suite once
 	$(PIP) install --quiet -e ".[dev]"
 	@echo "== running acceptance suite =="
 	-$(PY) -m pytest tests/acceptance -q
-	@echo "bootstrap done (canopy-mask fail expected while quarantined)"
+	@echo "bootstrap done"
 
 check-prereqs: ## Python 3.11, tippecanoe >= 2.x, mannheim workspace readable
 	@bash scripts/check-prereqs.sh
@@ -70,13 +70,13 @@ runpod-infer: ## gated: refuses unless MANNHEIM_RUNPOD_ENDPOINT is set
 
 pmtiles-buildings:
 	@test -f "$(WORKSPACE)/buildings.geojson" || { echo "error: $(WORKSPACE)/buildings.geojson missing (run values)"; exit 1; }
-	tippecanoe --name buildings --layer buildings --minimum-zoom 12 --maximum-zoom 18 \
+	tippecanoe --name buildings --layer buildings --minimum-zoom 10 --maximum-zoom 18 \
 		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
 		--read-parallel --force --output="$(WORKSPACE)/buildings.pmtiles" "$(WORKSPACE)/buildings.geojson"
 
 pmtiles-trees:
 	@test -f "$(WORKSPACE)/trees_polygons.geojson" || { echo "error: $(WORKSPACE)/trees_polygons.geojson missing (run trees)"; exit 1; }
-	tippecanoe --name trees --layer trees --minimum-zoom 12 --maximum-zoom 18 \
+	tippecanoe --name trees --layer trees --minimum-zoom 10 --maximum-zoom 18 \
 		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
 		--read-parallel --force --output="$(WORKSPACE)/trees.pmtiles" "$(WORKSPACE)/trees_polygons.geojson"
 

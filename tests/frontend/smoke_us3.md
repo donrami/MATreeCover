@@ -4,13 +4,13 @@
 
 **Maps**: FR-013, FR-015, FR-016, FR-020, SC-005, SC-007.
 
-**Setup**: Serve the published bundle with
-`python -m http.server -d dist`. Open the page in a clean browser.
+**Setup**: Serve the published bundle with a Range-capable static
+server (`python -m http.server` has no Range support; use nginx or
+equivalent). Open the page in a clean browser.
 
-**Quarantine note**: The tree layer needs an accepted canopy mask. The
-mask fails acceptance. Then `trees.pmtiles` is `pending`. The layer is
-not in the published style. The checks below apply once the mask is
-accepted (post-RunPod). The toggle wiring is in the bundle.
+**State note**: The canopy mask is accepted and `trees.pmtiles` is
+published in `dist/`, so the toggle renders the detected tree layer
+with real data.
 
 ## Checks
 

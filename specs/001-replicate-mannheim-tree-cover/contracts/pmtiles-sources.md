@@ -7,7 +7,7 @@ Each file's tippecanoe recipe is the contract.
 ## `buildings.pmtiles`
 
 ```text
-tippecanoe   --name buildings   --layer buildings   --minimum-zoom 12 --maximum-zoom 18   --base-zoom 14   --drop-densest-as-needed   --extend-zooms-if-still-dropping   --read-parallel   --output=buildings.pmtiles   buildings.geojson
+tippecanoe   --name buildings   --layer buildings   --minimum-zoom 10 --maximum-zoom 18   --base-zoom 14   --drop-densest-as-needed   --extend-zooms-if-still-dropping   --read-parallel   --output=buildings.pmtiles   buildings.geojson
 ```
 
 The input `buildings.geojson` is the post-clip, post-value-join
@@ -24,7 +24,7 @@ file from `src/pipeline/values.py`. Every feature carries:
 ## `trees.pmtiles`
 
 ```text
-tippecanoe   --name trees   --layer trees   --minimum-zoom 12 --maximum-zoom 18   --base-zoom 14   --drop-densest-as-needed   --extend-zooms-if-still-dropping   --read-parallel   --output=trees.pmtiles   canopy_polygons.geojson
+tippecanoe   --name trees   --layer trees   --minimum-zoom 10 --maximum-zoom 18   --base-zoom 14   --drop-densest-as-needed   --extend-zooms-if-still-dropping   --read-parallel   --output=trees.pmtiles   canopy_polygons.geojson
 ```
 
 The input `canopy_polygons.geojson` is the polygonized, clipped
@@ -34,7 +34,12 @@ canopy mask.
 
 - Coordinate reference system: EPSG:4326 in the PMTiles header
   (MapLibre auto-detects and re-projects to web mercator).
-- Zoom 12–18 covers the published map's zoom band.
+- Zoom 10–18. The lower bound is required, not arbitrary: MapLibre GL
+  does not request tiles below a vector source's `minzoom`, and the
+  initial view fits the full boundary at ~z10.9 (FR-002). With a
+  `minimum-zoom` of 12 the initial view would render no buildings and
+  no trees. `--drop-densest-as-needed` keeps the z10–11 overview
+  tiles within budget.
 - The maintainer verifies file size before `publish`; files >
   50 MiB stay in the release bundle, not in git (OR-005).
 - `tippecanoe` is the only generator. A replacement generator

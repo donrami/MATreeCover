@@ -39,7 +39,7 @@ Files above 50 MiB are recorded in the manifest. They are never committed
 
 ```text
 make check-prereqs
-make bootstrap        # venv + deps + acceptance suite (canopy-mask fail expected)
+make bootstrap        # venv + deps + acceptance suite (all green)
 ```
 
 ## Pipeline subcommands
@@ -61,7 +61,6 @@ Exit codes: 0 success, 1 acceptance/input failure, 2 RunPod gate,
 
 ```text
 make publish
-python -m http.server -d dist
 ```
 
 `dist/` is a plain static bundle (index.html, style.json, PMTiles,
@@ -72,6 +71,15 @@ Range; use nginx or another Range-capable host:
 ```text
 nginx -c /tmp/nginx-dist.conf   # server { root .../dist; }
 ```
+
+The bundle is ~171 MB on disk (buildings.pmtiles 33 MB, trees.pmtiles
+77 MB, buildings.geojson 54 MB, vendored libs ~1 MB). SC-008 is a time
+budget, not a byte budget: PMTiles are range-requested, so a first
+paint fetches only the viewport tiles — measured 434 KB of the
+buildings archive on a throttled 25 Mbps / 50 ms link. First usable
+map measured at 2.5 s (budget 10 s); popup, zoom, and toggle
+interactions measured at 80–211 ms (budget 2 s). Record:
+`validation/perf-budget.json`.
 
 There is no application server, no database, and no analytics (FR-001).
 

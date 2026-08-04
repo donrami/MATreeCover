@@ -5,13 +5,14 @@
 **Maps**: FR-001..FR-004, FR-010/FR-011, FR-012/FR-013, FR-017, FR-019,
 FR-018, SC-001, SC-002, SC-008.
 
-**Setup**: Run `make publish`. Serve `dist/` with
-`python -m http.server -d dist`. Open `http://localhost:8000/` in a
-clean browser with WebGL 2.
+**Setup**: Run `make publish`. Serve `dist/` with a Range-capable
+static server (`python -m http.server` has no Range support and
+cannot serve the PMTiles layers; use nginx or equivalent). Open the
+served URL in a clean browser with WebGL 2.
 
-**Quarantine note**: The canopy mask fails acceptance (FR-021). Then
-`buildings.pmtiles` is not in the bundle. Palette and outline checks
-apply once accepted values exist. Structural checks apply always.
+**State note**: The canopy mask is accepted (FR-021, completeness
+1.0). The bundle contains `buildings.pmtiles`, `trees.pmtiles`, and
+`buildings.geojson`. All checks below apply.
 
 ## Checks
 
@@ -35,7 +36,7 @@ apply once accepted values exist. Structural checks apply always.
 
 ## Palette checks
 
-These apply when building values are accepted.
+Building values are accepted (`values` pass). All checks apply.
 
 - [ ] Buildings use the reference palette at 75% opacity (FR-010).
 - [ ] Building outlines are thin gray (FR-010).
