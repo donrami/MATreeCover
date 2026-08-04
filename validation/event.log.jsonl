@@ -132,3 +132,9 @@
 {"ts": "2026-08-04T06:12:39+00:00", "subcommand": "values", "rss_peak_bytes": 180523008, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-04T06:12:39+00:00", "subcommand": "accept", "rss_peak_bytes": 49438720, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-04T06:12:40+00:00", "subcommand": "publish", "rss_peak_bytes": 62488576, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T07:42:52+00:00", "subcommand": "accept", "rss_peak_bytes": 49438720, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T07:42:53+00:00", "subcommand": "accept", "rss_peak_bytes": 49610752, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T07:42:53+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44765184, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T07:42:54+00:00", "subcommand": "values", "rss_peak_bytes": 180289536, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T07:42:55+00:00", "subcommand": "accept", "rss_peak_bytes": 49291264, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T08:11:25+00:00", "subcommand": "values", "rss_peak_bytes": 2818019328, "gpu_used": false, "exit_code": 0, "inputs": ["mosaic/canopy_prediction_mask.tif", "tables/buildings.geojson"]}
