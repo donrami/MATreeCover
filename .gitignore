@@ -28,3 +28,16 @@ Thumbs.db
 # CLI wrapper internals (per-invocation time/inputs scratch)
 validation/.time.*
 validation/.inputs.*
+
+# Tooling / local harness (never public)
+.omp/
+.specify/
+
+# Secrets
+.env*
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.secret.*
