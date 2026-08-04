@@ -23,6 +23,7 @@ user-adjustable while the static default stays as 003 shipped it.
 | `paint.raster-brightness-min` | `0` (default) | Fixed. Transform is `out = max * in`. |
 | `paint.raster-brightness-max` (static) | `0.65` | Unchanged in `style.json` — the no-JS / on-load default. |
 | `paint.raster-brightness-max` (runtime) | `[0.05, 1.0]`, default `0.65` | Set via `setPaintProperty`; user-adjustable (FR-001/FR-002). Supersedes 003's `[0.6, 0.7]` static-window clause at runtime only (research R-008). |
+| low-range behavior | below slider 25 the inverted layer (E-006) crossfades in (FR-019) | `basemap` keeps `max = v/100`; the inverted layer carries the visual. |
 
 **Invariants**:
 - Grayscale in, grayscale out: the scale is identical across RGB
@@ -90,6 +91,30 @@ swatches to a continuous gradient bar.
 - The legend card stays top-left at desktop, collapses to the bottom
   strip at ≤480 px (existing media query, unchanged position rules).
 
+## E-006 — BasemapInvertedLayer
+
+Second raster layer sharing the `basemap` source; renders the
+photo-negative used at very low brightness (FR-019).
+
+| Field | Value | Notes |
+|---|---|---|
+| `layer.id` | `"basemap-inverted"` | New layer, inserted between `basemap` and `outside-mask`. |
+| `source` | `"basemap"` | Same source as E-001 — tiles fetched once (SC-007). |
+| `paint.raster-brightness-min` | `1` | With max 0, the shader computes `out = 1 - in` (research R-010). |
+| `paint.raster-brightness-max` | `0` | Values in `[0,1]` — MapLibre clamps outside that range (research R-011). |
+| `paint.raster-opacity` | `s(v)`, ramp 0→1 for slider 25→5 | Crossfade with the dimmed basemap; continuous, no seam (R-011/R-012). |
+| `layout.visibility` | `"none"` when `s = 0`, else `"visible"` | Skips a wasted render pass at normal brightness. |
+
+**Invariants**:
+- Inverting gray yields gray: the low-brightness map stays grayscale
+  (FR-019, contract invariant 1).
+- The inverted layer never affects buildings, trees, mask, or popup
+  content — it renders below `outside-mask` (FR-019).
+- At slider ≥ 25 the layer is invisible; the default appearance
+  (FR-003) is untouched.
+- Background remains dark at minimum: measured p10 luminance ratio
+  0.002 of default (SC-001; research R-012).
+
 ## E-005 — UI element placement (static set)
 
 The five static elements governed by FR-008:
@@ -109,27 +134,30 @@ pairwise constraint).
 
 ## Rendering Order
 
-Unchanged from 003 (bottom to top):
+Unchanged from 003 except one added layer between the basemap and
+the mask (bottom to top):
 
 ```
-basemap            (brightness now user-adjustable)
+basemap            (brightness user-adjustable)
+basemap-inverted   (photo-negative, opacity s(v); new — FR-019)
 outside-mask       (black fill outside Mannheim — unchanged)
 buildings-fill     (palette at 0.75 / 0.8 opacity — frozen)
 buildings-line     (#555555 outlines — frozen)
 trees-fill         (green, default hidden — frozen)
 ```
 
-No layer is added, removed, or reordered (research R-009).
+The inverted layer is the only addition; nothing is removed or
+reordered (research R-011).
 
 ## State Transitions
 
 One runtime state, session-scoped:
 
 ```
-load      → slider value 65 (raster-brightness-max = 0.65, today's look)
-input     → slider value v ∈ [5, 100] → raster-brightness-max = v / 100
-reload    → value discarded, back to 65 (FR-007, no persistence)
+load      → slider 65; basemap max 0.65; inverted opacity 0 (hidden)
+input ≥ 25→ slider v; basemap max v/100; inverted opacity 0 (hidden)
+input < 25 → slider v; basemap max v/100; inverted opacity s(v) =
+             clamp((25 − v)/20, 0, 1), layer made visible
+input = 5  → basemap max 0.05; inverted opacity 1 (fully inverted)
+reload    → all values discarded, back to load state (FR-007)
 ```
-
-No other state; the style document's static 0.65 is the fallback for
-any load path that never touches the slider.

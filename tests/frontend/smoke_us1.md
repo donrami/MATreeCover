@@ -97,6 +97,22 @@ Measured 2026-08-04 on the published bundle; evidence in
 - [X] Luminance gates pass: minimum < 10% of default, maximum
       restores the original un-darkened luminance (SC-001).
 
+## Low-brightness inversion (004-map-ui-brightness-legend, FR-019,
+SC-008)
+
+Measured 2026-08-04 on the published bundle after the inversion
+slice; evidence in `validation/brightness-slider/luminance.json`.
+
+- [X] Dragging below 25 crossfades the base map gradually into the
+      photo-negative; no sudden switch at the threshold (FR-019).
+- [X] At 5, streets and labels render lighter gray than the
+      near-black background and remain legible (FR-019, SC-008).
+- [X] The inverted map stays grayscale: no hue shift (FR-019).
+- [X] Buildings, trees, popup, and zoom controls unaffected at any
+      slider position (FR-019, FR-014).
+- [X] At slider ≥ 25 the rendering is identical to the pre-inversion
+      appearance (FR-003 regression).
+
 ## Gradient legend (004-map-ui-brightness-legend, FR-010..FR-013,
 FR-018, SC-005)
 

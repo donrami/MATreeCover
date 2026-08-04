@@ -118,8 +118,26 @@ function wireBrightnessSlider() {
   const slider = document.getElementById('brightness-slider');
   if (!slider) return;
   const apply = () => {
+    const v = Number(slider.value);
     if (map.getLayer('basemap')) {
-      map.setPaintProperty('basemap', 'raster-brightness-max', Number(slider.value) / 100);
+      map.setPaintProperty('basemap', 'raster-brightness-max', v / 100);
+    }
+    // FR-019: below 25 the basemap crossfades into a photo-negative —
+    // basemap-inverted (min 1 / max 0, so the raster shader computes
+    // out = 1 - in) renders streets and labels lighter than the
+    // near-black background. Opacity s(v) = clamp((25 - v)/20, 0, 1);
+    // visibility "none" at s = 0 skips the wasted render pass
+    // (research R-011/R-012). Values stay in [0, 1] — MapLibre clamps
+    // raster-brightness-* outside that range (research R-011).
+    const s = Math.min(1, Math.max(0, (25 - v) / 20));
+    if (map.getLayer('basemap-inverted')) {
+      if (s > 0) {
+        map.setLayoutProperty('basemap-inverted', 'visibility', 'visible');
+        map.setPaintProperty('basemap-inverted', 'raster-opacity', s);
+      } else {
+        map.setPaintProperty('basemap-inverted', 'raster-opacity', 0);
+        map.setLayoutProperty('basemap-inverted', 'visibility', 'none');
+      }
     }
   };
   slider.addEventListener('input', apply);

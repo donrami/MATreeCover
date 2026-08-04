@@ -8,6 +8,8 @@
 
 **Organization**: Tasks are grouped by user story. Stories US1 and US2 both modify `src/site/index.html` and `src/site/style.css` (the slider lives inside the tools card US2 relocates), so stories run as sequential slices; [P] is only used within a story for file-disjoint work.
 
+**Status**: Phases 1–6 are shipped in milestone slice `9a00fcd`. Phase 7 is a follow-up slice that extends User Story 1 with the low-brightness inversion (FR-019, added to the design docs after the milestone) — the only open work in this feature. It touches `src/site/style.json` (new `basemap-inverted` layer), `src/site/main.js` (inversion opacity mapping), and `tests/frontend/smoke_us1.md` (inversion checks); none of the shipped US2/US3 files are re-entered.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
@@ -102,6 +104,26 @@
 
 ---
 
+## Phase 7: Follow-up Slice — Low-Brightness Inversion (FR-019)
+
+**Purpose**: When the slider drops below 25, the base map crossfades gradually into a photo-negative — a second raster layer `basemap-inverted` (same `basemap` source, `raster-brightness-min: 1` / `raster-brightness-max: 0`, so the shader computes `out = 1 - in`) with opacity `s(v) = clamp((25 − v)/20, 0, 1)` — fully inverted at 5. Streets and labels render lighter gray on the near-black background and stay legible; the map stays grayscale; buildings, trees, and popup are unaffected (FR-019, SC-008, research R-010..R-012).
+
+**Depends on**: User Story 1 (Phase 3) — the slider markup and `wireBrightnessSlider()` must exist. Standalone slice: no changes to `src/site/index.html` or `src/site/style.css`, so the shipped US2/US3 work is untouched.
+
+**Independent Test**: quickstart Scenario 1 step 2 (drag below 25 → gradual transition, no sudden switch; at 5, streets/labels lighter than the near-black background and legible) and Scenario 2 step 4 (per-pixel inversion assertion: features-at-max pixels measure lighter than background-at-max pixels at minimum) plus the Scenario 2 background gate (p10 ratio ≈ 0.002, SC-001).
+
+### Implementation — Inversion Slice (US1)
+
+- [X] T018 [US1] Add the `basemap-inverted` raster layer to `src/site/style.json` between the `basemap` and `outside-mask` layers: `id: "basemap-inverted"`, `type: "raster"`, `source: "basemap"` (same tile set — no new requests, FR-015/SC-007), `layout: { "visibility": "none" }`, `paint: { "raster-brightness-min": 1, "raster-brightness-max": 0, "raster-opacity": 0 }` — per `contracts/base-map-brightness.md` § Low-brightness inversion layer and research R-010/R-011; no other layer, source, or palette change
+- [X] T019 [P] [US1] Extend the `apply` handler in `wireBrightnessSlider()` in `src/site/main.js` with the inversion mapping: `const s = Math.min(1, Math.max(0, (25 - Number(slider.value)) / 20))`; when `s > 0` set `basemap-inverted` `raster-opacity` to `s` and `layout.visibility` to `"visible"`, otherwise set opacity `0` and visibility `"none"`; guard on `map.getLayer('basemap-inverted')` like the existing basemap guard — per research R-011/R-012 (clamped in-range values, visibility `"none"` skips the wasted render pass at `s = 0`)
+- [X] T020 [P] [US1] Extend `tests/frontend/smoke_us1.md` with the inversion checks: below 25 the basemap crossfades gradually into the photo-negative (no sudden switch); at 5, streets and labels render lighter gray than the near-black background and remain legible (FR-019, SC-008); the map stays grayscale with no hue shift; buildings, trees, popup, and zoom controls unaffected at any slider position; at slider ≥ 25 the rendering is identical to the pre-slice appearance (FR-003 regression)
+- [X] T021 [US1] Publish and verify per quickstart Scenarios 1–2: `make publish`, serve `dist/` (Range-capable server), screenshot the fixed viewport with `buildings-fill` hidden at slider 65 / 5 / 100; assert `min` background luminance ≤ 10% of `def` (p10 ≈ 0.002 expected, SC-001), `max` ≈ `def / 0.65` (±5%, restores pre-003 basemap), and the inversion assertion `mean(min luminance of features-at-max pixels) > mean(min luminance of background-at-max pixels)` (SC-008); record results into `validation/brightness-slider/luminance.json`
+- [X] T022 [US1] Commit the inversion slice per OR-004 with `make commit-slice` (single commit: `src/site/style.json` inverted layer, `src/site/main.js` mapping, `tests/frontend/smoke_us1.md` extension, `validation/brightness-slider/luminance.json` update), commit-check script passing
+
+**Checkpoint**: Inversion slice delivered — FR-019 and SC-008 verified on the published bundle with the background luminance gate still passing; the feature is complete.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -110,16 +132,19 @@
 - **Foundational (Phase 2)**: Depends on Setup — BLOCKS all user stories (regression baseline must be green first)
 - **User Stories (Phase 3+)**: Depend on Foundational; run sequentially because all three stories edit shared files in `src/site/` (index.html, style.css) and `tests/frontend/smoke_us1.md`
 - **Polish (Final Phase)**: Depends on all user stories
+- **Inversion Slice (Phase 7)**: Depends on User Story 1 (Phase 3) — needs the slider markup and `wireBrightnessSlider()`; standalone follow-up that does not re-enter US2/US3 files
 
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Can start after Foundational. No dependency on US2/US3.
 - **User Story 2 (P1)**: Can start after Foundational AND after US1 — the tools card US2 relocates contains the US1 slider. Sequenced after US1 to avoid same-file conflicts in `src/site/style.css`.
 - **User Story 3 (P2)**: Can start after Foundational; edits `#legend` markup in `src/site/index.html` and appends to `smoke_us1.md` — sequenced after US2 to keep story slices clean.
+- **Inversion follow-up (Phase 7, US1)**: Depends on US1 completion (shipped). Touches `src/site/style.json`, `src/site/main.js`, `tests/frontend/smoke_us1.md` — files US2/US3 no longer alter — so it lands as one clean slice after the milestone.
 
 ### Within Each User Story
 
 - Markup first (the element the JS/CSS bind to), then [P] file-disjoint work, then measurement/verification
+- In the inversion slice: the style layer (T018) first — the JS mapping (T019) guards on it — then file-disjoint work (T020) and end-to-end verification (T021, T022)
 - Story complete (checkpoint) before moving to the next priority
 
 ### Parallel Opportunities
@@ -127,6 +152,7 @@
 - T004, T005, T006 are file-disjoint (style.css / main.js / smoke_us1.md) and can run in parallel after T003
 - T010 is file-disjoint from T008/T009 (smoke_us4.md vs style.css) and can run in parallel
 - T013, T014 are file-disjoint (style.css / smoke_us1.md) and can run in parallel after T012
+- T019 (main.js) and T020 (smoke_us1.md) are file-disjoint and can run in parallel after T018 (style.json layer) lands
 - Cross-story parallelism is NOT safe: all stories touch `src/site/index.html` and `src/site/style.css`
 
 ---
@@ -138,6 +164,14 @@
 Task: "T004 Style the brightness slider in src/site/style.css"
 Task: "T005 Wire wireBrightnessSlider() in src/site/main.js"
 Task: "T006 Extend tests/frontend/smoke_us1.md with brightness checks"
+```
+
+## Parallel Example: Inversion Slice (Phase 7)
+
+```bash
+# After T018 (basemap-inverted layer in style.json) lands, launch together:
+Task: "T019 Extend the apply() mapping in src/site/main.js with inversion opacity/visibility"
+Task: "T020 Extend tests/frontend/smoke_us1.md with inversion checks"
 ```
 
 ---
@@ -161,6 +195,12 @@ Task: "T006 Extend tests/frontend/smoke_us1.md with brightness checks"
 5. Polish: full quickstart + all smoke checklists → `make commit-milestone`
 6. Each story adds value without breaking previous stories
 
+### Follow-up Slice (Inversion, FR-019)
+
+1. The milestone slice (`9a00fcd`) has shipped US1–US3 without the low-brightness inversion.
+2. Phase 7 lands as one independent slice after the milestone: `style.json` inverted layer → slider mapping + smoke extension (parallel) → publish + quickstart Scenarios 1–2 gates → `make commit-slice`.
+3. It is the final slice of this feature — nothing else remains open.
+
 ### Parallel Team Strategy
 
 With multiple developers:
@@ -179,5 +219,6 @@ With multiple developers:
 - Each user story is independently completable and testable (its checkpoint)
 - The palette (`src/site/style.json` buildings-fill) is FROZEN — no task may change it (spec FR-003, 003 contract)
 - The popup/hover/toggle behavior is untouched except for the slider wiring addition in `main.js` (FR-014)
+- The inversion slice (Phase 7) is the only open work — Phases 1–6 are shipped in milestone commit `9a00fcd`. The inverted layer reuses the `basemap` source (no new requests, FR-015/SC-007) and adds only in-range paint values (MapLibre clamps out-of-range `raster-brightness-*`, research R-011)
 - Avoid: vague tasks, same-file parallel work, cross-story dependencies that break slice independence
 - Commit after each task or logical group (OR-004)

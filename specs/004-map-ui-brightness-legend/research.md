@@ -239,3 +239,81 @@ unchanged; `smoke_us1.md` gains the new brightness + legend checks
 (extending 003's darkness section, which already asserts the
 default-appearance baseline this feature's slider default must
 match).
+
+## R-010 — Low-brightness inversion: mechanism and empirical result
+
+**Decision**: In the low slider range, blend the base map toward a
+photo-negative by crossfading a second raster layer
+(`basemap-inverted`) with paint `raster-brightness-min: 1,
+raster-brightness-max: 0`. The vendored shader computes
+`out = brightness_min + (brightness_max - brightness_min) * in`
+(R-001), so `min=1, max=0` gives `out = 1 - in`: dark features
+(streets, labels) render light, the light background renders dark.
+The map stays grayscale (inverting gray yields gray, FR-019).
+
+**Rationale**: Empirically verified on the served bundle
+(2026-08-04, browser): `setPaintProperty` accepts `min=1, max=0`
+verbatim (read back from `getStyle` unchanged). Screenshot analysis
+(zoom 12, buildings hidden): pixels dark at maximum (streets/labels)
+map to light gray (median 0.34–0.72 linear) and the light background
+maps to near-black (median 0.08–0.09 linear); the 10th-percentile
+background drops to 0.0001 (ratio 0.002 of default, well under the
+SC-001 gate). Vision-model inspection confirms: charcoal-dark
+background, silvery street lines, legible labels — exactly the
+requested "features lighter gray against a black background".
+
+**Alternatives considered**: *Vector street/label overlay (OSM)*:
+feature-exact control but adds a data source, pipeline work, and OSM
+attribution — rejected for scope (clarification session Q3 chose the
+no-data option). *CSS filter on the canvas*: affects buildings,
+trees, and popups — violates FR-004.
+
+## R-011 — Transition without out-of-range paint values
+
+**Decision**: The transition uses a second raster layer crossfaded
+by opacity, not a single-layer paint interpolation. The blend factor
+`s(v)` ramps 0→1 as the slider value drops from 25 to 5; the
+`basemap-inverted` layer's opacity is set to `s(v)` and the `basemap`
+layer keeps `raster-brightness-max = v/100`.
+
+**Rationale**: Empirically, MapLibre **clamps** `raster-brightness-*`
+to `[0, 1]` at runtime: requesting `raster-brightness-max: -0.85`
+reads back as `0`. A single-layer affine blend
+(`min=s, max=(1-s)·v − s`) therefore hits the clamp seam where the
+slope crosses zero, producing a visible jump. An opacity crossfade
+of two layers is a plain linear blend of two well-formed transforms —
+continuous everywhere, no seam. Both layers share the `basemap`
+source, so tiles are fetched once (SC-007 holds); the extra layer is
+a second raster shader pass only. The inverted layer sits between
+`basemap` and `outside-mask` in layer order, so the black boundary
+mask, buildings, and trees are unaffected (FR-019).
+
+**Alternatives considered**: *Single-layer paint blend*: rejected
+(clamp seam, R-011). *Swapping the style document per slider
+position*: heavy and janky. *No transition (hard switch below 25)*:
+violates the spec edge case "gradual, no sudden switch".
+
+## R-012 — Transition ramp and gate verification
+
+**Decision**: `s(v) = clamp((0.25 − v) / 0.20, 0, 1)` for
+`v = slider/100` — zero at slider 25, fully inverted at slider 5
+(spec assumption: "engages gradually below approximately 25, fully
+active at the minimum"). `basemap-inverted` opacity `s(v)`; at
+`s = 0` the layer is also hidden via `layout.visibility` to avoid a
+wasted render pass.
+
+**Rationale**: Linear ramp in the slider's percent space matches the
+slider's own linearity (identity mapping, R-001); the band 25→5
+covers the "very low" range the user described. Verified on the
+served bundle: at the minimum, the background p10 luminance ratio
+vs default is 0.002 (SC-001 gate ≤ 0.10 — PASS) and features
+measure 4–9× brighter than the background (SC-008 — PASS). The
+default slider position (65) is untouched, so no-regression (FR-003)
+holds: at v ≥ 25 the inverted layer is invisible.
+
+**Alternatives considered**: *Smoothstep ramp*: marginally nicer
+easing, but the linear ramp is perceptually fine over a 20-point band
+and simpler to reason about; the spec's "gradual" requirement is met.
+*Threshold at a different value*: 25 was chosen from the user's
+"set very low" wording and is documented in the spec assumptions;
+tuning is a one-line change.

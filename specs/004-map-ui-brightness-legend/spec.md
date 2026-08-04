@@ -14,6 +14,7 @@
 
 - Q: Should the brightness slider cover only dimming, or the full range from near-black up to the original light basemap? → A: Full range; the default position reproduces today's darkened appearance.
 - Q: Should the brightness control be permanently visible or collapsible? → A: Permanently visible as a standalone control on the map at all viewport sizes.
+- Q: How should street lines and text labels stay visible when brightness is very low? → A: Invert the base map in the low-brightness range (photo-negative): streets and labels render as lighter gray on the dark background, all map detail stays readable, no new data.
 
 ## Scope
 
@@ -46,7 +47,7 @@ Three related frontend refinements to the published map:
 
 ### User Story 1 - Dim the Base Map for Editorial-Style Images (Priority: P1)
 
-A journalist or editor wants a dramatic map image where the building tree-cover colors are the focal point. They drag the brightness slider down; the base map fades continuously from its default appearance toward near-black, and the building colors stay at full strength. At the lowest setting the map is almost black, with buildings clearly glowing in the foreground. Street labels fade with the map — that is expected and desired for this use case.
+A journalist or editor wants a dramatic map image where the building tree-cover colors are the focal point. They drag the brightness slider down; the base map fades continuously from its default appearance toward near-black, and the building colors stay at full strength. At the lowest setting the map is almost black, with buildings clearly glowing in the foreground; street lines and text labels invert to a lighter gray so the map stays readable as a dark backdrop.
 
 **Why this priority**: This is the primary request; without the slider the feature has no value.
 
@@ -61,6 +62,7 @@ A journalist or editor wants a dramatic map image where the building tree-cover 
 5. **Given** the tree layer toggled on, **When** the slider is lowered, **Then** tree polygons remain clearly visible at full opacity.
 6. **Given** the slider released at a mid-range position, **When** the user then pans or zooms, **Then** the brightness stays at the chosen value (no snap-back, no interference with map gestures).
 7. **Given** the slider raised above the default position, **When** a visitor views the map, **Then** the base map brightens continuously toward the original un-darkened appearance.
+8. **Given** the brightness slider at its lowest position, **When** a visitor views the map, **Then** street lines and text labels render in a lighter gray than the background and remain legible (inverted base map).
 
 ### User Story 2 - Clean, Non-Overlapping Controls (Priority: P1)
 
@@ -96,7 +98,7 @@ A visitor reads the legend to interpret building colors. Instead of separate col
 
 ### Edge Cases
 
-- Slider at minimum: raster street labels fade with the map — expected; building colors must stay distinguishable.
+- Slider at minimum: the base map inverts, so street lines and labels stay legible as light gray on the near-black background; building colors must stay distinguishable.
 - Dragging the slider must not pan or zoom the map, and panning/zooming must not reset the slider.
 - Touch devices: the slider must be usable by touch without conflicting with the zoom controls.
 - Keyboard users: the slider must be operable via keyboard (focus, arrow keys) and announce its value.
@@ -105,6 +107,7 @@ A visitor reads the legend to interpret building colors. Instead of separate col
 - Buildings-layer failure (existing error surface in the attribution slot): the error message must not overlap other controls.
 - Gradient interpolation across the palette (yellow → orange → brown → blue → light blue): no segment may render as an unintended color; the gradient follows the palette stops.
 - Very low brightness combined with tree layer on: trees must remain visible against the near-black map.
+- Low-brightness inversion: the transition from normal dimming to the inverted base map must be gradual across the low end of the slider range, with no sudden switch; the inverted map must stay grayscale (no hue shift), and buildings must remain distinguishable over it.
 - Narrow screens: the permanently visible brightness control must remain reachable and non-overlapping in the stacked layout (≤480 px).
 - Screen readers: the gradient bar must not regress legend accessibility — the value labels must remain available as text, not only as visual marks.
 
@@ -130,6 +133,7 @@ A visitor reads the legend to interpret building colors. Instead of separate col
 - **FR-016**: The brightness control MUST be permanently visible on the map as a standalone control at all supported viewport sizes (≥320 px); it MUST NOT be hidden behind a toggle or menu.
 - **FR-017**: The popup MAY transiently cover other elements while open, but MUST remain dismissible and MUST NOT permanently occlude any control.
 - **FR-018**: The gradient legend MUST remain interpretable by screen readers; the value labels MUST be exposed as text, not only as visual marks.
+- **FR-019**: At very low brightness settings, the base map MUST render inverted so that street lines and text labels appear lighter than the map background; the inversion MUST preserve the map's grayscale character and MUST NOT affect building colors, the tree layer, or popup content.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -143,25 +147,27 @@ A visitor reads the legend to interpret building colors. Instead of separate col
 
 ### Measurable Outcomes
 
-- **SC-001**: Moving the brightness control from default to minimum dims the base map to below 10% of its default background luminance, and moving it to maximum restores the original un-darkened luminance (measured on the same viewport, zoom, and area).
+- **SC-001**: Moving the brightness control from default to minimum dims the base map's background to below 10% of its default background luminance (feature pixels excluded — their legibility is covered by SC-008), and moving it to maximum restores the original un-darkened luminance (measured on the same viewport, zoom, and area).
 - **SC-002**: At minimum brightness, 100% of building palette colors remain distinguishable from the near-black background (contrast check at the default zoom).
 - **SC-003**: In a viewport matrix of at least 5 widths (≥320 px) and 3 zoom levels, 100% of UI-element pairs have zero overlapping clickable areas.
 - **SC-004**: At the former overlap location, the Bäume toggle receives clicks 100% of the time (no occlusion).
 - **SC-005**: The legend renders as a single continuous gradient; the labels 0, 15, 30, 50 and 100 are all visible at their proportional positions on both a desktop and a narrow (≤480 px) viewport.
 - **SC-006**: No regression: building click popup, hover pointer, Bäume toggle, and empty-space close pass the existing smoke checklist unchanged.
 - **SC-007**: No added network cost: the page loads the same tiles and data; dimming and the gradient legend are client-side visual changes.
+- **SC-008**: At the minimum brightness setting, sampled street lines and text labels measure lighter than the surrounding background (per-pixel feature luminance exceeds background luminance) and remain legible by eye; the base map stays grayscale.
 
 ## Assumptions
 
 - The brightness slider is session-only; its default position reproduces today's already-darkened base map (the result of the darken-base-map feature, 003).
 - The slider spans the full range from near-black up to the original un-darkened basemap; the default position reproduces today's darkened appearance. Brightening above the default is permitted and simply restores the pre-darkening light map.
-- At low brightness, raster labels fade along with the base map — this is intended for editorial-style output; buildings remain the focal point.
+- At low brightness, street lines and labels remain visible through inversion rather than fading; buildings remain the focal point against the dark backdrop.
 - The tree layer, when toggled on, renders at full opacity regardless of base-map brightness.
 - The gradient legend interpolates linearly between the existing palette stops; tick labels are 0, 15, 30, 50, 100, matching both the current legend and the reference project.
 - Supported viewports are at least 320 px wide, with the existing responsive breakpoint at 480 px preserved.
 - No persistence, no new data, no pipeline changes; purely client-side visual and layout changes.
 - The existing darker default (003) remains the baseline; the slider extends it into a user-controlled value rather than replacing it.
 - The brightness control is permanently visible as a standalone control; no collapsible or toggle behavior is required.
+- In the low-brightness range the base map renders inverted (negative image): originally dark features (streets, labels) appear as lighter gray on the dark background. The inversion engages gradually below approximately 25 on the slider and is fully active at the minimum; only the raster base map is transformed.
 
 ## Dependencies Evidence
 

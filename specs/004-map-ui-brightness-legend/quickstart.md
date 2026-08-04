@@ -46,6 +46,10 @@ FR-002, FR-003, FR-005, FR-016)
      jumps; buildings and trees keep their colors (FR-002, FR-004).
    - Drag back up past 65: the map brightens continuously toward the
      original un-darkened basemap (clarification Q1; FR-002).
+   - Drag below 25: the base map transitions gradually into the
+     inverted (photo-negative) look; at 5, streets and labels render
+     lighter than the near-black background and remain legible
+     (clarification Q3; FR-019; verified per-pixel in Scenario 2).
    - The slider is a visible standalone control at desktop and at a
      360 px viewport (FR-016).
    - Dragging the slider does not pan or zoom the map; panning after
@@ -53,9 +57,9 @@ FR-002, FR-003, FR-005, FR-016)
 3. Reload the page at a non-default slider value: the slider and the
    map return to the default (FR-007, contract invariant 4).
 
-## Scenario 2 — Luminance gates (SC-001)
+## Scenario 2 — Luminance and inversion gates (SC-001, SC-008)
 
-**Maps to**: success criterion SC-001.
+**Maps to**: success criteria SC-001 and SC-008.
 
 1. Open the bundle in a fixed-size window (e.g. 1280×800). Hide the
    building overlay to isolate the basemap:
@@ -65,34 +69,56 @@ FR-002, FR-003, FR-005, FR-016)
 2. Set the slider to default (65), screenshot → `def.png`; minimum
    (5), screenshot → `min.png`; maximum (100), screenshot →
    `max.png`. Keep the camera fixed.
-3. Compute mean luminance (identical method to 003, plus an sRGB→linear
-   decode for the min gate — luminance is linear light, and the raster
-   shader multiplies in linear space; without the decode the gamma of
-   the sRGB-encoded screenshot inflates the dark-state mean):
+3. Background gate (SC-001): luminance is linear light, and the
+   raster shader multiplies in linear space — decode the
+   sRGB-encoded screenshots first, and measure the background with a
+   feature-free sub-region (park or Rhine) or the 10th-percentile
+   luminance of the central crop (features are excluded: at minimum
+   they invert and are intentionally brighter):
    ```py
    import numpy as np, rasterio
    def srgb_to_linear(c):
        c = c.astype(np.float64)
        return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
-   def mean_lum(path):
+   def bg_lum(path):
        with rasterio.open(path) as ds:
            rgb = ds.read([1,2,3]).astype(np.float64) / 255.0
        lin = srgb_to_linear(rgb)
-       return (0.2126*lin[0] + 0.7152*lin[1] + 0.0722*lin[2]).mean()
-   d, m, x = mean_lum('def.png'), mean_lum('min.png'), mean_lum('max.png')
-   assert m <= 0.10 * d, (d, m)          # min < 10% of default
+       lum = (0.2126*lin[0] + 0.7152*lin[1] + 0.0722*lin[2]).flatten()
+       return np.percentile(lum, 10)          # background, not features
+   d, m, x = bg_lum('def.png'), bg_lum('min.png'), bg_lum('max.png')
+   assert m <= 0.10 * d, (d, m)          # min background < 10% of default
    assert abs(x - (d / 0.65)) <= 0.05 * (d / 0.65), (d, x)  # max restores original
    ```
-   Fallback per-pixel check (robust to encoding gamma): median of
-   per-pixel luminance ratios min/default must be ≤ 0.10; measured
-   2026-08-04: 0.090 (recorded in
-   `validation/brightness-slider/luminance.json`).
-4. **Pass criteria**:
-   - `min` luminance ≤ 10% of `def` (expected ≈ 7.7%: 0.05/0.65).
+   Per-pixel fallback (robust to encoding gamma): median of per-pixel
+   background ratios min/default ≤ 0.10; measured 2026-08-04: 0.090
+   before inversion was added (re-record at implementation).
+4. Inversion gate (SC-008): at minimum the base map inverts — pixels
+   that were dark at maximum (streets, labels) must become lighter
+   than the pixels that were bright (background):
+   ```py
+   def lum_arr(path):
+       with rasterio.open(path) as ds:
+           rgb = ds.read([1,2,3]).astype(np.float64) / 255.0
+       lin = srgb_to_linear(rgb)
+       return (0.2126*lin[0] + 0.7152*lin[1] + 0.0722*lin[2]).flatten()
+   a_max, a_min = lum_arr('max.png'), lum_arr('min.png')
+   dark = a_max < np.percentile(a_max, 25)       # features at max
+   assert np.mean(a_min[dark]) > np.mean(a_min[~dark]), 'features must invert lighter'
+   ```
+5. **Pass criteria**:
+   - `min` background ≤ 10% of `def` background (expected ≈ 7.7%:
+     0.05/0.65).
    - `max` luminance ≈ `def / 0.65` (restores the pre-003 light
      basemap; contract invariant 5).
-   - By eye at minimum: map is almost black, buildings still clearly
-     visible when the overlay is back on (SC-002).
+   - At minimum, streets and labels render lighter than the
+     background and are legible by eye (SC-008); the map stays
+     grayscale (FR-019).
+   - By eye at minimum: map background is almost black, buildings
+     still clearly visible when the overlay is back on (SC-002).
+   - The transition between normal dimming and the inverted look is
+     gradual across the low end of the slider range (no sudden
+     switch; spec edge case).
    - Record results under `validation/brightness-slider/luminance.json`.
 
 ## Scenario 3 — Overlap matrix (SC-003, FR-008)

@@ -37,6 +37,17 @@
       "paint": { "raster-brightness-max": 0.65 }
     },
     {
+      "id": "basemap-inverted",
+      "type": "raster",
+      "source": "basemap",
+      "layout": { "visibility": "none" },
+      "paint": {
+        "raster-brightness-min": 1,
+        "raster-brightness-max": 0,
+        "raster-opacity": 0
+      }
+    },
+    {
       "id": "outside-mask",
       "type": "fill",
       "source": "boundary",

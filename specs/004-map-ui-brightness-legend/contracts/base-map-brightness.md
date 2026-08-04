@@ -27,6 +27,21 @@ style swap, a hue shift, a persistence mechanism, or a data change.
 | persistence | none — page memory only, reset to default on reload |
 | `layout.visibility` | `"visible"` |
 
+### Low-brightness inversion layer (FR-019)
+
+| Property | Required value |
+|---|---|
+| `layer.id` | `"basemap-inverted"` (between `basemap` and `outside-mask`) |
+| `source` | `"basemap"` (same source — tiles fetched once) |
+| `paint.raster-brightness-min` / `-max` | `1` / `0` (constant — `out = 1 - in`) |
+| `paint.raster-opacity` | `s(v) = clamp((25 − v)/20, 0, 1)` for slider `v < 25`; `0` otherwise |
+| `layout.visibility` | `"none"` at `s = 0`, `"visible"` otherwise |
+
+MapLibre clamps `raster-brightness-*` paint values to `[0, 1]`
+(verified empirically), so the inverted look must be expressed as a
+second layer with in-range values, crossfaded by opacity — never via
+out-of-range paint numbers (research R-011).
+
 Supersedes: 003's `base-map-style.md` fixed the static value in
 `[0.6, 0.7]` as a constant. That window still holds for the static
 default (0.65); the runtime range is now user-controlled and wider.
@@ -40,8 +55,9 @@ All other 003 invariants remain in force.
    overlay at any slider position.
 2. **Only the basemap is affected (FR-004).** Building colors, the
    tree layer, the outside mask, popup content, and labels-on-other-
-   layers must not change with the slider. Raster labels fade with
-   the basemap — intended (spec edge case).
+   layers must not change with the slider. In the low-brightness
+   range the basemap inverts (FR-019): raster streets and labels
+   render lighter than the background instead of fading.
 3. **Same tiles, same network (SC-007, FR-015).** Source URLs and
    `tileSize` never change; the slider is a client-side render
    transform only, with no added requests.
@@ -50,16 +66,25 @@ All other 003 invariants remain in force.
 5. **Live and continuous (FR-002, FR-005).** Every slider step
    re-renders immediately; the range covers near-black (0.05) to the
    original un-darkened basemap (1.0), with no jumps or snap-back.
+   Below slider 25 the transition into the inverted look is a smooth
+   opacity crossfade (FR-019, research R-011).
 6. **Default = today (FR-003).** On load, before any interaction, the
    map renders exactly as the published bundle renders today.
 7. **All zoom levels.** The paint value is constant across zooms;
    every zoom renders at the chosen brightness (FR-002 scope).
+8. **Inversion is grayscale and overlay-safe (FR-019).** The inverted
+   layer sits below the mask, buildings, and trees; the low-brightness
+   map never gains a hue, and overlays are never affected.
 
 ## Verification
 
 - Luminance: slider minimum measures < 10% of the default's
-  background luminance; slider maximum restores the original
-  un-darkened luminance (SC-001; quickstart Scenario 2).
+  background luminance (feature pixels excluded); slider maximum
+  restores the original un-darkened luminance (SC-001; quickstart
+  Scenario 2).
+- Feature legibility at minimum: sampled streets and labels measure
+  lighter than the background and remain legible (SC-008; quickstart
+  Scenario 2).
 - Default appearance: pixel-identical basemap rendering at slider
   default vs. the pre-feature bundle (quickstart Scenario 1).
 - No persistence: reloading the page at a non-default slider value
