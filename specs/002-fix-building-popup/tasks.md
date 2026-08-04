@@ -75,8 +75,8 @@ description: "Task list: Fix Building Popup Interaction"
 
 **Purpose**: End-to-end validation and the operational-constraint commit.
 
-- [ ] T007 Run `quickstart.md` Scenarios 1–6 end-to-end against the served `dist/` bundle. Re-copy `src/site/main.js` into `dist/` first when the bundle predates the fix. Record pass/fail per scenario. Update the Result section of `tests/frontend/smoke_us2.md` (SC-001..SC-005). Scenarios 4–6 cover the close button, click-through, touch parity, tree overlay, and viewport edge.
-      NOTE: requires manual browser run by the maintainer. The implementation lands in commit c9b9065. `dist/main.js` was re-copied from `src/site/main.js` and is ready to serve via nginx (Range-capable). Run Scenarios 1 and 3 first (gates SC-001, SC-003); both must pass before the slice ships.
+- [X] T007 Run `quickstart.md` Scenarios 1–6 end-to-end against the served `dist/` bundle. Re-copy `src/site/main.js` into `dist/` first when the bundle predates the fix. Record pass/fail per scenario. Update the Result section of `tests/frontend/smoke_us2.md` (SC-001..SC-005). Scenarios 4–6 cover the close button, click-through, touch parity, tree overlay, and viewport edge.
+      NOTE: PASSED on the served bundle (nginx, 127.0.0.1:8088). Maintainer confirmed all scenarios after the CSS fix (commit 810bd6f, vendored maplibre-gl.css 5.7.1). Scenarios 1 and 3 (gates SC-001, SC-003) pass; checklist Result ticked in `tests/frontend/smoke_us2.md`.
 
 - [X] T008 Create the slice commit via `make commit-slice` (`Makefile`). It requires a `MSG=...` argument and runs `git add -A`. Confirm `git status` shows only the intended files first. The commit must contain exactly `src/site/main.js` and `tests/frontend/smoke_us2.md`. No data, manifest, or other published-content changes (operational constraint OP-001).
       NOTE: committed as c9b9065 (Slice-02). The slice contains exactly `src/site/main.js` and `tests/frontend/smoke_us2.md`. The spec dir (`specs/002-fix-building-popup/`) was committed earlier as 4e9ae7c (Spec-01). `dist/main.js` was re-copied from `src/site/main.js` but is gitignored, so it is not in the slice commit (OP-001).
