@@ -29,8 +29,8 @@ description: "Task list for base-map darkening"
 
 **Purpose**: Capture the pre-change state so SC-001 (≥30% luminance drop) is measurable against the *current published bundle*, and confirm the working baseline.
 
-- [ ] T001 Create `validation/darken/` and capture the current bundle baseline: serve the existing `dist/` (unchanged) with a Range-capable server, open at the fixed viewport used in quickstart Scenario 1 (1280×800, buildings hidden via `map.setLayoutProperty('buildings-fill','visibility','none')` or a building-free area), screenshot to `validation/darken/old-baseline.png`
-- [ ] T002 [P] Confirm the pre-change state: `src/site/style.json` `basemap` layer has no `paint` block (renders at full brightness), and `make publish` succeeds on the unchanged tree
+- [X] T001 Create `validation/darken/` and capture the current bundle baseline: serve the existing `dist/` (unchanged) with a Range-capable server, open at the fixed viewport used in quickstart Scenario 1 (1280×800, buildings hidden via `map.setLayoutProperty('buildings-fill','visibility','none')` or a building-free area), screenshot to `validation/darken/old-baseline.png`
+- [X] T002 [P] Confirm the pre-change state: `src/site/style.json` `basemap` layer has no `paint` block (renders at full brightness), and `make publish` succeeds on the unchanged tree
 
 **Checkpoint**: Baseline captured — the old bundle is reproducible for before/after comparison.
 
@@ -42,7 +42,7 @@ description: "Task list for base-map darkening"
 
 **⚠️ CRITICAL**: No user story verification can begin until this phase is complete.
 
-- [ ] T003 Write `scripts/measure_luminance.py`: reads one or two PNGs with `numpy` + `rasterio` (both already in `.venv`), prints mean relative luminance (0.2126 R + 0.7152 G + 0.0722 B), and with `--assert-ratio OLD NEW 0.70` exits nonzero unless `mean_new <= 0.70 * mean_old`
+- [X] T003 Write `scripts/measure_luminance.py`: reads one or two PNGs with `numpy` + `rasterio` (both already in `.venv`), prints mean relative luminance (0.2126 R + 0.7152 G + 0.0722 B), and with `--assert-ratio OLD NEW 0.70` exits nonzero unless `mean_new <= 0.70 * mean_old`
 
 **Checkpoint**: Foundation ready — `python scripts/measure_luminance.py validation/darken/old-baseline.png` prints a luminance value.
 
@@ -56,10 +56,10 @@ description: "Task list for base-map darkening"
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Add the darkening paint to the `basemap` layer in `src/site/style.json`: `"paint": { "raster-brightness-max": 0.65 }` (target within contract window [0.6, 0.7] per `contracts/base-map-style.md`); validate the file with `python -m json.tool`; no other layer or source changes
-- [ ] T005 [US1] Regenerate the bundle with `make publish`; confirm `dist/style.json` contains the paint block and that the basemap tile URLs, `tileSize`, attribution, and layer order are unchanged
-- [ ] T006 [US1] Capture `validation/darken/new-baseline.png` at the identical viewport as T001 and run `python scripts/measure_luminance.py --assert-ratio validation/darken/old-baseline.png validation/darken/new-baseline.png 0.70` (SC-001 gate; expected ratio ≈ 0.65)
-- [ ] T007 [P] [US1] Visual palette check per quickstart Scenario 2 at default zoom: yellow `#ffd524`, orange `#e6854a`, brown `#a97e65`, dark blue `#0674aa`, light blues `#1db6ff`/`#39c2ff`/`#56ceff`/`#6ad4ff`, and gray unavailable `#444444` are each clearly distinguishable from the darkened background (FR-004); neighboring different-value buildings show an easily perceived color difference
+- [X] T004 [US1] Add the darkening paint to the `basemap` layer in `src/site/style.json`: `"paint": { "raster-brightness-max": 0.65 }` (target within contract window [0.6, 0.7] per `contracts/base-map-style.md`); validate the file with `python -m json.tool`; no other layer or source changes
+- [X] T005 [US1] Regenerate the bundle with `make publish`; confirm `dist/style.json` contains the paint block and that the basemap tile URLs, `tileSize`, attribution, and layer order are unchanged
+- [X] T006 [US1] Capture `validation/darken/new-baseline.png` at the identical viewport as T001 and run `python scripts/measure_luminance.py --assert-ratio validation/darken/old-baseline.png validation/darken/new-baseline.png 0.70` (SC-001 gate; expected ratio ≈ 0.65)
+- [X] T007 [P] [US1] Visual palette check per quickstart Scenario 2 at default zoom: yellow `#ffd524`, orange `#e6854a`, brown `#a97e65`, dark blue `#0674aa`, light blues `#1db6ff`/`#39c2ff`/`#56ceff`/`#6ad4ff`, and gray unavailable `#444444` are each clearly distinguishable from the darkened background (FR-004); neighboring different-value buildings show an easily perceived color difference
 
 **Checkpoint**: At this point, User Story 1 is complete — the map is measurably darker and the palette is distinguishable (SC-001, SC-002).
 
@@ -73,8 +73,8 @@ description: "Task list for base-map darkening"
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] Label legibility check per quickstart Scenario 3: zoom to a downtown area, read ten street/district labels, pan the city, and repeat at one zoomed-in and one zoomed-out level (SC-003, FR-005)
-- [ ] T009 [US2] If any label fails: tune `raster-brightness-max` in `src/site/style.json` within the contract window [0.6, 0.7] (nudge up toward 0.7), re-run `make publish`, re-capture and re-measure per T006, and repeat the T008 check until both SC-001 and SC-003 pass (depends on T004–T008)
+- [X] T008 [US2] Label legibility check per quickstart Scenario 3: zoom to a downtown area, read ten street/district labels, pan the city, and repeat at one zoomed-in and one zoomed-out level (SC-003, FR-005)
+- [X] T009 [US2] If any label fails: tune `raster-brightness-max` in `src/site/style.json` within the contract window [0.6, 0.7] (nudge up toward 0.7), re-run `make publish`, re-capture and re-measure per T006, and repeat the T008 check until both SC-001 and SC-003 pass (depends on T004–T008)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 both pass — the map is darker and still navigable.
 
@@ -88,10 +88,10 @@ description: "Task list for base-map darkening"
 
 ### Implementation for User Story 3
 
-- [ ] T010 [P] [US3] Toggle the `Bäume` layer on and confirm tree polygons (`#39C43D` at 0.75) are clearly visible over the darkened background (FR-006)
-- [ ] T011 [P] [US3] Locate a building without a valid value and confirm its gray fill (`#444444` at 0.4) is visible and distinct from the darkened background, never merging into it (FR-007)
-- [ ] T012 [US3] Interaction regression per quickstart Scenario 4: building click opens the compact value popup, empty-space click closes it, hover shows the pointer cursor, zoom in/out keeps the darkening applied (FR-008, FR-009)
-- [ ] T013 [US3] Extend `tests/frontend/smoke_us1.md` with the darkness checks (base map darker than before; grayscale preserved — no hue; palette distinguishable; 10/10 labels legible at a downtown zoom), then run the published smoke checklists `smoke_us1.md` (extended), `smoke_us2.md`, `smoke_us3.md` (SC-004)
+- [X] T010 [P] [US3] Toggle the `Bäume` layer on and confirm tree polygons (`#39C43D` at 0.75) are clearly visible over the darkened background (FR-006)
+- [X] T011 [P] [US3] Locate a building without a valid value and confirm its gray fill (`#444444` at 0.4) is visible and distinct from the darkened background, never merging into it (FR-007)
+- [X] T012 [US3] Interaction regression per quickstart Scenario 4: building click opens the compact value popup, empty-space click closes it, hover shows the pointer cursor, zoom in/out keeps the darkening applied (FR-008, FR-009)
+- [X] T013 [US3] Extend `tests/frontend/smoke_us1.md` with the darkness checks (base map darker than before; grayscale preserved — no hue; palette distinguishable; 10/10 labels legible at a downtown zoom), then run the published smoke checklists `smoke_us1.md` (extended), `smoke_us2.md`, `smoke_us3.md` (SC-004)
 
 **Checkpoint**: All user stories complete — the darkened map delivers value without regressions.
 
@@ -101,10 +101,10 @@ description: "Task list for base-map darkening"
 
 **Purpose**: Governance, evidence, and cleanup across all stories.
 
-- [ ] T014 [P] No-network-change check per quickstart Scenario 5: `git diff HEAD -- src/site/style.json` touches only the `basemap` layer `paint` block; browser network tab requests the same basemap.de tile URLs; `dist/manifest.json` artifacts unchanged (SC-005, FR-010)
-- [ ] T015 [P] Record the measured evidence in `validation/darken/luminance.json`: old/new mean luminance, ratio, and the final `raster-brightness-max` value used (project convention: `validation/` holds measured records)
-- [ ] T016 Run `make check-or005` (governance gate: no forbidden artifacts tracked; new PNG/JSON records in `validation/darken/` are small and allowed)
-- [ ] T017 Commit the slice per OR-004: `make commit-slice MSG="darken base map (raster-brightness-max 0.65)"` after T013 and T014 pass
+- [X] T014 [P] No-network-change check per quickstart Scenario 5: `git diff HEAD -- src/site/style.json` touches only the `basemap` layer `paint` block; browser network tab requests the same basemap.de tile URLs; `dist/manifest.json` artifacts unchanged (SC-005, FR-010)
+- [X] T015 [P] Record the measured evidence in `validation/darken/luminance.json`: old/new mean luminance, ratio, and the final `raster-brightness-max` value used (project convention: `validation/` holds measured records)
+- [X] T016 Run `make check-or005` (governance gate: no forbidden artifacts tracked; new PNG/JSON records in `validation/darken/` are small and allowed)
+- [X] T017 Commit the slice per OR-004: `make commit-slice MSG="darken base map (raster-brightness-max 0.65)"` after T013 and T014 pass
 
 **Checkpoint**: Feature complete, evidenced, and committed.
 

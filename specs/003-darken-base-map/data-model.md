@@ -39,17 +39,28 @@ distinguishable.
 | Field | Value | Notes |
 |---|---|---|
 | `fill-color` (has_value) | interpolated stops: `0 → #ffd524`, `12 → #e6854a`, `24 → #a97e65`, `24.08 → #0674aa`, `32 → #1db6ff`, `40 → #39c2ff`, `48 → #56ceff`, `80 → #6ad4ff` | Reference palette (yellow → blue via orange/brown/dark blue). Frozen. |
-| `fill-color` (no value) | `#444444` | Unavailable marker. Frozen. |
-| `fill-opacity` | `0.75` (has_value), `0.4` (no value) | Frozen. |
+| `fill-color` (no value) | `#b8b8b8` | Unavailable marker. Lightened from `#444444` (see note). |
+| `fill-opacity` | `0.75` (has_value), `0.8` (no value) | No-value branch raised from `0.4` (see note). |
 | `line-color` / `line-width` | `#555555` / `0.5` | Outline layer `buildings-line`. Frozen. |
 
 **Invariants**:
-- No palette stop, opacity, or outline value changes (FR-003).
+- No value-scale stop, value opacity (0.75), or outline value changes
+  (FR-003). The unavailable marker is not part of the yellow-to-blue
+  value scale; it was adjusted to satisfy FR-007 (see note).
 - Every palette color composited over the darkened background must
   remain clearly distinguishable (SC-002, verification method in
   research R-007).
 - The unavailable gray must not disappear into the darkened
-  background (FR-007): `#444444` at 0.4 over the background.
+  background (FR-007): `#b8b8b8` at 0.8 over the background.
+
+**Note (2026-08-04, implementation)**: at `raster-brightness-max:
+0.65` the previous marker (`#444444` at 0.4) collapsed to local
+ΔE ≈ 4.6 against darkened blocks — below the just-noticeable
+difference, violating FR-007. The fill is dark either way, so raising
+opacity did not help; the marker was lightened to `#b8b8b8` at 0.8
+(neutral gray, no chroma, distinct from every value color), which
+measures local ΔE 22–30 against darkened blocks (measured on the
+actual buildings via polygon-exact pixel sampling).
 
 ## E-003 — TreeLayer
 

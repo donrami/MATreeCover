@@ -79,8 +79,9 @@ invariant "Verification · Luminance".
      background by hue, not only lightness.
    - The light blue high-value colors (`#39c2ff`..`#6ad4ff`) remain
      bright and clearly visible.
-   - Gray "no value" buildings (`#444444` at 0.4 opacity) are
-     visible and do not merge into the background (FR-007).
+   - Gray "no value" buildings (`#b8b8b8` at 0.8 opacity, lightened
+     during implementation for FR-007) are visible and do not merge
+     into the background (FR-007).
    - Neighboring buildings with different values show an
      easily-perceived color difference.
 3. (Optional, scripted) composited ΔE check: for each palette stop

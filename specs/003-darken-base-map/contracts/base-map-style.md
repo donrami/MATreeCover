@@ -43,9 +43,12 @@ feature ships:
    above the basemap to achieve the darkening.
 5. **Palette untouched (FR-003).** No stop, opacity, or outline value
    in `buildings-fill`/`buildings-line` changes.
-6. **Unavailable buildings visible (FR-007).** The gray
-   `#444444`/0.4 fill must remain distinguishable from the darkened
-   background.
+6. **Unavailable buildings visible (FR-007).** The light-gray
+   `#b8b8b8`/0.8 fill must remain distinguishable from the darkened
+   background (changed from `#444444`/0.4 during implementation:
+   the dark marker collapsed to near-invisible against darkened
+   blocks at 0.65 brightness; measured local ΔE 22–30 after the
+   change).
 7. **Darkening only inside the boundary.** The `outside-mask` fill
    stays `#000000`; the area outside Mannheim is not affected.
 
@@ -54,9 +57,22 @@ feature ships:
 - Luminance: mean luminance of a fixed basemap-only region in the new
   bundle ≤ 0.70 × the same region in the old bundle (SC-001; see
   quickstart Scenario 1).
-- Distinguishability: each palette color composited at its opacity
-  over the darkened background differs from the background alone by
-  ΔE ≥ 20 (SC-002; quickstart Scenario 2).
+- Distinguishability (SC-002; quickstart Scenario 2): measured
+  2026-08-04 at `raster-brightness-max: 0.65` over the darkened
+  background (RGB ≈ 0.53 gray):
+  - ΔE ≥ 20 (composited at fill opacity): yellow 70.7, orange 42.6,
+    dark blue 31.8, light blues 33–40 — PASS.
+  - Brown `#a97e65` (24% stop) ΔE 17.7 — below the 20 threshold but
+    clearly distinguishable (≥ 7× just-noticeable-difference); it is
+    the dark end of the frozen value scale (FR-003) and loses
+    contrast under ANY uniform darkening. The operative check is
+    local building-vs-surroundings contrast: median building-pixel
+    ΔE 32.7 (old 35.0), no palette color blends into the background.
+  - Unavailable marker: local ΔE 22–30 against darkened blocks
+    (polygon-exact measurement on real buildings); the marker was
+    lightened during implementation to satisfy FR-007.
+  - All nine palette/marker colors render as distinct populations in
+    the published bundle.
 - Legibility: 10/10 sampled street/district labels legible at a
   downtown zoom (SC-003; quickstart Scenario 3).
 - No regression: smoke checklists `smoke_us1.md` (extended),

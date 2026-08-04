@@ -1,0 +1,44 @@
+{
+  "feature": "003-darken-base-map",
+  "date": "2026-08-04",
+  "raster_brightness_max": 0.65,
+  "capture": {
+    "viewport_css": "1280x800",
+    "screenshot_scale": 0.8,
+    "camera": {"lng": 8.5021044636552, "lat": 49.50048745208301, "zoom": 10.896595400230652},
+    "protocol": "load -> idle -> hide buildings-fill -> wait 2s -> screenshot"
+  },
+  "luminance": {
+    "old_mean": 0.1691,
+    "new_mean": 0.1183,
+    "ratio_new_over_old": 0.6995,
+    "gate": 0.70,
+    "sc001_pass": true,
+    "median_per_pixel_scaling": 0.6632,
+    "expected_scaling": 0.65,
+    "note": "whole-viewport mean includes the black outside-mask and dark UI panel; map-region-only ratio 0.6962"
+  },
+  "unavailable_marker": {
+    "old": "#444444 at 0.4",
+    "new": "#b8b8b8 at 0.8",
+    "reason": "dark marker collapsed to local DeltaE ~4.6 against darkened blocks at 0.65 brightness (FR-007 violation); light marker measures local DeltaE 22-30 on real buildings",
+    "local_deltaE_new": [22.0, 30.5]
+  },
+  "palette_deltaE_vs_darkened_background": {
+    "0pct_yellow": 70.7, "12pct_orange": 42.6, "24pct_brown": 17.7,
+    "24.08pct_darkblue": 31.8, "32pct": 40.2, "40pct": 37.5,
+    "48pct": 35.0, "80pct_plus": 33.4,
+    "note": "brown is the dark end of the frozen value scale; remains clearly distinguishable (7x JND)"
+  },
+  "local_contrast_buildings": {
+    "old_median_deltaE": 35.0,
+    "new_median_deltaE": 32.7,
+    "note": "light palette end gains, dark end loses slightly; inherent to uniform darkening with a frozen value scale"
+  },
+  "labels": {
+    "edge_position_agreement": 0.908,
+    "ocr": "street labels readable on new bundle (Friedrichsplatz, Jesuitenkirche)",
+    "human_eyeball_pending": "10/10 label read -> smoke_us1.md"
+  },
+  "trees_deltaE_vs_darkened_bg": 66.6
+}

@@ -167,3 +167,7 @@
 {"ts": "2026-08-04T09:59:16+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44601344, "gpu_used": false, "exit_code": 2, "inputs": []}
 {"ts": "2026-08-04T09:59:17+00:00", "subcommand": "values", "rss_peak_bytes": 180019200, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-04T09:59:18+00:00", "subcommand": "accept", "rss_peak_bytes": 49360896, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T17:05:11+00:00", "subcommand": "publish", "rss_peak_bytes": 63135744, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T17:16:21+00:00", "subcommand": "publish", "rss_peak_bytes": 62922752, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T17:18:45+00:00", "subcommand": "publish", "rss_peak_bytes": 62775296, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T17:20:12+00:00", "subcommand": "publish", "rss_peak_bytes": 63127552, "gpu_used": false, "exit_code": 0, "inputs": []}

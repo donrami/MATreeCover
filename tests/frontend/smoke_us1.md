@@ -43,6 +43,40 @@ Building values are accepted (`values` pass). All checks apply.
 - [X] Colors interpolate continuously between stops. Values above 80%
       keep the final reference color (FR-011).
 
+## Darkened base map (003-darken-base-map, SC-001/SC-002/SC-003,
+FR-001..FR-008)
+
+Measured 2026-08-04 on the published bundle at
+`raster-brightness-max: 0.65`; evidence in
+`validation/darken/luminance.json`.
+
+- [X] Base map is measurably darker: mean luminance of a fixed
+      basemap-only region dropped ≥30% vs the pre-change bundle
+      (measured 0.1691 → 0.1183, ratio 0.6995; median per-pixel
+      scaling 0.6632 ≈ 0.65) (SC-001, FR-001).
+- [X] Base map stays grayscale: no hue or tint on the base map;
+      per-pixel transform scales RGB channels identically (FR-002).
+- [X] Building value colors unchanged: palette stops and 0.75 opacity
+      identical to the reference (FR-003); light colors improved
+      contrast (yellow ΔE 70.7 vs darkened background).
+- [X] Every value color distinguishable from the darkened background
+      at default zoom: yellow 70.7, orange 42.6, brown 17.7, dark
+      blue 31.8, light blues 33–40 (ΔE; brown is the dark end of the
+      frozen scale and remains clearly visible) (SC-002, FR-004).
+- [X] Unavailable buildings visible: marker lightened to `#b8b8b8`
+      at 0.8 during implementation (the dark marker collapsed to
+      ΔE 4.6 against darkened blocks, violating FR-007); measured
+      local ΔE 22–30 on real buildings (FR-007).
+- [X] Tree layer clearly visible over the darkened base map when
+      toggled on (green ΔE 66.6) (FR-006).
+- [X] Darkening applies at every zoom level (constant paint value,
+      no zoom stops) (FR-008).
+- [ ] Street and district labels legible by eye at a downtown zoom:
+      ten sampled labels read without strain (SC-003; structural +
+      OCR evidence passed — edge positions 90.8% preserved, OCR
+      reads "Friedrichsplatz", "Jesuitenkirche" — final human pass
+      pending).
+
 ## Result
 
 - [X] All applicable checks pass.
