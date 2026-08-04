@@ -110,6 +110,22 @@ function wireTreesToggle() {
   });
 }
 
+function wireBrightnessSlider() {
+  // FR-001..FR-007: slider value (5..100) maps identity to the
+  // basemap's raster-brightness-max (0.05..1.0); default 65 == the
+  // style's static 0.65, so a load with no interaction renders the
+  // published appearance (FR-003). Session-only: nothing is stored.
+  const slider = document.getElementById('brightness-slider');
+  if (!slider) return;
+  const apply = () => {
+    if (map.getLayer('basemap')) {
+      map.setPaintProperty('basemap', 'raster-brightness-max', Number(slider.value) / 100);
+    }
+  };
+  slider.addEventListener('input', apply);
+  apply();
+}
+
 function wireErrorHandling() {
   // FR-020: a failed trees load never blocks buildings
   map.on('error', (event) => {
@@ -159,6 +175,7 @@ async function onMapLoad() {
 
   wireBuildingsInteractions();
   wireTreesToggle();
+  wireBrightnessSlider();
   wireErrorHandling();
 }
 

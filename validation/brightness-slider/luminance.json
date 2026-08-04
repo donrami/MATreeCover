@@ -1,0 +1,47 @@
+{
+  "feature": "004-map-ui-brightness-legend",
+  "date": "2026-08-04",
+  "method": "Screenshots of the published bundle (dist/, served via nginx) at fixed camera (center [8.52, 49.5], zoom 12, 1280x800), buildings-fill hidden. Central 50% crop. Per-pixel multipliers = median of per-pixel luminance ratios (003 convention space). Linear-space mean luminance = mean of 0.2126R+0.7152G+0.0722B after sRGB->linear decode.",
+  "paint_values": {
+    "min": 0.05,
+    "default": 0.65,
+    "max": 1.0
+  },
+  "per_pixel_multiplier": {
+    "default_vs_max": 0.661,
+    "min_vs_max": 0.058,
+    "min_vs_default": 0.09,
+    "expected": {
+      "default_vs_max": 0.65,
+      "min_vs_max": 0.05,
+      "min_vs_default": 0.0769
+    }
+  },
+  "linear_mean_luminance": {
+    "default": 0.211,
+    "min": 0.0107,
+    "max": 0.5162,
+    "min_over_default": 0.0508
+  },
+  "raw_mean_luminance_003_convention": {
+    "default": 0.4592,
+    "min": 0.0776,
+    "max": 0.6794
+  },
+  "gates": {
+    "SC001_min_below_10pct_of_default": {
+      "per_pixel_multiplier": true,
+      "linear_mean_ratio": true,
+      "measured": {
+        "per_pixel": 0.09,
+        "linear_mean": 0.0508
+      },
+      "verdict": "PASS"
+    },
+    "SC001_max_restores_original": {
+      "default_vs_max_multiplier": 0.661,
+      "approx_0.65": true,
+      "verdict": "PASS"
+    }
+  }
+}

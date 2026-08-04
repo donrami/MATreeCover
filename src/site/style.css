@@ -22,12 +22,21 @@ html, body {
   background: var(--map-bg);
 }
 
-/* Legend — top-left card */
-#legend {
+/* Left stack — legend above tools card; flex column so the two can
+ * never overlap regardless of content height (FR-008, research R-003). */
+#left-stack {
   position: absolute;
   top: 12px;
   left: 12px;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* Legend — top-left card */
+#legend {
   background: var(--panel-bg);
   border: 1px solid var(--subtle);
   border-radius: 8px;
@@ -44,35 +53,62 @@ html, body {
   margin-bottom: 8px;
 }
 
-.legend-stops {
-  list-style: none;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 0.78rem;
-}
+/* Gradient bar — continuous scale (FR-010..FR-012) */
+.legend-gradient { position: relative; width: 100%; }
 
-.legend-stops li { display: flex; align-items: center; gap: 3px; }
-
-.legend-stops .swatch {
-  width: 14px;
+.legend-gradient-bar {
   height: 14px;
   border-radius: 3px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(90deg,
+    #ffd524 0%, #e6854a 12%, #a97e65 24%, #0674aa 24.08%,
+    #1db6ff 32%, #39c2ff 40%, #56ceff 48%, #6ad4ff 80%, #6ad4ff 100%);
+}
+
+.legend-gradient-ticks {
+  list-style: none;
+  position: relative;
+  height: 16px;
+  margin-top: 3px;
+  font-size: 0.7rem;
+}
+
+.legend-gradient-ticks li {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.legend-gradient-ticks li:first-child { transform: none; }
+.legend-gradient-ticks li:last-child { transform: translateX(-100%); }
+
+/* Screen-reader value list (FR-018): visually hidden, text exposed */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .legend-units { margin-top: 6px; font-size: 0.7rem; color: var(--subtle); }
 
-/* Controls — top-right below the navigation control */
+/* Controls — tools card (Bäume + Helligkeit) in the left column below
+ * the legend; never shares the top-right corner with the navigation
+ * control (FR-008). */
 #controls {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-end;
+  align-items: flex-start;
+  background: var(--panel-bg);
+  border: 1px solid var(--subtle);
+  border-radius: 6px;
+  padding: 8px 12px;
 }
 
 #baeume {
@@ -88,6 +124,20 @@ html, body {
 #baeume.active {
   border-color: #39C43D;
   color: #39C43D;
+}
+
+#controls .brightness {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--subtle);
+}
+
+#controls .brightness input[type="range"] {
+  width: 160px;
+  accent-color: #39C43D;
+  cursor: pointer;
 }
 
 /* Attribution slot (buildings-load failure surface, pmtiles-sources contract) */
@@ -132,13 +182,20 @@ html, body {
 
 .building-popup .popup-value { font-weight: 600; }
 
-/* Narrow screens: legend collapses to a bottom strip, controls stack (FR-018) */
+/* Narrow screens: stack collapses to a bottom strip (legend at the
+ * bottom, tools card above it) — still no overlap with the zoom
+ * control or attribution (FR-008). */
 @media (max-width: 480px) {
-  #legend {
+  #left-stack {
     top: auto;
     bottom: 12px;
     left: 12px;
     right: 12px;
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  #legend {
     max-width: none;
     display: flex;
     align-items: center;
@@ -151,13 +208,9 @@ html, body {
   #legend .legend-desc,
   #legend .legend-units { display: none; }
 
-  .legend-stops { font-size: 0.7rem; margin-left: auto; }
+  .legend-gradient { flex: 1; min-width: 120px; max-width: 260px; margin-left: auto; }
 
   #controls {
-    top: auto;
-    bottom: 76px;
-    right: 12px;
-    flex-direction: column;
     align-items: flex-end;
   }
 }

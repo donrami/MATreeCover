@@ -11,21 +11,37 @@
 <body>
   <div id="map" role="application" aria-label="Karte der Baumflächen in Mannheim"></div>
 
+  <div id="left-stack">
   <aside id="legend" aria-label="Legende">
     <h1>Baumfläche</h1>
     <p class="legend-desc">Durchschnittlicher Baumanteil im 60-m-Umkreis</p>
-    <ol class="legend-stops">
-      <li><span class="swatch" style="background:#ffd524"></span>0</li>
-      <li><span class="swatch" style="background:#e6854a"></span>15</li>
-      <li><span class="swatch" style="background:#a97e65"></span>30</li>
-      <li><span class="swatch" style="background:#1db6ff"></span>50</li>
-      <li><span class="swatch" style="background:#6ad4ff"></span>100</li>
+    <div class="legend-gradient" role="img" aria-label="Farbverlauf von 0 bis 100 Prozent Baumfläche">
+      <div class="legend-gradient-bar" aria-hidden="true"></div>
+      <ol class="legend-gradient-ticks" aria-hidden="true">
+        <li style="left:0%">0</li>
+        <li style="left:15%">15</li>
+        <li style="left:30%">30</li>
+        <li style="left:50%">50</li>
+        <li style="left:100%">100</li>
+      </ol>
+    </div>
+    <ol class="legend-stops sr-only">
+      <li>0</li>
+      <li>15</li>
+      <li>30</li>
+      <li>50</li>
+      <li>100</li>
     </ol>
     <p class="legend-units">Prozent</p>
   </aside>
 
   <div id="controls">
     <button id="baeume" type="button" aria-pressed="false">Bäume</button>
+    <label class="brightness" for="brightness-slider">
+      <span>Helligkeit</span>
+      <input type="range" id="brightness-slider" min="5" max="100" value="65">
+    </label>
+  </div>
   </div>
 
   <div id="attribution"></div>

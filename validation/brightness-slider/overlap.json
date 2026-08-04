@@ -1,0 +1,23 @@
+{
+  "feature": "004-map-ui-brightness-legend",
+  "date": "2026-08-04",
+  "method": "Served bundle (dist/ via nginx), headless Chromium. For each matrix cell: set viewport width, map.resize(), set zoom, then getBoundingClientRect of #legend, #controls, #attribution and .maplibregl-ctrl-top-right; assert pairwise disjoint. Same check as tests/frontend/smoke_us4.md.",
+  "viewports": [320, 480, 768, 1280, 1920],
+  "zooms": "default view, default+2, default-2 (per width)",
+  "cells": 15,
+  "overlapping_pairs": 0,
+  "verdict": "PASS (SC-003: 100% of element pairs disjoint at all 15 cells)",
+  "results": [
+    {"width": 320, "pairs": [], "note": "legend strip bottom (737-788), controls above (630-727), nav top-right (281-320 x 0-97), attribution bottom-right"},
+    {"width": 480, "pairs": [], "note": "same narrow layout, no overlap"},
+    {"width": 768, "pairs": [], "note": "desktop layout: legend (12-232 x 12-159), controls below (12-198 x 169-266), nav top-right (729-768), attribution bottom-right"},
+    {"width": 1280, "pairs": [], "note": "legend 12-232 x 12-159; controls 12-198 x 169-266; nav 1241-1280 x 0-97"},
+    {"width": 1920, "pairs": [], "note": "legend 12-232 x 12-159; controls 12-198 x 169-266; nav 1881-1920 x 0-97"}
+  ],
+  "additional_checks": {
+    "former_overlap_point_click": "elementFromPoint(1260, 55) at 1280px hits the navigation control (zoom button), not the Bäume toggle — no occluded control",
+    "baeume_clickable": "elementFromPoint at Bäume center resolves to the Bäume button itself; real click toggles trees-fill and aria-pressed (SC-004)",
+    "attribution_error_message": "attribution slot populated with buildings-failure text overlaps neither nav, legend, nor controls",
+    "popup": "building click opens the popup with value text; close button present (transient, FR-017)"
+  }
+}

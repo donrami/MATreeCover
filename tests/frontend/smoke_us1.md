@@ -77,6 +77,39 @@ Measured 2026-08-04 on the published bundle at
       structural + OCR evidence: edge positions 90.8% preserved, OCR
       reads "Friedrichsplatz", "Jesuitenkirche").
 
+## Brightness slider (004-map-ui-brightness-legend, FR-001..FR-007,
+FR-016, SC-001)
+
+Measured 2026-08-04 on the published bundle; evidence in
+`validation/brightness-slider/luminance.json`.
+
+- [X] A "Helligkeit" slider exists in the tools card, default value
+      65 (FR-001, FR-003).
+- [X] On load the map matches the pre-feature bundle appearance
+      (FR-003).
+- [X] Dragging dims the base map live; buildings and trees keep
+      their colors (FR-002, FR-004).
+- [X] Dragging does not pan the map; panning does not reset the
+      slider (FR-006).
+- [X] Reloading resets the slider and the map to the default
+      (FR-007).
+- [X] Slider visible and usable at 360 px viewport width (FR-016).
+- [X] Luminance gates pass: minimum < 10% of default, maximum
+      restores the original un-darkened luminance (SC-001).
+
+## Gradient legend (004-map-ui-brightness-legend, FR-010..FR-013,
+FR-018, SC-005)
+
+- [X] Legend shows one continuous gradient bar, no segment
+      boundaries (FR-010/FR-011).
+- [X] Tick labels 0, 15, 30, 50, 100 at proportional positions
+      (FR-012).
+- [X] Title, description, and "Prozent" unit retained (FR-013).
+- [X] Screen-reader value list present; values exposed as text
+      (FR-018).
+- [X] At 360 px the bottom strip shows the gradient with all labels
+      visible (SC-005).
+
 ## Result
 
 - [X] All applicable checks pass.
