@@ -21,7 +21,7 @@ SSH=(ssh -p "$PORT" -i "$KEY" -o StrictHostKeyChecking=accept-new -o ConnectTime
 SCP=(scp -P "$PORT" -i "$KEY" -o StrictHostKeyChecking=accept-new)
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WS="${MANNHEIM_WORKSPACE:-/home/mainuser/Desktop/mannheim/workspace/mannheim}"
+WS="${MANNHEIM_WORKSPACE:-/home/mainuser/Desktop/MATreeCover/data/archive/workspace}"
 
 "${SSH[@]}" "$HOST" "mkdir -p /workspace/mannheim/src/endpoint /workspace/mannheim/mosaic /workspace/mannheim/models"
 "${SCP[@]}" "$REPO_ROOT/src/endpoint/server.py" "$HOST:/workspace/mannheim/src/endpoint/server.py"

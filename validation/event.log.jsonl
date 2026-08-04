@@ -120,3 +120,15 @@
 {"ts": "2026-08-04T05:55:45+00:00", "subcommand": "values", "rss_peak_bytes": 181153792, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-04T05:55:45+00:00", "subcommand": "accept", "rss_peak_bytes": 49364992, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-04T05:55:47+00:00", "subcommand": "publish", "rss_peak_bytes": 63000576, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T06:11:44+00:00", "subcommand": "accept", "rss_peak_bytes": 45072384, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:11:45+00:00", "subcommand": "accept", "rss_peak_bytes": 45776896, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:11:45+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44974080, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T06:11:46+00:00", "subcommand": "values", "rss_peak_bytes": 180297728, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:11:46+00:00", "subcommand": "accept", "rss_peak_bytes": 44945408, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:11:47+00:00", "subcommand": "publish", "rss_peak_bytes": 58474496, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:12:37+00:00", "subcommand": "accept", "rss_peak_bytes": 49463296, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T06:12:38+00:00", "subcommand": "accept", "rss_peak_bytes": 49278976, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T06:12:38+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44703744, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-04T06:12:39+00:00", "subcommand": "values", "rss_peak_bytes": 180523008, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-04T06:12:39+00:00", "subcommand": "accept", "rss_peak_bytes": 49438720, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-04T06:12:40+00:00", "subcommand": "publish", "rss_peak_bytes": 62488576, "gpu_used": false, "exit_code": 0, "inputs": []}
