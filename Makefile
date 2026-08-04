@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 PY := .venv/bin/python
 PIP := .venv/bin/pip
-WORKSPACE ?= /home/mainuser/Desktop/mannheim/workspace/mannheim
+WORKSPACE ?= /home/mainuser/Desktop/MATreeCover/data/archive/workspace
 CLI := $(PY) -m src.pipeline.cli
 MSG ?=
 

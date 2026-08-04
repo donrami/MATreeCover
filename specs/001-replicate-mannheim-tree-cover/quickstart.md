@@ -13,9 +13,9 @@ OR-001..OR-005, SC-001..SC-010).
   Technical Context.
 - `tippecanoe` ≥ 2.x on `$PATH`.
 - A modern browser for the frontend scenarios.
-- The mannheim workspace at
-  `/home/mainuser/Desktop/mannheim/workspace/mannheim`,
-  read-only access sufficient.
+- The mannheim workspace archive at
+  `/home/mainuser/Desktop/MATreeCover/data/archive/workspace`
+  (mirror of the original workspace; read-only access sufficient).
 
 ## Setup
 

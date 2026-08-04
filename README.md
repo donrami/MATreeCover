@@ -30,9 +30,10 @@ Files above 50 MiB are recorded in the manifest. They are never committed
 
 - Linux x86_64, Python 3.11.
 - `tippecanoe` >= 2.x on `$PATH`.
-- The mannheim workspace at
-  `/home/mainuser/Desktop/mannheim/workspace/mannheim` (read-only is
-  sufficient). Override with `MANNHEIM_WORKSPACE`.
+- The mannheim workspace archive at
+  `/home/mainuser/Desktop/MATreeCover/data/archive/workspace` (the
+  archived mirror of the original workspace; read-only is sufficient).
+  Override with `MANNHEIM_WORKSPACE`.
 - A modern browser with WebGL 2 for the frontend.
 
 ## Setup
