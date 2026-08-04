@@ -7,6 +7,15 @@ dist/
 data/
 mosaic/
 
+# Archive of the prior mannheim workspace (never public). Kept in-repo for
+# reproduction after Desktop/mannheim is deleted; the manifest records
+# paths/sizes/sha256 (OR-005). Point MANNHEIM_WORKSPACE at
+# data/archive/workspace to run the pipeline/tests against it.
+data/archive/
+
+# Model weights (CityTreeCover DeepLabV3+ ResNet34, MIT)
+*.pth
+
 # Python
 .venv/
 __pycache__/
