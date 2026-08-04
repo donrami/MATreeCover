@@ -121,6 +121,15 @@ html, body {
   margin-bottom: 2px;
 }
 
+/* Tip triangle matches the dark content box (MapLibre default is white) */
+.building-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: var(--panel-bg);
+}
+
+.building-popup.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+  border-bottom-color: var(--panel-bg);
+}
+
 .building-popup .popup-value { font-weight: 600; }
 
 /* Narrow screens: legend collapses to a bottom strip, controls stack (FR-018) */
