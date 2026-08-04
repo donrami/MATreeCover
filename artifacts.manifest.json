@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-04T02:47:59+00:00",
+  "generated_at": "2026-08-04T02:50:57+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -9687,7 +9687,8 @@
       "size_bytes": 868688823,
       "sha256": "801d3f9f060585afe20ec1ebccbfbc5cacb33215c7e72ec28f467d1593d7c8c7",
       "source": "derived: trees.py polygonize of accepted canopy mask",
-      "license": "MIT"
+      "license": "MIT",
+      "acceptance": "pass"
     }
   ]
 }
