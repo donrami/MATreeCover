@@ -8,7 +8,7 @@
 
 **Organization**: Tasks are grouped by user story. Stories US1 and US2 both modify `src/site/index.html` and `src/site/style.css` (the slider lives inside the tools card US2 relocates), so stories run as sequential slices; [P] is only used within a story for file-disjoint work.
 
-**Status**: Phases 1–6 are shipped in milestone slice `9a00fcd`. Phase 7 is a follow-up slice that extends User Story 1 with the low-brightness inversion (FR-019, added to the design docs after the milestone) — the only open work in this feature. It touches `src/site/style.json` (new `basemap-inverted` layer), `src/site/main.js` (inversion opacity mapping), and `tests/frontend/smoke_us1.md` (inversion checks); none of the shipped US2/US3 files are re-entered.
+**Status**: Phases 1–6 shipped in milestone slice `9a00fcd`. Phase 7 shipped the low-brightness inversion (FR-019) in commit `e2dbb65` with `raster-brightness-min: 1` (uncapped). Clarification Q4 capped inverted features at 0.65; Phase 8 shipped the cap correction (paint flipped to `min: 0.65`, smoke + evidence updated, visual smoke test approved by maintainer). Nothing remains open on this feature.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -106,21 +106,40 @@
 
 ## Phase 7: Follow-up Slice — Low-Brightness Inversion (FR-019)
 
-**Purpose**: When the slider drops below 25, the base map crossfades gradually into a photo-negative — a second raster layer `basemap-inverted` (same `basemap` source, `raster-brightness-min: 1` / `raster-brightness-max: 0`, so the shader computes `out = 1 - in`) with opacity `s(v) = clamp((25 − v)/20, 0, 1)` — fully inverted at 5. Streets and labels render lighter gray on the near-black background and stay legible; the map stays grayscale; buildings, trees, and popup are unaffected (FR-019, SC-008, research R-010..R-012).
+**Purpose**: When the slider drops below 25, the base map crossfades gradually into a photo-negative — a second raster layer `basemap-inverted` (same `basemap` source, `raster-brightness-min: 0.65` / `raster-brightness-max: 0`, so the shader computes `out = 0.65 × (1 - in)` — inverted features never exceed the 0.65 cap, clarification Q4) with opacity `s(v) = clamp((25 − v)/20, 0, 1)` — fully inverted at 5. Streets and labels render lighter gray on the near-black background and stay legible; the map stays grayscale; buildings, trees, and popup are unaffected (FR-019, SC-008, research R-010..R-012). NOTE: this slice shipped with `min: 1` (uncapped, `out = 1 - in`, features measured up to 0.72 linear); Phase 8 corrects the paint value and re-verifies the cap.
 
 **Depends on**: User Story 1 (Phase 3) — the slider markup and `wireBrightnessSlider()` must exist. Standalone slice: no changes to `src/site/index.html` or `src/site/style.css`, so the shipped US2/US3 work is untouched.
 
-**Independent Test**: quickstart Scenario 1 step 2 (drag below 25 → gradual transition, no sudden switch; at 5, streets/labels lighter than the near-black background and legible) and Scenario 2 step 4 (per-pixel inversion assertion: features-at-max pixels measure lighter than background-at-max pixels at minimum) plus the Scenario 2 background gate (p10 ratio ≈ 0.002, SC-001).
+**Independent Test**: quickstart Scenario 1 step 2 (drag below 25 → gradual transition, no sudden switch; at 5, streets/labels lighter than the near-black background and legible) and Scenario 2 step 4 (per-pixel inversion assertion: features-at-max pixels measure lighter than background-at-max pixels at minimum) plus the Scenario 2 background gate (p10 ratio ≈ 0.002, SC-001) and the cap assertion `a_min[dark].max() <= 0.65` (SC-008) — the cap is enforced and verified in Phase 8.
 
 ### Implementation — Inversion Slice (US1)
 
-- [X] T018 [US1] Add the `basemap-inverted` raster layer to `src/site/style.json` between the `basemap` and `outside-mask` layers: `id: "basemap-inverted"`, `type: "raster"`, `source: "basemap"` (same tile set — no new requests, FR-015/SC-007), `layout: { "visibility": "none" }`, `paint: { "raster-brightness-min": 1, "raster-brightness-max": 0, "raster-opacity": 0 }` — per `contracts/base-map-brightness.md` § Low-brightness inversion layer and research R-010/R-011; no other layer, source, or palette change
+- [X] T018 [US1] Add the `basemap-inverted` raster layer to `src/site/style.json` between the `basemap` and `outside-mask` layers: `id: "basemap-inverted"`, `type: "raster"`, `source: "basemap"` (same tile set — no new requests, FR-015/SC-007), `layout: { "visibility": "none" }`, `paint: { "raster-brightness-min": 1, "raster-brightness-max": 0, "raster-opacity": 0 }` — per `contracts/base-map-brightness.md` § Low-brightness inversion layer and research R-010/R-011; no other layer, source, or palette change (shipped with `min: 1` — the 0.65 cap is applied by T023)
 - [X] T019 [P] [US1] Extend the `apply` handler in `wireBrightnessSlider()` in `src/site/main.js` with the inversion mapping: `const s = Math.min(1, Math.max(0, (25 - Number(slider.value)) / 20))`; when `s > 0` set `basemap-inverted` `raster-opacity` to `s` and `layout.visibility` to `"visible"`, otherwise set opacity `0` and visibility `"none"`; guard on `map.getLayer('basemap-inverted')` like the existing basemap guard — per research R-011/R-012 (clamped in-range values, visibility `"none"` skips the wasted render pass at `s = 0`)
 - [X] T020 [P] [US1] Extend `tests/frontend/smoke_us1.md` with the inversion checks: below 25 the basemap crossfades gradually into the photo-negative (no sudden switch); at 5, streets and labels render lighter gray than the near-black background and remain legible (FR-019, SC-008); the map stays grayscale with no hue shift; buildings, trees, popup, and zoom controls unaffected at any slider position; at slider ≥ 25 the rendering is identical to the pre-slice appearance (FR-003 regression)
 - [X] T021 [US1] Publish and verify per quickstart Scenarios 1–2: `make publish`, serve `dist/` (Range-capable server), screenshot the fixed viewport with `buildings-fill` hidden at slider 65 / 5 / 100; assert `min` background luminance ≤ 10% of `def` (p10 ≈ 0.002 expected, SC-001), `max` ≈ `def / 0.65` (±5%, restores pre-003 basemap), and the inversion assertion `mean(min luminance of features-at-max pixels) > mean(min luminance of background-at-max pixels)` (SC-008); record results into `validation/brightness-slider/luminance.json`
 - [X] T022 [US1] Commit the inversion slice per OR-004 with `make commit-slice` (single commit: `src/site/style.json` inverted layer, `src/site/main.js` mapping, `tests/frontend/smoke_us1.md` extension, `validation/brightness-slider/luminance.json` update), commit-check script passing
 
-**Checkpoint**: Inversion slice delivered — FR-019 and SC-008 verified on the published bundle with the background luminance gate still passing; the feature is complete.
+**Checkpoint**: Inversion slice delivered (uncapped) and Phase 8 cap correction shipped — FR-019 and SC-008 verified on the published bundle, inverted features never exceed the 0.65 cap; the feature is complete.
+
+---
+
+## Phase 8: Cap Correction Slice — Inverted Features Capped at 0.65 (FR-019, SC-008)
+
+**Purpose**: Clarification Q4 caps the inverted features' brightness at 0.65 (the map's default-brightness reference). The shipped Phase 7 layer paints `raster-brightness-min: 1` (uncapped; features measured up to 0.72 linear — too bright). The fix flips the paint to `min: 0.65` so the shader computes `out = 0.65 × (1 - in)` — no inverted feature ever exceeds the cap while the near-black background is preserved — updates the smoke checks, and re-verifies SC-008 with the per-pixel cap assertion (quickstart Scenario 2).
+
+**Depends on**: Phase 7 (shipped). Standalone slice: touches only `src/site/style.json` (one paint value), `tests/frontend/smoke_us1.md` (cap checks), and `validation/brightness-slider/`; no US2/US3 files are re-entered.
+
+**Independent Test**: quickstart Scenario 2 step 4 cap assertion — `a_min[dark].max() <= 0.65` at minimum brightness (per-pixel feature luminance ≤ 0.65, SC-008); features still measure lighter than the background (legibility preserved); background gate p10 ≈ 0.002 unchanged (SC-001).
+
+### Implementation — Cap Correction Slice (US1)
+
+- [X] T023 [US1] Change the `basemap-inverted` layer's `paint.raster-brightness-min` in `src/site/style.json` from `1` to `0.65` (all other properties unchanged: `raster-brightness-max: 0`, `raster-opacity: 0`, `layout.visibility: "none"`) — per `contracts/base-map-brightness.md` § Low-brightness inversion layer and clarification Q4; the shader then computes `out = 0.65 × (1 - in)` so no inverted feature exceeds 0.65
+- [X] T024 [P] [US1] Update the inversion checks in `tests/frontend/smoke_us1.md`: assert streets and labels never render brighter than the 0.65 cap at minimum brightness (per-pixel sRGB luminance ≤ 0.65; measured max 0.6275 sRGB) while remaining lighter than the near-black background and legible (FR-019, SC-008, clarification Q4)
+- [X] T025 [US1] Publish (`make publish`) and re-verify on the served bundle: screenshots at slider 65 / 5 / 100 with `buildings-fill` hidden; cap assertion PASS (`max_features_at_min_srgb = 0.6275 ≤ 0.65`); record the updated results into `validation/brightness-slider/luminance.json`; maintainer eyeball smoke test on the published bundle approved the visual result
+- [X] T026 [US1] Commit the cap-correction slice per OR-004 with `make commit-slice` (single commit: `src/site/style.json` paint flip + stale comment fix in `src/site/main.js`, `tests/frontend/smoke_us1.md` cap checks, `validation/brightness-slider/luminance.json` update, plus the accumulated doc updates from the clarify/plan/tasks phases), commit-check script passing
+
+**Checkpoint**: The 0.65 cap is enforced and verified — inverted features never exceed the cap at any brightness; the feature is complete.
 
 ---
 
@@ -133,6 +152,7 @@
 - **User Stories (Phase 3+)**: Depend on Foundational; run sequentially because all three stories edit shared files in `src/site/` (index.html, style.css) and `tests/frontend/smoke_us1.md`
 - **Polish (Final Phase)**: Depends on all user stories
 - **Inversion Slice (Phase 7)**: Depends on User Story 1 (Phase 3) — needs the slider markup and `wireBrightnessSlider()`; standalone follow-up that does not re-enter US2/US3 files
+- **Cap Correction (Phase 8)**: Depends on Phase 7 (shipped) — flips the inverted layer's paint to `min: 0.65`; touches only `src/site/style.json`, `tests/frontend/smoke_us1.md`, `validation/brightness-slider/`
 
 ### User Story Dependencies
 
@@ -140,11 +160,13 @@
 - **User Story 2 (P1)**: Can start after Foundational AND after US1 — the tools card US2 relocates contains the US1 slider. Sequenced after US1 to avoid same-file conflicts in `src/site/style.css`.
 - **User Story 3 (P2)**: Can start after Foundational; edits `#legend` markup in `src/site/index.html` and appends to `smoke_us1.md` — sequenced after US2 to keep story slices clean.
 - **Inversion follow-up (Phase 7, US1)**: Depends on US1 completion (shipped). Touches `src/site/style.json`, `src/site/main.js`, `tests/frontend/smoke_us1.md` — files US2/US3 no longer alter — so it lands as one clean slice after the milestone.
+- **Cap correction (Phase 8, US1)**: Depends on Phase 7 (shipped). Touches `src/site/style.json`, `tests/frontend/smoke_us1.md`, `validation/brightness-slider/` — no US2/US3 files.
 
 ### Within Each User Story
 
 - Markup first (the element the JS/CSS bind to), then [P] file-disjoint work, then measurement/verification
 - In the inversion slice: the style layer (T018) first — the JS mapping (T019) guards on it — then file-disjoint work (T020) and end-to-end verification (T021, T022)
+- In the cap-correction slice: the paint flip (T023) first, then file-disjoint smoke cap checks (T024) and end-to-end verification/commit (T025, T026)
 - Story complete (checkpoint) before moving to the next priority
 
 ### Parallel Opportunities
@@ -153,6 +175,7 @@
 - T010 is file-disjoint from T008/T009 (smoke_us4.md vs style.css) and can run in parallel
 - T013, T014 are file-disjoint (style.css / smoke_us1.md) and can run in parallel after T012
 - T019 (main.js) and T020 (smoke_us1.md) are file-disjoint and can run in parallel after T018 (style.json layer) lands
+- T023 (style.json paint flip) and T024 (smoke_us1.md cap checks) are file-disjoint and can run in parallel after the cap value lands
 - Cross-story parallelism is NOT safe: all stories touch `src/site/index.html` and `src/site/style.css`
 
 ---
@@ -172,6 +195,14 @@ Task: "T006 Extend tests/frontend/smoke_us1.md with brightness checks"
 # After T018 (basemap-inverted layer in style.json) lands, launch together:
 Task: "T019 Extend the apply() mapping in src/site/main.js with inversion opacity/visibility"
 Task: "T020 Extend tests/frontend/smoke_us1.md with inversion checks"
+```
+
+## Parallel Example: Cap Correction (Phase 8)
+
+```bash
+# After T023 (paint flip min 1 → 0.65 in style.json) lands, launch together:
+Task: "T024 Add the 0.65 cap assertions to tests/frontend/smoke_us1.md"
+# Then verification (T025) and commit (T026) run in sequence.
 ```
 
 ---
@@ -195,11 +226,12 @@ Task: "T020 Extend tests/frontend/smoke_us1.md with inversion checks"
 5. Polish: full quickstart + all smoke checklists → `make commit-milestone`
 6. Each story adds value without breaking previous stories
 
-### Follow-up Slice (Inversion, FR-019)
+### Follow-up Slices (Inversion, FR-019 + Cap, Q4)
 
 1. The milestone slice (`9a00fcd`) has shipped US1–US3 without the low-brightness inversion.
-2. Phase 7 lands as one independent slice after the milestone: `style.json` inverted layer → slider mapping + smoke extension (parallel) → publish + quickstart Scenarios 1–2 gates → `make commit-slice`.
-3. It is the final slice of this feature — nothing else remains open.
+2. Phase 7 landed as one independent slice after the milestone: `style.json` inverted layer → slider mapping + smoke extension (parallel) → publish + quickstart Scenarios 1–2 gates → `make commit-slice` (commit `e2dbb65`).
+3. Phase 8 shipped the cap correction: flip `basemap-inverted` paint `min` 1 → 0.65 → smoke cap checks (parallel) → publish + visual smoke test on the served bundle (maintainer eyeball approved) → `make commit-slice`.
+4. Phase 8 is the final slice of this feature — nothing else remains open.
 
 ### Parallel Team Strategy
 
@@ -219,6 +251,6 @@ With multiple developers:
 - Each user story is independently completable and testable (its checkpoint)
 - The palette (`src/site/style.json` buildings-fill) is FROZEN — no task may change it (spec FR-003, 003 contract)
 - The popup/hover/toggle behavior is untouched except for the slider wiring addition in `main.js` (FR-014)
-- The inversion slice (Phase 7) is the only open work — Phases 1–6 are shipped in milestone commit `9a00fcd`. The inverted layer reuses the `basemap` source (no new requests, FR-015/SC-007) and adds only in-range paint values (MapLibre clamps out-of-range `raster-brightness-*`, research R-011)
+- The cap-correction slice (Phase 8) shipped the 0.65 cap — Phases 1–7 shipped earlier (milestone `9a00fcd`, inversion `e2dbb65`). The inverted layer reuses the `basemap` source (no new requests, FR-015/SC-007) and adds only in-range paint values; the corrected paint `min: 0.65` keeps every inverted feature within the 0.65 cap (MapLibre clamps out-of-range `raster-brightness-*`, research R-011). Phase 8 closes the chapter on clarification Q4.
 - Avoid: vague tasks, same-file parallel work, cross-story dependencies that break slice independence
 - Commit after each task or logical group (OR-004)

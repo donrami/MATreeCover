@@ -42,7 +42,7 @@
       "source": "basemap",
       "layout": { "visibility": "none" },
       "paint": {
-        "raster-brightness-min": 1,
+        "raster-brightness-min": 0.65,
         "raster-brightness-max": 0,
         "raster-opacity": 0
       }

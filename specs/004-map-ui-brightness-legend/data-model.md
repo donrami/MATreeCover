@@ -100,7 +100,7 @@ photo-negative used at very low brightness (FR-019).
 |---|---|---|
 | `layer.id` | `"basemap-inverted"` | New layer, inserted between `basemap` and `outside-mask`. |
 | `source` | `"basemap"` | Same source as E-001 — tiles fetched once (SC-007). |
-| `paint.raster-brightness-min` | `1` | With max 0, the shader computes `out = 1 - in` (research R-010). |
+| `paint.raster-brightness-min` | `0.65` | With max 0, the shader computes `out = 0.65 × (1 - in)` — inverted features capped at 0.65 (clarification Q4, research R-010). |
 | `paint.raster-brightness-max` | `0` | Values in `[0,1]` — MapLibre clamps outside that range (research R-011). |
 | `paint.raster-opacity` | `s(v)`, ramp 0→1 for slider 25→5 | Crossfade with the dimmed basemap; continuous, no seam (R-011/R-012). |
 | `layout.visibility` | `"none"` when `s = 0`, else `"visible"` | Skips a wasted render pass at normal brightness. |
@@ -114,6 +114,8 @@ photo-negative used at very low brightness (FR-019).
   (FR-003) is untouched.
 - Background remains dark at minimum: measured p10 luminance ratio
   0.002 of default (SC-001; research R-012).
+- Inverted features never exceed 0.65 brightness (per-pixel
+  luminance ≤ 0.65; SC-008, clarification Q4).
 
 ## E-005 — UI element placement (static set)
 

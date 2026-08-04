@@ -33,7 +33,7 @@ style swap, a hue shift, a persistence mechanism, or a data change.
 |---|---|
 | `layer.id` | `"basemap-inverted"` (between `basemap` and `outside-mask`) |
 | `source` | `"basemap"` (same source — tiles fetched once) |
-| `paint.raster-brightness-min` / `-max` | `1` / `0` (constant — `out = 1 - in`) |
+| `paint.raster-brightness-min` / `-max` | `0.65` / `0` (constant — `out = 0.65 × (1 − in)`; features never exceed the 0.65 cap) |
 | `paint.raster-opacity` | `s(v) = clamp((25 − v)/20, 0, 1)` for slider `v < 25`; `0` otherwise |
 | `layout.visibility` | `"none"` at `s = 0`, `"visible"` otherwise |
 
@@ -72,9 +72,10 @@ All other 003 invariants remain in force.
    map renders exactly as the published bundle renders today.
 7. **All zoom levels.** The paint value is constant across zooms;
    every zoom renders at the chosen brightness (FR-002 scope).
-8. **Inversion is grayscale and overlay-safe (FR-019).** The inverted
-   layer sits below the mask, buildings, and trees; the low-brightness
-   map never gains a hue, and overlays are never affected.
+8. **Inversion is grayscale, capped, and overlay-safe (FR-019).** The
+   inverted layer sits below the mask, buildings, and trees; the
+   low-brightness map never gains a hue, inverted features never
+   exceed 0.65 brightness (SC-008), and overlays are never affected.
 
 ## Verification
 
@@ -83,7 +84,8 @@ All other 003 invariants remain in force.
   restores the original un-darkened luminance (SC-001; quickstart
   Scenario 2).
 - Feature legibility at minimum: sampled streets and labels measure
-  lighter than the background and remain legible (SC-008; quickstart
+  lighter than the background, stay within the 0.65 cap (per-pixel
+  luminance ≤ 0.65), and remain legible (SC-008; quickstart
   Scenario 2).
 - Default appearance: pixel-identical basemap rendering at slider
   default vs. the pre-feature bundle (quickstart Scenario 1).

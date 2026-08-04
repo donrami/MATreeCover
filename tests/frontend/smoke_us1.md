@@ -107,6 +107,9 @@ slice; evidence in `validation/brightness-slider/luminance.json`.
       photo-negative; no sudden switch at the threshold (FR-019).
 - [X] At 5, streets and labels render lighter gray than the
       near-black background and remain legible (FR-019, SC-008).
+- [X] At 5, inverted features never exceed the 0.65 cap
+      (per-pixel sRGB luminance ≤ 0.65; measured max 0.6275 sRGB;
+      SC-008, clarification Q4).
 - [X] The inverted map stays grayscale: no hue shift (FR-019).
 - [X] Buildings, trees, popup, and zoom controls unaffected at any
       slider position (FR-019, FR-014).

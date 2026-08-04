@@ -48,8 +48,9 @@ FR-002, FR-003, FR-005, FR-016)
      original un-darkened basemap (clarification Q1; FR-002).
    - Drag below 25: the base map transitions gradually into the
      inverted (photo-negative) look; at 5, streets and labels render
-     lighter than the near-black background and remain legible
-     (clarification Q3; FR-019; verified per-pixel in Scenario 2).
+     lighter than the near-black background, never brighter than the
+     0.65 cap, and remain legible (clarifications Q3/Q4; FR-019;
+     verified per-pixel in Scenario 2).
    - The slider is a visible standalone control at desktop and at a
      360 px viewport (FR-016).
    - Dragging the slider does not pan or zoom the map; panning after
@@ -105,6 +106,7 @@ FR-002, FR-003, FR-005, FR-016)
    a_max, a_min = lum_arr('max.png'), lum_arr('min.png')
    dark = a_max < np.percentile(a_max, 25)       # features at max
    assert np.mean(a_min[dark]) > np.mean(a_min[~dark]), 'features must invert lighter'
+   assert a_min[dark].max() <= 0.65, 'inverted features must stay within the 0.65 cap (SC-008)'
    ```
 5. **Pass criteria**:
    - `min` background ≤ 10% of `def` background (expected ≈ 7.7%:
@@ -112,7 +114,8 @@ FR-002, FR-003, FR-005, FR-016)
    - `max` luminance ≈ `def / 0.65` (restores the pre-003 light
      basemap; contract invariant 5).
    - At minimum, streets and labels render lighter than the
-     background and are legible by eye (SC-008); the map stays
+     background, never exceeding the 0.65 cap (per-pixel luminance
+     ≤ 0.65), and are legible by eye (SC-008); the map stays
      grayscale (FR-019).
    - By eye at minimum: map background is almost black, buildings
      still clearly visible when the overlay is back on (SC-002).
@@ -216,7 +219,9 @@ FR-015)
   gates): check the slider wiring — the `input` listener must call
   `setPaintProperty('basemap', 'raster-brightness-max', value/100)`;
   verify the default value is 65 and the static style value is 0.65.
-  Do not tune the slider range to mask a wiring bug.
+  Do not tune the slider range to mask a wiring bug. An SC-008
+  cap failure means `basemap-inverted` still paints `min: 1` — set
+  it to `0.65` and re-measure; never raise the cap to pass.
 - Scenario 3/4 failure (overlap or swallowed click): layout
   contract violation — stop and fix the placement per
   `contracts/ui-layout.md`; do not shrink the viewport matrix.

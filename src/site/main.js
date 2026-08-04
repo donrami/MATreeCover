@@ -123,9 +123,10 @@ function wireBrightnessSlider() {
       map.setPaintProperty('basemap', 'raster-brightness-max', v / 100);
     }
     // FR-019: below 25 the basemap crossfades into a photo-negative —
-    // basemap-inverted (min 1 / max 0, so the raster shader computes
-    // out = 1 - in) renders streets and labels lighter than the
-    // near-black background. Opacity s(v) = clamp((25 - v)/20, 0, 1);
+    // basemap-inverted (min 0.65 / max 0, so the raster shader computes
+    // out = 0.65 * (1 - in) — inverted features never exceed the 0.65
+    // cap, clarification Q4) renders streets and labels lighter than
+    // the near-black background. Opacity s(v) = clamp((25 - v)/20, 0, 1);
     // visibility "none" at s = 0 skips the wasted render pass
     // (research R-011/R-012). Values stay in [0, 1] — MapLibre clamps
     // raster-brightness-* outside that range (research R-011).

@@ -37,12 +37,13 @@ Four UI changes to the static frontend (`src/site/`), all client-side:
 4. **Low-brightness inversion (FR-019)** — in the low range of the
    slider the base map transitions to a photo-negative: a second
    raster layer (`basemap-inverted`, same source, paint
-   `raster-brightness-min: 1, raster-brightness-max: 0` — the shader
-   computes `out = 1 - in`) is crossfaded in by opacity as the
-   slider drops below 25, fully replacing the dimmed basemap at 5.
-   Streets and labels (dark in the original) render as light gray on
-   the near-black background; the map stays grayscale, overlays are
-   unaffected (empirically verified: research R-010..R-012).
+   `raster-brightness-min: 0.65, raster-brightness-max: 0` — the
+   shader computes `out = 0.65 × (1 - in)`, capping inverted
+   features at 0.65 per clarification Q4) is crossfaded in by
+   opacity as the slider drops below 25, fully replacing the dimmed
+   basemap at 5. Streets and labels (dark in the original) render as
+   light gray on the near-black background; the map stays grayscale,
+   overlays are unaffected (research R-010..R-012).
 
 No pipeline, data, palette, popup, or interaction changes. The
 publish step copies `index.html`, `style.css`, `main.js` verbatim
@@ -94,7 +95,9 @@ default (0.65) background luminance; maximum (1.0) must restore the
 original un-darkened luminance (SC-001 — under the inverted mode the
 background stays dark: measured p10 ratio 0.002, research R-012).
 Inversion gate (SC-008): at minimum, streets and labels must measure
-lighter than the background and stay legible (research R-010/R-012).
+lighter than the background, never exceed the 0.65 brightness cap
+(per-pixel luminance ≤ 0.65), and stay legible (research
+R-010/R-012).
 MapLibre clamps `raster-brightness-*` paint values to `[0, 1]`
 (verified: negative max is silently clamped to 0), so the transition
 to the inverted look uses a second raster layer crossfaded by
@@ -137,10 +140,13 @@ constraints:
   at minimum; 1.0 restores the original (research R-006). Under the
   inverted mode the background remains below the gate (measured p10
   ratio 0.002, research R-012).
-- **SC-008 (inversion legibility)**: PASS by construction and
-  measurement — inversion maps dark features to light gray and the
-  light background to near-black (research R-010/R-012); verified on
-  the served bundle.
+- **SC-008 (inversion legibility, capped)**: PASS by construction —
+  inversion maps dark features to light gray capped at 0.65
+  (`min 0.65 / max 0` ⇒ `out = 0.65 × (1 − in)`, per-pixel max
+  0.65) over the near-black background (research R-010/R-012).
+  NOTE: the currently shipped bundle still paints `min: 1`
+  (uncapped; features measured up to 0.72 linear) — the cap slice
+  flips the paint value and re-runs the SC-008 measurement.
 - **SC-003/SC-004 (no overlap, Bäume clickable)**: PASS by design —
   tools card moves to the left column, top-right reserved for the
   navigation control (research R-003); verified via quickstart
@@ -179,7 +185,7 @@ specs/004-map-ui-brightness-legend/
 ```text
 src/
 └── site/
-    ├── style.json      # NEW basemap-inverted layer (min 1 / max 0), below outside-mask
+    ├── style.json      # NEW basemap-inverted layer (min 0.65 / max 0), below outside-mask
     ├── index.html      # legend → gradient markup; #controls gains the slider
     ├── style.css       # tools card to left column; gradient styles; responsive rules
     └── main.js         # wireBrightnessSlider(): input → basemap max + inverted-layer opacity

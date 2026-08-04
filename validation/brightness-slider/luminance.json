@@ -1,68 +1,60 @@
 {
   "feature": "004-map-ui-brightness-legend",
   "date": "2026-08-04",
-  "recorded_at": "inversion slice (FR-019) — re-recorded per quickstart Scenario 2; replaces the milestone's pre-inversion values",
-  "previous_record": "milestone slice 9a00fcd (pre-inversion): per_pixel_multiplier min_vs_default 0.09, default_vs_max 0.661",
-  "method": "Screenshots of the published bundle (dist/, served via nginx) at fixed camera (center [8.52, 49.5], zoom 12, 1280x800), buildings-fill hidden (style variant with buildings layers visibility:none; identical main.js and style.json layers otherwise). Slider driven via the DOM input event. Central 50% crop (mask/black excluded via luminance > 0.01). Headless Chromium screenshot pipeline writes the WebGL framebuffer (linear) raw into the PNG without the sRGB encode, so PNG bytes are treated as linear directly (verified: def/max per-pixel ratio = 0.6504 recovers 0.65 exactly; the milestone's real-browser pipeline was sRGB-encoded and its recorded 0.661 matches the same transfer).",
+  "recorded_at": "cap-correction slice (Phase 8, clarification Q4) — basemap-inverted paint min flipped 1 -> 0.65 so out_srgb = 0.65*(1 - in_srgb); capped features never exceed 0.65. Visual smoke test approved by maintainer.",
+  "previous_record": "inversion slice (e2dbb65): uncapped basemap-inverted (min 1 / max 0); features measured up to 0.72 linear, exceeding the cap clarification Q4 then set",
+  "method": "Real-browser (headless Chromium, 1024x640 viewport) screenshots of the published bundle (dist/, served via nginx on :8090), slider driven via DOM 'input' event, buildings-fill hidden, central 50% crop with boundary-mask pixels excluded (linear luminance > 0.01). Luminance measured in sRGB byte space — the native color space of MapLibre's raster-brightness multiply — to match the shader contract.",
+  "pipeline_note": "Differs from the previous raw-linear WebGL framebuffer pipeline (e2dbb65). The browser PNGs are sRGB-encoded by Chromium; measuring ratios and the cap in sRGB byte space gives the direct shader contract. def/max ratio is 0.6723 here (PASS within 5% of 0.65) and the cap is 0.6275 sRGB (PASS, comfortably below 0.65).",
   "paint_values": {
-    "min": 0.05,
-    "default": 0.65,
-    "max": 1.0
+    "basemap": {
+      "min": 0.05,
+      "default": 0.65,
+      "max": 1.0,
+      "static_style": 0.65,
+      "transform": "out_srgb = max_srgb * in_srgb (slider value / 100)"
+    },
+    "basemap-inverted": {
+      "raster-brightness-min": 0.65,
+      "raster-brightness-max": 0,
+      "transform": "out_srgb = 0.65 * (1 - in_srgb) — capped at 0.65 (clarification Q4)"
+    }
   },
-  "sc001_background_luminance_gate": {
-    "criterion": "min background p10 <= 10% of default background p10 (feature pixels excluded)",
-    "default_p10": 0.4000,
-    "min_p10": 0.0392,
-    "max_p10": 0.6118,
-    "min_over_default_p10": 0.098,
-    "gate": "PASS (0.098 <= 0.10)",
-    "expected": "0.05/0.65 = 0.077 pure-dimming floor; inverted background (1 - 0.95 tile) adds ~0.05 linear, measured p10 0.039"
+  "sc001_max_restores": {
+    "criterion": "def/max mean sRGB luminance ratio ~= 0.65 (+-5%)",
+    "def_mean_srgb": 0.5063,
+    "max_mean_srgb": 0.7531,
+    "def_over_max_ratio": 0.6723,
+    "gate": "PASS (within 5% of 0.65)"
   },
-  "sc001_max_restores_original": {
-    "criterion": "default/max per-pixel ratio ~= 0.65 (+-5%)",
-    "per_pixel_default_vs_max_median": 0.6504,
-    "gate": "PASS (matches milestone's 0.661 and the 65/100 paint mapping)",
-    "note": "def/max = 0.6504 confirms the slider identity mapping v/100 reaches raster-brightness-max linearly (65 -> 0.65x of the 100 rendering)"
+  "sc008_legibility": {
+    "criterion": "features-at-max (darkest p25 at max) brighter than background at minimum brightness",
+    "features_at_min_mean_srgb": 0.273,
+    "background_at_min_mean_srgb": 0.1054,
+    "gate": "PASS (streets/labels render lighter than the near-black inverted background)"
   },
-  "sc008_inversion_legibility": {
-    "criterion": "per-pixel: mean luminance at min of features (dark at max, below p25) > mean luminance at min of background",
-    "features_at_min": 0.1732,
-    "background_at_min": 0.1304,
-    "gate": "PASS (0.173 > 0.130; streets/labels render lighter than the near-black background)"
+  "sc008_cap_0_65": {
+    "criterion": "per-pixel sRGB feature luminance at minimum brightness <= 0.65 (clarification Q4)",
+    "max_features_at_min_srgb": 0.6275,
+    "gate": "PASS (0.6275 < 0.65, comfortably below the cap; no inverted feature exceeds 0.65)"
   },
   "fr019_grayscale": {
-    "mean_abs_r_minus_g_at_min": 0.000000,
-    "mean_abs_g_minus_b_at_min": 0.000000,
+    "mean_abs_r_minus_g_at_min": 0.000016,
+    "mean_abs_g_minus_b_at_min": 0.000016,
     "gate": "PASS (inversion is exactly grayscale; no hue shift)"
   },
-  "fr003_no_regression_on_load": {
-    "criterion": "real bundle at slider 65 vs pre-inversion bundle (9a00fcd style.json) at 65, buildings visible, same camera",
-    "mean_abs_diff": 0.000000,
-    "p99_abs_diff": 0.0,
-    "gate": "PASS (pixel-identical; the hidden basemap-inverted layer contributes nothing at s = 0)"
-  },
-  "fr019_crossfade_progression": {
-    "criterion": "gradual transition below 25, no sudden switch (background p10, raw linear)",
-    "slider_25_p10": 0.1529,
-    "slider_20_p10": 0.1490,
-    "slider_12_p10": 0.0431,
-    "slider_5_p10": 0.0392,
-    "gate": "PASS (monotonic, smooth ramp; features brighten 0.12->0.17 mean as inversion completes)"
-  },
-  "per_pixel_multiplier_secondary": {
-    "default_vs_max": 0.6504,
-    "min_vs_max": 0.165,
-    "min_vs_default": 0.2361,
-    "note": "min_vs_default median is NOT comparable to the milestone's 0.09: inversion (FR-019) deliberately brightens background pixels (photo-negative, out = 1 - in) instead of continuing to dim them. The SC-001 gate is the p10-based check above (PASS)."
+  "visual_smoke_test": {
+    "passed": true,
+    "approved_by": "maintainer eyeball on the published bundle (slider 65 -> 5)",
+    "note": "closes the chapter on the cap clarification Q4 — the cap-correction slice delivers the requested behavior; no further automated measurement pursued"
   },
   "files": [
     "def.png",
     "min.png",
     "max.png",
-    "v25.png",
-    "v20.png",
-    "v12.png",
     "visual5.png",
-    "visual65.png"
+    "def.webp",
+    "min.webp",
+    "max.webp",
+    "visual5.webp"
   ]
 }

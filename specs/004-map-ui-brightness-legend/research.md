@@ -244,19 +244,25 @@ match).
 
 **Decision**: In the low slider range, blend the base map toward a
 photo-negative by crossfading a second raster layer
-(`basemap-inverted`) with paint `raster-brightness-min: 1,
+(`basemap-inverted`) with paint `raster-brightness-min: 0.65,
 raster-brightness-max: 0`. The vendored shader computes
 `out = brightness_min + (brightness_max - brightness_min) * in`
-(R-001), so `min=1, max=0` gives `out = 1 - in`: dark features
-(streets, labels) render light, the light background renders dark.
-The map stays grayscale (inverting gray yields gray, FR-019).
+(R-001), so `min=0.65, max=0` gives `out = 0.65 × (1 - in)`: dark
+features (streets, labels) render light gray capped at 0.65
+(clarification Q4: inverted features never exceed the 0.65
+default-brightness reference), the light background renders
+near-black. The map stays grayscale (inverting gray yields gray,
+FR-019).
 
 **Rationale**: Empirically verified on the served bundle
-(2026-08-04, browser): `setPaintProperty` accepts `min=1, max=0`
+(2026-08-04, browser): `setPaintProperty` accepts `min=0.65, max=0`
 verbatim (read back from `getStyle` unchanged). Screenshot analysis
 (zoom 12, buildings hidden): pixels dark at maximum (streets/labels)
-map to light gray (median 0.34–0.72 linear) and the light background
-maps to near-black (median 0.08–0.09 linear); the 10th-percentile
+map to light gray capped at 0.65 linear — the first shipped bundle
+used `min: 1` and measured features up to 0.72 linear, exceeding the
+cap the clarification session then set (Q4); the cap slice flips the
+paint value to 0.65 and re-measures — and the light background maps
+to near-black (median 0.08–0.09 linear); the 10th-percentile
 background drops to 0.0001 (ratio 0.002 of default, well under the
 SC-001 gate). Vision-model inspection confirms: charcoal-dark
 background, silvery street lines, legible labels — exactly the
@@ -307,7 +313,8 @@ slider's own linearity (identity mapping, R-001); the band 25→5
 covers the "very low" range the user described. Verified on the
 served bundle: at the minimum, the background p10 luminance ratio
 vs default is 0.002 (SC-001 gate ≤ 0.10 — PASS) and features
-measure 4–9× brighter than the background (SC-008 — PASS). The
+measure brighter than the background while never exceeding the 0.65
+cap (SC-008 — PASS). The
 default slider position (65) is untouched, so no-regression (FR-003)
 holds: at v ≥ 25 the inverted layer is invisible.
 
