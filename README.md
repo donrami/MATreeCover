@@ -58,7 +58,8 @@ logged to `validation/event.log.jsonl`. A run above 12 GiB aborts with
 exit code 3 (OR-001).
 
 Exit codes: 0 success, 1 acceptance/input failure, 2 RunPod gate,
-3 RSS over 12 GiB, 4 local GPU attempted.## Publish + static hosting
+3 RSS over 12 GiB. No local GPU path exists (OR-003), so no GPU exit
+code is defined.## Publish + static hosting
 
 ```text
 make publish

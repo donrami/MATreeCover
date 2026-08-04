@@ -79,3 +79,68 @@ def test_output_4326(tmp_path) -> None:
     trees.polygonize_canopy(mask_path, out, boundary)
     data = json.loads(out.read_text(encoding="utf-8"))
     assert "EPSG:4326" in data["crs"]["properties"]["name"]
+
+
+def _make_chunked_mask(path: Path, chunk_px: int = 400) -> np.ndarray:
+    """A mask spanning many chunks: blobs crossing seams, one interior
+    blob, and a diagonal corner-touching pair split across a seam."""
+    size = 3 * chunk_px
+    mask = np.zeros((size, size), dtype=np.uint8)
+    yy, xx = np.ogrid[:size, :size]
+    # blob crossing the chunk-corner at (chunk_px, chunk_px)
+    mask[(xx - chunk_px) ** 2 + (yy - chunk_px) ** 2 <= (chunk_px // 2) ** 2] = 1
+    # blob crossing the vertical and horizontal seams
+    mask[(xx - 2 * chunk_px) ** 2 + (yy - 2 * chunk_px) ** 2 <= (3 * chunk_px // 4) ** 2] = 1
+    # blob entirely inside one chunk
+    mask[(xx - size + chunk_px // 2) ** 2 + (yy - chunk_px // 2) ** 2 <= (chunk_px // 4) ** 2] = 1
+    # diagonal pair (4-connectivity: two components) straddling a seam
+    mask[chunk_px - 1, chunk_px + 1] = 1
+    mask[chunk_px, chunk_px + 2] = 1
+    with rasterio.open(
+        path, "w", driver="GTiff", height=size, width=size, count=1,
+        dtype="uint8", crs="EPSG:25832",
+        transform=from_origin(ORIGIN_X, ORIGIN_Y, GSD, GSD),
+    ) as dst:
+        dst.write(mask, 1)
+    return mask
+
+
+def test_chunked_matches_full_read_components(tmp_path) -> None:
+    """OR-002: chunked polygonization must reproduce the full-read result
+    — one feature per 4-connected canopy component (independent reference:
+    scipy.ndimage.label), exact pixel totals, no seam splits or corner
+    merges."""
+    from scipy import ndimage
+
+    chunk_px = 400
+    mask_path = tmp_path / "chunked_mask.tif"
+    mask = _make_chunked_mask(mask_path, chunk_px)
+    structure = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=int)  # 4-connectivity
+    _, ncomp = ndimage.label(mask > 0, structure=structure)
+
+    size = mask.shape[0]
+    boundary = box(ORIGIN_X, ORIGIN_Y - size * GSD, ORIGIN_X + size * GSD, ORIGIN_Y)
+    out = tmp_path / "trees_chunked.geojson"
+    features = trees.polygonize_canopy(mask_path, out, boundary, chunk_px=chunk_px)
+
+    assert len(features) == ncomp
+    total_pixels = int((mask > 0).sum())
+    assert sum(f["properties"]["canopy_pixel_count"] for f in features) == total_pixels
+    ids = [f["properties"]["id"] for f in features]
+    assert ids == [f"tree-{i + 1}" for i in range(len(features))]  # E-004
+
+
+def test_chunked_deterministic(tmp_path) -> None:
+    """Same input, same window order, same GEOS ops: byte-identical
+    output on a re-run (reproducible derived artifact)."""
+    chunk_px = 400
+    mask_path = tmp_path / "chunked_mask.tif"
+    _make_chunked_mask(mask_path, chunk_px)
+    size = 3 * chunk_px
+    boundary = box(ORIGIN_X, ORIGIN_Y - size * GSD, ORIGIN_X + size * GSD, ORIGIN_Y)
+    out1 = tmp_path / "trees_1.geojson"
+    out2 = tmp_path / "trees_2.geojson"
+    features1 = trees.polygonize_canopy(mask_path, out1, boundary, chunk_px=chunk_px)
+    features2 = trees.polygonize_canopy(mask_path, out2, boundary, chunk_px=chunk_px)
+    assert features1 == features2
+    assert out1.read_bytes() == out2.read_bytes()

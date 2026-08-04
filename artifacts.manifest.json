@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-04T07:42:55+00:00",
+  "generated_at": "2026-08-04T10:00:00+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -193,8 +193,8 @@
     {
       "path": "trees.pmtiles",
       "kind": "trees",
-      "size_bytes": 80249720,
-      "sha256": "8ce482258c1dff8a5f897215cf85e235895a7d8634ce44b4475cb4d9079a9a96",
+      "size_bytes": 80427192,
+      "sha256": "27ad668cca325ab6903aa11ac6cbd4a68b7c1c4d5576fba0287806d33469b2ae",
       "source": "derived: trees.py + tippecanoe",
       "license": "MIT",
       "extent": [
@@ -9714,8 +9714,8 @@
     {
       "path": "trees_polygons.geojson",
       "kind": "large-file",
-      "size_bytes": 868688823,
-      "sha256": "801d3f9f060585afe20ec1ebccbfbc5cacb33215c7e72ec28f467d1593d7c8c7",
+      "size_bytes": 871157933,
+      "sha256": "a6886e36dbe818f328717f7d94b081eb796a8e60e14f074202a794d1344d335e",
       "source": "derived: trees.py polygonize of accepted canopy mask",
       "license": "MIT",
       "acceptance": "pass"

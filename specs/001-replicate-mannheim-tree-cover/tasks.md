@@ -292,9 +292,30 @@ Task: "Write RSS/GPU gate test in tests/pipeline/test_rss.py"
 
 **Purpose**: Close gaps found by the convergence assessment between the spec/plan/tasks and the implemented codebase.
 
-- [ ] T056 Rework `src/pipeline/trees.py` so polygonization never loads the complete canopy mask into memory (windowed/chunked reads with overlap, then stitch), and run the `trees` job through the `/usr/bin/time -v` wrapper recording peak RSS ≤ 12 GiB in `validation/event.log.jsonl` per OR-002, plan: chunked jobs, T029, SC-009 (contradicts)
-- [ ] T057 Assert the published building count (93,022) against the accepted inventory (93,024 rows minus the 2 duplicate-id rows deduped per FR-004) in the acceptance suite, and document the dedupe rationale per SC-003 (partial)
-- [ ] T058 Restore default SIGPIPE handling in `src/pipeline/cli.py` (`signal.signal(signal.SIGPIPE, signal.SIG_DFL)` in `main()`) so a torn-down invoking session cannot turn a completed run into an unlogged exit-1 with orphaned `validation/.time.*` reports, honoring the cli.md per-invocation logging contract (partial)
-- [ ] T059 Remove the dead `refuse_local_inference`/`LocalGPUError` path in `src/pipeline/canopy.py` or wire it into a real local-attempt guard, and align the exit-code table (`4` GPU attempted) in `contracts/cli.md` and `README.md` with the reachable codes per cli.md, plan: OR-003 gate (unrequested)
+- [X] T056 Rework `src/pipeline/trees.py` so polygonization never loads the complete canopy mask into memory (windowed/chunked reads with overlap, then stitch), and run the `trees` job through the `/usr/bin/time -v` wrapper recording peak RSS ≤ 12 GiB in `validation/event.log.jsonl` per OR-002, plan: chunked jobs, T029, SC-009 (contradicts)
+- [X] T057 Assert the published building count (93,022) against the accepted inventory (93,024 rows minus the 2 duplicate-id rows deduped per FR-004) in the acceptance suite, and document the dedupe rationale per SC-003 (partial)
+- [X] T058 Restore default SIGPIPE handling in `src/pipeline/cli.py` (`signal.signal(signal.SIGPIPE, signal.SIG_DFL)` in `main()`) so a torn-down invoking session cannot turn a completed run into an unlogged exit-1 with orphaned `validation/.time.*` reports, honoring the cli.md per-invocation logging contract (partial)
+- [X] T059 Remove the dead `refuse_local_inference`/`LocalGPUError` path in `src/pipeline/canopy.py` or wire it into a real local-attempt guard, and align the exit-code table (`4` GPU attempted) in `contracts/cli.md` and `README.md` with the reachable codes per cli.md, plan: OR-003 gate (unrequested)
 
-**Convergence record (T056-T059)**: Full suite green (59 passed). A fresh `values` run was verified end-to-end through the wrapper: 26m35s, exit 0, peak RSS 2.62 GiB (≤ 12 GiB), event row logged, deterministic 93,022-feature output. The three earlier exit-1 `values` runs visible in `validation/.time.*` (all ~27 min, complete valid output files, no event-log rows) were session-teardown artifacts — the wrapper died before logging and the child hit Python's default SIGPIPE→BrokenPipeError on its final echo — not compute defects. Remaining gaps: `trees.py` reads the full 90,000×125,000 uint8 mask (10.5 GiB) and its peak RSS is unrecorded (OR-002/OR-001); the published building count (93,022) vs the 93,024-row inventory (2 duplicate ids) is unasserted (SC-003/FR-004); the `LocalGPUError`/exit-code-4 path is unreachable dead code; SC-006/SC-007 visitor metrics remain manual records.
+**Convergence record (T056-T059)**: Full suite green (65 passed; was 59 — four new
+tests: chunked-parity + determinism for `trees`, duplicate-id accounting + published
+count for buildings, SIGPIPE/orphan-sweep for the CLI). T056: `trees.py` reworked to
+windowed polygonization — 1000 px chunks with a 1 px overlap, seam tests in exact
+integer pixel space, area-overlap stitching that preserves `shapes` 4-connectivity;
+the 10.5 GiB mask is never loaded whole (OR-002). Fresh `trees` run through the
+`/usr/bin/time -v` wrapper: ~7m15s, exit 0, peak RSS 6.11 GiB (≤ 12 GiB) recorded in
+`validation/event.log.jsonl` (`subcommand=trees`, `inputs=[mosaic/canopy_prediction_mask.tif]`);
+deterministic output — two runs, byte-identical sha256 `a6886e36…d335e`, 153,524 features,
+sequential `tree-<n>` ids, only 2 zero-count boundary slivers from the pre-existing
+rounding formula. `trees.pmtiles` regenerated (80,427,192 B), manifest + `dist/`
+republished, OR-005 OK after refreshing the `trees_polygons.geojson` large-file record.
+T057: acceptance suite asserts exactly 93,022 deduped features (93,024 raw rows − the 2
+duplicate-id rows `b-62e14c8638d8` / `b-c0aa13bc722a`, FR-004) and the published
+buildings layer count (SC-003). T058: `main()` restores `signal.SIGPIPE`→`SIG_DFL` so a
+torn-down session cannot turn a completed run into a misleading exit-1 (an orphaned
+child dies silently on SIGPIPE); `_sweep_stale_reports()` removes `.time.*`/`.inputs.*`
+from dead wrappers on every invocation (pid-alive check) — the three exit-1 artifacts
+above are now swept. T059: dead `refuse_local_inference`/`LocalGPUError` path removed
+from `canopy.py`; exit-code tables in `contracts/cli.md` and `README.md` aligned to the
+reachable codes 0–3 (no local GPU path exists; OR-003 is enforced by the RunPod gate,
+exit 2). Remaining: only SC-006/SC-007 (manual visitor metrics) are unverifiable by code.

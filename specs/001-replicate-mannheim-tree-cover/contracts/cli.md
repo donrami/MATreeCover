@@ -68,6 +68,8 @@ for the `Bäume` layer. Clips to the official boundary
 - **Outputs**: `trees_polygons.geojson` with stable ids
   `tree-<n>` and `canopy_pixel_count`.
 - **Exit code**: `0` on success; `1` on input failure.
+- **Memory**: windowed 1000 px chunk reads with a 1 px overlap;
+  never loads the full mask (OR-002).
 - **Notes**: the PMTiles step (`make pmtiles-trees`) consumes
   the output with tippecanoe.
 
@@ -106,4 +108,7 @@ invokes a GPU.
 | `1` | Acceptance or input failure. |
 | `2` | RunPod gate tripped; the local machine stopped. |
 | `3` | RSS exceeded 12 GiB. |
-| `4` | GPU attempted locally (OR-003 violation). |
+
+Only reachable codes are listed. Local GPU inference is impossible by
+construction (OR-003): `runpod-infer` stops at the gate (`2`) and no
+local inference code path exists, so no GPU exit code is defined.

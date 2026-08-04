@@ -68,3 +68,38 @@ def test_event_log_row_shape() -> None:
     row = _last_event_row()
     for key in ("ts", "subcommand", "rss_peak_bytes", "gpu_used", "exit_code", "inputs"):
         assert key in row, f"event row missing {key}"
+
+
+def test_stale_report_sweep() -> None:
+    """T058: orphaned .time.*/.inputs.* reports from dead wrappers are
+    removed on the next invocation; live wrappers' reports survive."""
+    import os as _os
+
+    from src.pipeline import cli as cli_mod
+
+    dead = REPO_ROOT / "validation" / ".time.999999999.txt"  # pid cannot exist
+    live = REPO_ROOT / "validation" / f".time.{_os.getpid()}.txt"
+    dead.write_text("stale", encoding="utf-8")
+    live.write_text("live", encoding="utf-8")
+    try:
+        cli_mod._sweep_stale_reports()
+        assert not dead.exists(), "dead wrapper's report must be swept"
+        assert live.exists(), "live wrapper's report must survive"
+    finally:
+        live.unlink(missing_ok=True)
+
+
+def test_sigpipe_silent_death() -> None:
+    """T058: with the default SIGPIPE disposition, a torn-down session
+    (reader gone) kills the wrapper silently instead of surfacing a
+    BrokenPipeError exit 1 that masquerades as an acceptance failure."""
+    import signal
+
+    proc = subprocess.Popen(
+        [str(VENV_PY), "-m", "src.pipeline.cli", "accept"],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=REPO_ROOT,
+    )
+    assert proc.stdout is not None
+    proc.stdout.close()  # reader disappears before the wrapper writes
+    rc = proc.wait(timeout=120)
+    assert rc == -signal.SIGPIPE, f"expected SIGPIPE death, got rc={rc}"

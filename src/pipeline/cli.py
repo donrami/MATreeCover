@@ -7,7 +7,8 @@ child process under `/usr/bin/time -v` so the wrapper can measure peak RSS
 (pending/fail input short-circuits, OR-001/OR-002).
 
 Exit codes: 0 success, 1 acceptance/input failure, 2 RunPod gate,
-3 RSS > 12 GiB, 4 GPU attempted locally.
+3 RSS > 12 GiB. No local GPU path exists (OR-003), so no GPU exit code
+is defined.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ import json
 import os
 import resource
 import shutil
+import signal
 import subprocess
 import sys
 import urllib.request
@@ -36,7 +38,6 @@ EXIT_OK = 0
 EXIT_ACCEPTANCE = 1
 EXIT_RUNPOD_GATE = 2
 EXIT_RSS = 3
-EXIT_GPU = 4
 
 CANOPY_MASK = "mosaic/canopy_prediction_mask.tif"
 BUILDINGS_INPUT = "tables/buildings.geojson"
@@ -289,10 +290,52 @@ def _run_wrapped(argv: list[str]) -> int:
     return proc.returncode
 
 
+def _pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True  # exists, owned by someone else
+
+
+def _sweep_stale_reports() -> None:
+    """Remove orphaned ``.time.*`` / ``.inputs.*`` reports.
+
+    A torn-down invoking session kills the wrapper before it can unlink
+    its reports, so completed runs can leave stale files behind. Each
+    report is named after its wrapper pid; when that process is no
+    longer alive the report is orphaned and safe to remove (a live
+    wrapper reuses nothing: its own pid names fresh files, and
+    ``/usr/bin/time -o`` truncates on collision).
+    """
+    for pattern in (".time.*", ".inputs.*"):
+        for path in (REPO_ROOT / "validation").glob(pattern):
+            try:
+                pid = int(path.name.split(".")[-2])
+            except (ValueError, IndexError):
+                continue
+            if not _pid_alive(pid):
+                try:
+                    path.unlink()
+                except OSError:
+                    continue
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    # Python converts SIGPIPE into BrokenPipeError; a torn-down session
+    # kills the wrapper but can leave the child running, and the child's
+    # final echo then "fails" a completed run with exit 1. Restore the
+    # default disposition so an orphaned child dies silently instead of
+    # fabricating an acceptance failure (cli.md logging contract: the
+    # wrapper writes the per-invocation row while it is alive).
+    if hasattr(signal, "SIGPIPE"):
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     if os.environ.get(WRAPPER_ENV) == "1":
         return _dispatch(argv)
+    _sweep_stale_reports()
     return _run_wrapped(argv)
 
 
