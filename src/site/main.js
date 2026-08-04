@@ -9,6 +9,10 @@ const ATTRIBUTION_HTML = 'attribution.html';
 const UNAVAILABLE = '\u2013'; // en dash, FR-009
 
 let map = null;
+// FR-001..FR-011: one persistent popup instance for the page lifetime.
+// closeOnClick: false removes MapLibre's default map-wide close listener
+// so a building click never closes the popup (research R-001/R-002).
+let buildingPopup = null;
 
 function escapeHtml(value) {
   return String(value)
@@ -47,17 +51,47 @@ function wireBuildingsInteractions() {
     map.getCanvas().style.cursor = '';
   });
 
-  // FR-008/FR-009/FR-014: compact popup with the two-decimal value
+  // FR-001..FR-011: single persistent popup instance, created once.
+  // closeOnClick: false disables MapLibre's default map-wide close
+  // listener so a building click never closes the popup (R-001/R-002).
+  if (!buildingPopup) {
+    buildingPopup = new maplibregl.Popup({
+      closeButton: true,
+      offset: 8,
+      className: 'building-popup',
+      closeOnClick: false,
+    });
+  }
+
+  // FR-002/FR-003: building click updates the single popup at the
+  // click point. addTo(map) re-attaches after a previous close (FR-011).
+  // FR-007: has_value === false shows the en dash, never 0.00%.
   map.on('click', 'buildings-fill', (event) => {
     const feature = event.features && event.features[0];
     if (!feature) return;
     const props = feature.properties || {};
     const hasValue = props.has_value === true;
-    const valueStr = hasValue ? `${escapeHtml(props.value_str)}%` : UNAVAILABLE;
-    new maplibregl.Popup({ closeButton: true, offset: 8, className: 'building-popup' })
+    const valueDisplay = hasValue ? `${escapeHtml(props.value_str)}%` : UNAVAILABLE;
+    buildingPopup
       .setLngLat(event.lngLat)
-      .setHTML(`<div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value">${valueStr}</div>`)
-      .addTo(map);
+      .setHTML(`<div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value">${valueDisplay}</div>`);
+    if (!buildingPopup.isOpen()) {
+      buildingPopup.addTo(map);
+    }
+  });
+
+  // FR-003: map-level close — empty space (no building at point)
+  // closes the popup. Layer-filtered click above fires first for
+  // building clicks; this handler then sees the building feature and
+  // does nothing (research R-003). Boundary mask and outside-Mannheim
+  // clicks have no buildings-fill feature, so they close the popup.
+  map.on('click', (event) => {
+    const features = map.queryRenderedFeatures(event.point, {
+      layers: ['buildings-fill'],
+    });
+    if (features.length === 0) {
+      buildingPopup.remove();
+    }
   });
 }
 
