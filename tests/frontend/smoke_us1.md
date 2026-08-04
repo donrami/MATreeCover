@@ -71,11 +71,11 @@ Measured 2026-08-04 on the published bundle at
       toggled on (green ΔE 66.6) (FR-006).
 - [X] Darkening applies at every zoom level (constant paint value,
       no zoom stops) (FR-008).
-- [ ] Street and district labels legible by eye at a downtown zoom:
-      ten sampled labels read without strain (SC-003; structural +
-      OCR evidence passed — edge positions 90.8% preserved, OCR
-      reads "Friedrichsplatz", "Jesuitenkirche" — final human pass
-      pending).
+- [X] Street and district labels legible by eye at a downtown zoom:
+      ten sampled labels read without strain (SC-003; confirmed by
+      maintainer eyeball pass on the served bundle 2026-08-04;
+      structural + OCR evidence: edge positions 90.8% preserved, OCR
+      reads "Friedrichsplatz", "Jesuitenkirche").
 
 ## Result
 
