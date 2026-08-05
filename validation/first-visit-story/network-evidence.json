@@ -1,0 +1,19 @@
+{
+  "recorded": "2026-08-05",
+  "viewport": {
+    "width": 1365,
+    "height": 768
+  },
+  "requestsDuringOpenClose": [],
+  "totalRequestsOnPageLoad": 79,
+  "storageWritesOnDismissal": [
+    {
+      "key": "matreecover.story-dismissed",
+      "value": "1",
+      "at": 7025.29999999702
+    }
+  ],
+  "storageWriteKeys": [
+    "matreecover.story-dismissed"
+  ]
+}
