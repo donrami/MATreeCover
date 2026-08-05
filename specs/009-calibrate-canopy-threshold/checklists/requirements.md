@@ -31,5 +31,5 @@
 
 ## Notes
 
-- All items pass. Ready for `/speckit.plan`.
+- All items pass. Ready for `planning`.
 - Pod dependency is the only external gate (OR-003); everything else is local.

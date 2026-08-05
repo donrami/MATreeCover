@@ -46,7 +46,7 @@ Zero map/site changes: existing pytest suites must stay green, and no published 
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No `constitution.md` exists in `.specify/memory/` (only a template) — no constitution-derived gates. The gates applied are the repository's documented governance rules (DEVELOPMENT.md) and the feature spec:
+No project constitution file exists — no constitution-derived gates. The gates applied are the repository's documented governance rules (DEVELOPMENT.md) and the feature spec:
 
 | Gate | Requirement | Status (design) |
 |------|-------------|-----------------|
@@ -64,16 +64,16 @@ No `constitution.md` exists in `.specify/memory/` (only a template) — no const
 
 ```text
 specs/008-verify-tree-detection/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
+├── plan.md              # This file (planning command output)
+├── research.md          # Phase 0 output (planning command)
+├── data-model.md        # Phase 1 output (planning command)
+├── quickstart.md        # Phase 1 output (planning command)
+├── contracts/           # Phase 1 output (planning command)
 │   ├── README.md
 │   ├── verify-sample.md
 │   ├── verify-ratings.md
 │   └── verify-report.md
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (task generation command - NOT created by planning)
 ```
 
 ### Source Code (repository root)

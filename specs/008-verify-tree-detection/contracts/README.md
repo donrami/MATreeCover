@@ -3,7 +3,7 @@
 Date: 2026-08-05. Contracts define the observable interfaces of the
 verification feature. They are referenced by the plan, the data model,
 and the quickstart; the acceptance criteria in [tasks.md](../tasks.md)
-(the `/speckit.tasks` output) test against them.
+(the `task generation` output) test against them.
 
 | Contract | Scope |
 |----------|-------|

@@ -66,7 +66,7 @@ specs/009-calibrate-canopy-threshold/
 │   ├── README.md
 │   ├── candidate-mask.md
 │   └── value-delta.md
-└── tasks.md             # Phase 2 output (/speckit.tasks)
+└── tasks.md             # Phase 2 output (task generation)
 ```
 
 ### Source Code (repository root)

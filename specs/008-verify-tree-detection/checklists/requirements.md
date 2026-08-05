@@ -31,5 +31,5 @@
 
 ## Notes
 
-- All items pass. The spec is ready for `/speckit.plan`.
+- All items pass. The spec is ready for `planning`.
 - Resolved decisions recorded in the spec's Clarifications section (Session 2026-08-05): visual inspection ground truth, repository-only deliverable, no pass/fail gating.
