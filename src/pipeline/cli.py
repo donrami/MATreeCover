@@ -173,7 +173,9 @@ def trees() -> int:
 
 
 @click.command()
-def runpod_infer() -> int:
+@click.option("--threshold", "threshold", default=0.5, type=float, help="sigmoid threshold (default 0.5)")
+@click.option("--out", "out_rel", default=None, help="workspace-relative mask output, e.g. mosaic/canopy_prediction_mask_t060.tif (default: mosaic/canopy_prediction_mask.tif)")
+def runpod_infer(threshold: float, out_rel: str | None) -> int:
     """Gated inference on existing weights via RunPod (FR-025/OR-003)."""
     from .canopy import MODEL_ID, STOP_MESSAGE
 
@@ -184,24 +186,26 @@ def runpod_infer() -> int:
     workspace = ws.workspace_root()
     _gate([BOUNDARY_INPUT], workspace)
     tiles = sorted(str(p.relative_to(workspace)) for p in (workspace / "mosaic" / "extract").glob("dop20rgb_*.tif"))
-    payload = json.dumps({"model": MODEL_ID, "inputs": tiles}).encode("utf-8")
+    payload = json.dumps({"model": MODEL_ID, "inputs": tiles, "threshold": threshold}).encode("utf-8")
     request = urllib.request.Request(endpoint, data=payload, headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(request, timeout=3600) as response:
             body = response.read()
     except Exception as exc:
         raise CliError(f"runpod-infer: endpoint request failed: {exc}") from exc
-    mask_path = workspace / CANOPY_MASK
+    mask_path = workspace / (out_rel or CANOPY_MASK)
     mask_path.write_bytes(body)
+    meta_path = mask_path.with_suffix(".json")
     meta = {
         "model": MODEL_ID,
         "crs": "EPSG:25832",
         "ground_sampling_distance_m": 0.2,
+        "threshold": threshold,
         "generated_at": _utcnow(),
         "endpoint": endpoint,
     }
-    (workspace / "mosaic" / "canopy_prediction_mask.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
-    click.echo(f"runpod-infer: wrote {mask_path} + canopy_prediction_mask.json")
+    meta_path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    click.echo(f"runpod-infer: wrote {mask_path} + {meta_path.name} (threshold {threshold})")
     return EXIT_OK
 
 
@@ -220,16 +224,19 @@ def verify_sample() -> int:
 
 
 @click.command()
-def verify_render() -> int:
+@click.option("--mask", "mask_rel", default=None, help="workspace-relative canopy mask (default: published mask)")
+@click.option("--patches-dir", "patches_dir", default=None, type=click.Path(path_type=Path), help="PNG output dir (default: verification/patches)")
+@click.option("--sample-out", "sample_out", default=None, type=click.Path(path_type=Path), help="sample file to persist degeneracy (default: verification/sample.jsonl)")
+def verify_render(mask_rel: str | None, patches_dir: Path | None, sample_out: Path | None) -> int:
     """Render review PNGs with the canopy-mask overlay (FR-001/FR-008)."""
     from . import verify as verify_mod
 
     try:
-        verify_mod.render_patches()
+        verify_mod.render_patches(mask_rel=mask_rel, patches_dir=patches_dir, sample_path=sample_out)
     except Exception as exc:
         raise CliError(f"verify-render: {exc}") from exc
-    n_png = len(list(verify_mod.PATCHES_DIR.glob("*.png")))
-    click.echo(f"verify-render: {n_png} PNGs in {verify_mod.PATCHES_DIR}; degeneracy updated")
+    n_png = len(list((patches_dir or verify_mod.PATCHES_DIR).glob("*.png")))
+    click.echo(f"verify-render: {n_png} PNGs in {patches_dir or verify_mod.PATCHES_DIR}")
     return EXIT_OK
 
 
@@ -244,6 +251,34 @@ def verify_report() -> int:
         raise CliError(f"verify-report: {exc}") from exc
     verify_mod.REPORT_FILE.write_text(report, encoding="utf-8")
     click.echo(f"verify-report: wrote {verify_mod.REPORT_FILE}")
+    return EXIT_OK
+
+
+@click.command()
+@click.option("--mask", "mask_rel", required=True, help="workspace-relative candidate mask, e.g. mosaic/canopy_prediction_mask_t060.tif")
+def verify_value_delta(mask_rel: str) -> int:
+    """Per-building value comparison candidate vs published (FR-005/008)."""
+    from . import verify as verify_mod
+
+    try:
+        summary = verify_mod.value_delta(mask_rel)
+    except Exception as exc:
+        raise CliError(f"verify-value-delta: {exc}") from exc
+    stem = Path(mask_rel).stem
+    out_md = verify_mod.VERIFICATION_DIR / f"value-delta_{stem}.md"
+    out_md.write_text(
+        f"# Value delta: {stem}\n\n"
+        f"- Mask: {summary['mask']}\n"
+        f"- Threshold: {summary['threshold']}\n"
+        f"- Buildings: {summary['n_buildings']}\n"
+        f"- Mean delta (pp): {summary['mean_delta']}\n"
+        f"- Mean |delta| (pp): {summary['mean_abs_delta']}\n"
+        f"- Share moved > 0.5 pp: {summary['share_moved_gt_0_5pp']:.1%}\n"
+        f"- City mean published: {summary['city_mean_published']} %\n"
+        f"- City mean candidate: {summary['city_mean_candidate']} %\n",
+        encoding="utf-8",
+    )
+    click.echo(f"verify-value-delta: wrote {out_md}")
     return EXIT_OK
 
 
@@ -408,6 +443,7 @@ cli.add_command(runpod_infer)
 cli.add_command(verify_sample)
 cli.add_command(verify_render)
 cli.add_command(verify_report)
+cli.add_command(verify_value_delta)
 
 
 if __name__ == "__main__":

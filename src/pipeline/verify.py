@@ -427,6 +427,7 @@ def render_patches(
     sample: list[dict[str, Any]] | None = None,
     sample_path: Path | str | None = None,
     patches_dir: Path | str | None = None,
+    mask_rel: str | None = None,
 ) -> list[dict[str, Any]]:
     """Render review PNGs with the canopy-mask overlay; classify degeneracy.
 
@@ -435,11 +436,12 @@ def render_patches(
     (OR-001). Degeneracies per contract: no-imagery (no tile overlap;
     no PNG), empty-mask (no tree pixels in the window), full-mask
     (> 99 % tree pixels). Degeneracy is persisted back into the sample
-    file (FR-008).
+    file (FR-008). `mask_rel` selects a workspace-relative mask (default:
+    the published canopy mask), enabling per-candidate re-rendering.
     """
     root = Path(workspace_root) if workspace_root is not None else ws.workspace_root()
     extract = root / EXTRACT_DIR
-    mask_path = root / CANOPY_MASK_REL
+    mask_path = root / (mask_rel or CANOPY_MASK_REL)
     if sample is None:
         sample = read_jsonl(SAMPLE_FILE)
     out_path = Path(sample_path) if sample_path is not None else SAMPLE_FILE
@@ -666,6 +668,137 @@ Datum: {today} | Seed: {seed} | Stichprobe: {n_sample} Patches | Bezirksdaten: S
 
 {recommendations}
 """
+
+
+# --------------------------------------------------------------------------
+# Value delta (contracts/value-delta.md, FR-005/008)
+# --------------------------------------------------------------------------
+
+BOUNDARY_INPUT = "boundary.geojson"
+BUILDINGS_INPUT = "tables/buildings.geojson"
+PUBLISHED_VALUES_REL = "buildings.geojson"  # derived: values.py (EPSG:4326, `value`)
+
+
+def _threshold_from_stem(stem: str) -> float | None:
+    """Expected threshold from a mask stem like canopy_prediction_mask_t060."""
+    marker = "_t"
+    if marker not in stem:
+        return None
+    digits = stem.rsplit(marker, 1)[-1]
+    if not digits.isdigit() or len(digits) != 3:
+        return None
+    return int(digits) / 1000.0
+
+
+def compute_delta_rows(
+    published: list[dict[str, Any]], candidate: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Join candidate values against published values per building_id.
+
+    delta = value_candidate - value_published. Every published building
+    must appear exactly once in the candidate set.
+    """
+    candidate_by_id = {b["id"]: b for b in candidate}
+    rows: list[dict[str, Any]] = []
+    for b in published:
+        cand = candidate_by_id.get(b["id"])
+        if cand is None:
+            raise ValueError(f"candidate value missing for building {b['id']}")
+        v_pub = b.get("value")
+        v_cand = cand.get("value")
+        if v_pub is None or v_cand is None:
+            raise ValueError(f"missing value for building {b['id']} (pub={v_pub}, cand={v_cand})")
+        rows.append(
+            {
+                "building_id": b["id"],
+                "value_published": float(v_pub),
+                "value_candidate": float(v_cand),
+                "delta": float(v_cand) - float(v_pub),
+            }
+        )
+    if len(rows) != len(published):
+        raise ValueError("candidate/published building sets differ")
+    return rows
+
+
+def value_delta(
+    mask_rel: str,
+    workspace_root: Path | None = None,
+) -> dict[str, Any]:
+    """Per-building value comparison candidate vs published.
+
+    Trust checks (FR-008): companion metadata exists, records the
+    threshold, EPSG:25832 and 0.2 m GSD; candidate extent matches the
+    published mask. Returns the summary; the CLI writes the artifacts.
+    """
+    import rasterio
+
+    from . import boundary as boundary_mod
+    from . import buildings as buildings_mod
+    from . import values as values_mod
+
+    root = Path(workspace_root) if workspace_root is not None else ws.workspace_root()
+    mask_path = root / mask_rel
+    meta_path = mask_path.with_suffix(".json")
+    if not meta_path.exists():
+        raise ValueError(f"missing metadata for {mask_rel}")
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if not isinstance(meta.get("threshold"), (int, float)):
+        raise ValueError(f"metadata for {mask_rel} has no numeric threshold")
+    expected = _threshold_from_stem(Path(mask_rel).stem)
+    if expected is not None and abs(float(meta["threshold"]) - expected) > 1e-9:
+        raise ValueError(
+            f"metadata threshold {meta['threshold']} != filename threshold {expected}"
+        )
+    if meta.get("crs") != "EPSG:25832":
+        raise ValueError(f"metadata crs {meta.get('crs')!r} != EPSG:25832")
+    gsd = meta.get("ground_sampling_distance_m")
+    if gsd is not None and abs(float(gsd) - GSD_M) > 1e-9:
+        raise ValueError(f"metadata gsd {gsd} != {GSD_M}")
+    with rasterio.open(mask_path) as cand, rasterio.open(root / CANOPY_MASK_REL) as pub:
+        if (cand.bounds, cand.width, cand.height) != (pub.bounds, pub.width, pub.height):
+            raise ValueError(f"candidate extent/size != published mask")
+
+    boundary = boundary_mod.load_boundary(root / BOUNDARY_INPUT)
+    buffered = boundary_mod.load_buffered(root / BOUNDARY_INPUT)
+    buildings = buildings_mod.load_buildings(root / BUILDINGS_INPUT)
+    selected = buildings_mod.select_in_buffer(buildings, buffered["geometry"])
+    out_path = root / f"buildings_candidate_{Path(mask_rel).stem}.geojson"
+    features = values_mod.compute_building_values(
+        mask_path, selected, out_path, boundary["geometry"]
+    )
+    candidate = [f["properties"] for f in features]
+    published_path = root / PUBLISHED_VALUES_REL
+    _fields, _columns, _wkb = _read_geojson(published_path)
+    index = {name: _fields.index(name) for name in ("id", "value")}
+    published = [
+        {"id": str(i), "value": float(v)}
+        for i, v in zip(_columns[index["id"]], _columns[index["value"]])
+        if v is not None
+    ]
+    rows = compute_delta_rows(published, candidate)
+    return summarize_deltas(rows, mask_rel, meta.get("threshold"))
+
+
+def summarize_deltas(
+    rows: list[dict[str, Any]], mask_rel: str, threshold: float
+) -> dict[str, Any]:
+    """Aggregates per contract (city level)."""
+    import statistics
+
+    deltas = [r["delta"] for r in rows]
+    n_moved = sum(1 for d in deltas if abs(d) > 0.5)
+    summary: dict[str, Any] = {
+        "mask": mask_rel,
+        "threshold": threshold,
+        "n_buildings": len(rows),
+        "mean_delta": round(statistics.mean(deltas), 4),
+        "mean_abs_delta": round(statistics.mean(abs(d) for d in deltas), 4),
+        "share_moved_gt_0_5pp": round(n_moved / len(rows), 4),
+        "city_mean_published": round(statistics.mean(r["value_published"] for r in rows), 4),
+        "city_mean_candidate": round(statistics.mean(r["value_candidate"] for r in rows), 4),
+    }
+    return summary
 
 
 def validate_sample_record(rec: dict[str, Any]) -> list[str]:

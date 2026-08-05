@@ -60,6 +60,19 @@ def _env_int(name: str, default: int) -> int:
         return default
 
 
+def _parse_threshold(value) -> float:
+    """Request threshold with default 0.5; validates numeric and (0, 1)."""
+    if value is None:
+        return THRESHOLD
+    try:
+        threshold = float(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"threshold must be a number, got {value!r}") from None
+    if not 0.0 < threshold < 1.0:
+        raise ValueError(f"threshold must be in (0, 1), got {threshold}")
+    return threshold
+
+
 class EndpointError(RuntimeError):
     """Raised when the inference cannot run; HTTP layer maps to 500."""
 
@@ -195,7 +208,13 @@ def _coverage_ratio(boundary_path: Path, tile_dir: Path) -> float | None:
         return None
 
 
-def run_inference(tile_dir: Path, weights_path: Path, boundary_path: Path, out_dir: Path) -> dict:
+def run_inference(
+    tile_dir: Path,
+    weights_path: Path,
+    boundary_path: Path,
+    out_dir: Path,
+    threshold: float = THRESHOLD,
+) -> dict:
     """Run the banded DeepLabV3+ inference; write mask + meta; return meta."""
     import numpy as np
     import rasterio
@@ -258,7 +277,7 @@ def run_inference(tile_dir: Path, weights_path: Path, boundary_path: Path, out_d
                     canvas[:, c0:c1] = np.maximum(canvas[:, c0:c1], mask)
                     n_patches += 1
                 write_from = 0 if r0 == 0 else OVERLAP_PX
-                band_out = (canvas[write_from:band_h] >= THRESHOLD).astype(np.uint8)
+                band_out = (canvas[write_from:band_h] >= threshold).astype(np.uint8)
                 dst.write(band_out, 1, window=((r0 + write_from, r1), (0, width)))
 
     duration_s = time.time() - t0
@@ -269,7 +288,7 @@ def run_inference(tile_dir: Path, weights_path: Path, boundary_path: Path, out_d
         "ground_sampling_distance_m": GSD_M,
         "canvas": {"width_px": width, "height_px": height, "origin": [origin_x, origin_y]},
         "n_patches": n_patches,
-        "threshold": THRESHOLD,
+        "threshold": threshold,
         "patch_size_px": PATCH_PX,
         "overlap_px": OVERLAP_PX,
         "coverage_buffered_boundary": coverage,
@@ -329,7 +348,12 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(400, {"error": f"model must be {MODEL_ID}"})
             return
         try:
-            meta = self.server.run_inference_once(payload.get("inputs", []))
+            threshold = _parse_threshold(payload.get("threshold"))
+        except ValueError as exc:
+            self._send_json(400, {"error": str(exc)})
+            return
+        try:
+            meta = self.server.run_inference_once(payload.get("inputs", []), threshold)
         except EndpointError as exc:
             self._send_json(500, {"error": str(exc)})
             return
@@ -357,9 +381,9 @@ class EndpointServer(ThreadingHTTPServer):
         self.out_dir = out_dir
         self._lock = threading.Lock()
 
-    def run_inference_once(self, inputs: list) -> dict:
+    def run_inference_once(self, inputs: list, threshold: float = THRESHOLD) -> dict:
         with self._lock:
-            return run_inference(self.tile_dir, self.weights_path, self.boundary_path, self.out_dir)
+            return run_inference(self.tile_dir, self.weights_path, self.boundary_path, self.out_dir, threshold)
 
 
 def main() -> None:

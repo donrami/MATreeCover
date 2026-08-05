@@ -472,3 +472,91 @@ def test_report_inconclusive_small_district() -> None:
     assert "inconclusive" in text
     # the small-sample limitation must name at least one district
     assert "A" in text.split("Einschraenkungen")[1].split("Empfehlungen")[0]
+
+
+# --------------------------------------------------------------------------
+# Feature 009: mask parameter + value delta (T002/T003)
+# --------------------------------------------------------------------------
+
+
+def test_render_mask_param_changes_overlay(tmp_path: Path) -> None:
+    """Same sample, two different masks -> different overlays (T002)."""
+    import numpy as np
+    import rasterio
+
+    ws = _render_workspace(tmp_path, tree_rows=448)  # published: block y 280..320, inside window
+    # candidate: block y 340..380, also inside the window, different position
+    _write_raster(
+        ws / "mosaic" / "canopy_prediction_mask_t060.tif",
+        _make_mask_block(2048, 148).astype(np.uint8),
+        rasterio.transform.from_origin(0.0, 409.6, v.GSD_M, v.GSD_M),
+    )
+    sample = [_sample_record("p001", 102.4, 358.4)]
+    out_pub = v.render_patches(
+        workspace_root=ws, sample=list(sample), sample_path=tmp_path / "s_pub.jsonl",
+        patches_dir=tmp_path / "patches_pub",
+    )
+    out_cand = v.render_patches(
+        workspace_root=ws, sample=list(sample), sample_path=tmp_path / "s_cand.jsonl",
+        patches_dir=tmp_path / "patches_cand", mask_rel="mosaic/canopy_prediction_mask_t060.tif",
+    )
+    # both rendered; the overlay pixels differ because the tree block moved
+    pub = (tmp_path / "patches_pub" / "p001.png").read_bytes()
+    cand = (tmp_path / "patches_cand" / "p001.png").read_bytes()
+    assert pub != cand
+    assert out_pub[0]["degeneracy"] is None and out_cand[0]["degeneracy"] is None
+
+
+def _make_mask_block(px: int, tree_rows: int) -> np.ndarray:
+    import numpy as np
+
+    mask = np.zeros((px, px), dtype=np.uint8)
+    mask[tree_rows : tree_rows + 200, 200:400] = 1
+    return mask
+
+
+def test_value_delta_join_and_summary() -> None:
+    published = [{"id": f"b{i}", "value": 10.0 + i} for i in range(3)]
+    candidate = [{"id": f"b{i}", "value": 5.0 + i} for i in range(3)]
+    rows = v.compute_delta_rows(published, candidate)
+    assert [r["delta"] for r in rows] == [-5.0, -5.0, -5.0]
+    summary = v.summarize_deltas(rows, "mask_t060.tif", 0.6)
+    assert summary["threshold"] == 0.6
+    assert summary["n_buildings"] == 3
+    assert summary["mean_delta"] == -5.0
+    assert summary["mean_abs_delta"] == 5.0
+    assert summary["share_moved_gt_0_5pp"] == 1.0
+
+
+def test_value_delta_missing_candidate_raises() -> None:
+    published = [{"id": "b1", "value": 1.0}, {"id": "b2", "value": 2.0}]
+    candidate = [{"id": "b1", "value": 0.5}]
+    with pytest.raises(ValueError, match="b2"):
+        v.compute_delta_rows(published, candidate)
+
+
+def test_value_delta_metadata_trust(tmp_path: Path) -> None:
+    """Missing or wrong-threshold metadata aborts (FR-008)."""
+    import json
+
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_origin
+
+    ws = tmp_path / "ws"
+    (ws / "mosaic").mkdir(parents=True)
+    transform = from_origin(0.0, 204.8, v.GSD_M, v.GSD_M)
+    mask = np.zeros((v.PATCH_PX, v.PATCH_PX), dtype=np.uint8)
+    _write_raster(ws / "mosaic" / "canopy_prediction_mask.tif", mask, transform)
+    # candidate mask same extent
+    _write_raster(ws / "mosaic" / "canopy_prediction_mask_t060.tif", mask, transform)
+    # missing metadata -> abort
+    with pytest.raises(ValueError, match="missing metadata"):
+        v.value_delta("mosaic/canopy_prediction_mask_t060.tif", workspace_root=ws)
+    # wrong threshold vs filename (_t060 -> 0.6) -> abort
+    (ws / "mosaic" / "canopy_prediction_mask_t060.json").write_text(
+        json.dumps({"threshold": 0.5, "crs": "EPSG:25832", "ground_sampling_distance_m": 0.2}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="threshold"):
+        v.value_delta("mosaic/canopy_prediction_mask_t060.tif", workspace_root=ws)
