@@ -94,8 +94,8 @@ the map page only.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No `constitution.md` is ratified (only the template exists in
-`.specify/memory/`). As in plans 004 and 006, gates are derived from
+No `constitution.md` is ratified (only the template exists in the
+harness memory directory). As in plans 004 and 006, gates are derived from
 the de-facto governance (README/Makefile) and the approved feature
 spec:
 
