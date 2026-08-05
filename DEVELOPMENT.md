@@ -44,6 +44,9 @@ python -m src.pipeline.cli values       # per-building 60 m values from the acce
 python -m src.pipeline.cli trees        # polygonize the mask to trees_polygons.geojson
 python -m src.pipeline.cli publish      # emit the static dist/ bundle
 python -m src.pipeline.cli runpod-infer # gated; needs MANNHEIM_RUNPOD_ENDPOINT
+python -m src.pipeline.cli verify-sample  # reproducible 100-patch inspection sample (feature 008)
+python -m src.pipeline.cli verify-render  # review PNGs with canopy-mask overlay, degeneracy flags
+python -m src.pipeline.cli verify-report  # German findings report from ratings + notes
 ```
 
 Every invocation runs under the `/usr/bin/time -v` wrapper. Peak RSS is
@@ -118,6 +121,24 @@ interactions measured at 80–211 ms (budget 2 s). Record:
 `validation/live-perf.json`.
 
 There is no application server, no database, and no analytics (FR-001).
+
+## Verification of detection quality (feature 008)
+
+Structured visual inspection of the reused canopy model on Mannheim
+imagery — evidence for how well the published tree layer detects trees.
+Read-only over the workspace; never runs the model (OR-003). Details in
+`specs/008-verify-tree-detection/`; artifacts in `verification/`.
+
+```text
+python -m src.pipeline.cli verify-sample   # verification/sample.jsonl (seed 20260805, 38 Stadtteile x 3 bands)
+python -m src.pipeline.cli verify-render   # verification/patches/*.png (gitignored) + degeneracy in sample
+# owner rates each PNG into verification/ratings.jsonl (contracts/verify-ratings.md)
+python -m src.pipeline.cli verify-report   # verification/report.md from ratings + notes.md
+```
+
+District boundaries: official GDI-MA Stadtteile (38, dl-de/by-2-0),
+committed at `verification/stadtteile.geojson` (attribution in
+`verification/README.md`).
 
 ## Canopy-mask inference on RunPod (FR-024/FR-025)
 

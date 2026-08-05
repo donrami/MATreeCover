@@ -205,6 +205,48 @@ def runpod_infer() -> int:
     return EXIT_OK
 
 
+@click.command()
+def verify_sample() -> int:
+    """Generate the reproducible verification sample (FR-004)."""
+    from . import verify as verify_mod
+
+    try:
+        records = verify_mod.select_sample()
+    except Exception as exc:
+        raise CliError(f"verify-sample: {exc}") from exc
+    verify_mod.write_jsonl(verify_mod.SAMPLE_FILE, records)
+    click.echo(f"verify-sample: wrote {len(records)} records to {verify_mod.SAMPLE_FILE}")
+    return EXIT_OK
+
+
+@click.command()
+def verify_render() -> int:
+    """Render review PNGs with the canopy-mask overlay (FR-001/FR-008)."""
+    from . import verify as verify_mod
+
+    try:
+        verify_mod.render_patches()
+    except Exception as exc:
+        raise CliError(f"verify-render: {exc}") from exc
+    n_png = len(list(verify_mod.PATCHES_DIR.glob("*.png")))
+    click.echo(f"verify-render: {n_png} PNGs in {verify_mod.PATCHES_DIR}; degeneracy updated")
+    return EXIT_OK
+
+
+@click.command()
+def verify_report() -> int:
+    """Generate the verification findings report (FR-003/006/007/008)."""
+    from . import verify as verify_mod
+
+    try:
+        report = verify_mod.generate_report()
+    except Exception as exc:
+        raise CliError(f"verify-report: {exc}") from exc
+    verify_mod.REPORT_FILE.write_text(report, encoding="utf-8")
+    click.echo(f"verify-report: wrote {verify_mod.REPORT_FILE}")
+    return EXIT_OK
+
+
 # --------------------------------------------------------------------------
 # Wrapper: RSS measurement, event log, exit-code pass-through
 # --------------------------------------------------------------------------
@@ -363,6 +405,9 @@ cli.add_command(publish)
 cli.add_command(values)
 cli.add_command(trees)
 cli.add_command(runpod_infer)
+cli.add_command(verify_sample)
+cli.add_command(verify_render)
+cli.add_command(verify_report)
 
 
 if __name__ == "__main__":

@@ -65,3 +65,4 @@ validation/.inputs.*
 *.p12
 *.jks
 *.secret.*
+verification/patches/
