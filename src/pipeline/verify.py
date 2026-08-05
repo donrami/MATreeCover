@@ -14,6 +14,7 @@ registered in cli.py (verify-sample, verify-render, verify-report).
 from __future__ import annotations
 
 import json
+import math
 import random
 from pathlib import Path
 from typing import Any
@@ -687,7 +688,7 @@ def _threshold_from_stem(stem: str) -> float | None:
     digits = stem.rsplit(marker, 1)[-1]
     if not digits.isdigit() or len(digits) != 3:
         return None
-    return int(digits) / 1000.0
+    return int(digits) / 100.0  # t060 -> 0.60
 
 
 def compute_delta_rows(
@@ -774,7 +775,7 @@ def value_delta(
     published = [
         {"id": str(i), "value": float(v)}
         for i, v in zip(_columns[index["id"]], _columns[index["value"]])
-        if v is not None
+        if v is not None and not (isinstance(v, float) and math.isnan(v))
     ]
     rows = compute_delta_rows(published, candidate)
     return summarize_deltas(rows, mask_rel, meta.get("threshold"))

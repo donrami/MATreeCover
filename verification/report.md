@@ -105,3 +105,13 @@ qualitativ.
 - Andernfalls die Uebersegmentierung als dokumentierte Einschraenkung
   akzeptieren; die Gebaeudewerte sind dann in den betroffenen
   Stadtteilen tendenziell ueberhoeht.
+
+---
+
+## Kalibrierung und Entscheidung (Feature 009, 2026-08-05)
+
+- Kandidaten: Sigmoid-Schwellen 0.6 und 0.65, gleiche Gewichte und Kacheln (RunPod, RTX 3090, 12314 Patches pro Lauf).
+- Wiedererkennung der bei 0.5 detektierten Baumflaeche je Kandidat: zuvor korrekte Patches 82.9 % (0.6) / 75.8 % (0.65); zuvor over-bewertete Patches 80.6 % / 72.8 %.
+- Unabhaengige Sichtpruefung der fuenf staerksten Verluste in zuvor korrekten Patches: 70-85 % der bei 0.6 entfernten Flaeche sind echte Baumkronen; der zusaetzliche 0.65-Schritt entfernt ueberwiegend Kronenraender. Beide Schwellen verlieren echte Baeume; 0.6 staerker als der 0.65-Zusatzschritt.
+- Entscheidung (Eigentuemer): die veroeffentlichten Werte bleiben bei Schwelle 0.5. Keine Uebernahme der Kandidaten. Massnahme: allgemeiner Genauigkeitshinweis auf der Website (Feature 010), ohne Nennung einzelner Stadtteile.
+- Zusaetzlicher Befund: vorbestehender `values.py`-Fehler (fftconvolve-Float-Rauschen) fuehrte zu 109 Gebaeuden ohne Wert in der veroeffentlichten Datei; im Pipeline-Code behoben, die Karte bleibt unveraendert (Entscheidung oben).

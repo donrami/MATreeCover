@@ -141,3 +141,33 @@ def test_edge_building_is_null_when_disc_incomplete(tmp_path: Path) -> None:
     assert props["has_value"] is False
     assert props["value_str"] == "\u2013"
     assert props["completeness"] < 0.95
+
+
+def test_treeless_building_gets_zero_not_null(tmp_path: Path) -> None:
+    """A building in a treeless area gets value 0.0, never None from
+    fftconvolve float residue (R-006). Regression for the pre-existing
+    noise-sign bug found during 009 calibration."""
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_origin
+
+    mask_path = tmp_path / "mask_bare.tif"
+    mask = np.zeros((MASK_PX, MASK_PX), dtype=np.uint8)  # no trees at all
+    transform = from_origin(0.0, MASK_PX * GSD, GSD, GSD)
+    with rasterio.open(
+        mask_path, "w", driver="GTiff", height=MASK_PX, width=MASK_PX, count=1,
+        dtype="uint8", crs="EPSG:25832", transform=transform,
+    ) as dst:
+        dst.write(mask, 1)
+    # interior building, disc fully inside the mask
+    building = {"id": "b-bare", "geometry": box(250 * GSD, 250 * GSD, 260 * GSD, 260 * GSD)}
+    out_path = tmp_path / "buildings_bare.geojson"
+    boundary = box(-100, -100, MASK_PX * GSD + 100, MASK_PX * GSD + 100)
+    features = values.compute_building_values(
+        mask_path, [building], out_path, boundary,
+        radius_m=RADIUS_M, gsd_m=GSD,
+    )
+    props = features[0]["properties"]
+    assert props["has_value"] is True
+    assert props["value"] == 0.0
+    assert props["completeness"] >= 0.95

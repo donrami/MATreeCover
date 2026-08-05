@@ -1,0 +1,21 @@
+{
+  "model": "deepLabV3plus-resnet34",
+  "crs": "EPSG:25832",
+  "ground_sampling_distance_m": 0.2,
+  "canvas": {
+    "width_px": 90000,
+    "height_px": 125000,
+    "origin": [
+      457000.000001,
+      5497000.0
+    ]
+  },
+  "n_patches": 12314,
+  "threshold": 0.65,
+  "patch_size_px": 1024,
+  "overlap_px": 64,
+  "coverage_buffered_boundary": null,
+  "weights_sha256": "7d0fcd344263ec9dfafb0e49d044b155535ac8385d98816781d739dc1bbfe5a1",
+  "duration_s": 803.0,
+  "generated_at": "2026-08-05T19:33:41Z"
+}

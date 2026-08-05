@@ -66,3 +66,5 @@ validation/.inputs.*
 *.jks
 *.secret.*
 verification/patches/
+verification/patches_t*/
+verification/removal_maps/

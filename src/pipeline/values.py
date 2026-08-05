@@ -244,6 +244,8 @@ def compute_building_values(
             value = None
         else:
             value = float(s / px * 100.0)
+            if -1e-6 < value < 0:
+                value = 0.0  # fftconvolve float residue (R-006)
             if value < 0 or value > 100:
                 value = None
         geom = b["geometry"].intersection(boundary_geometry)
