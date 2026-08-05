@@ -23,6 +23,16 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 
+# Cloudflare worker tooling (workers/map)
+node_modules/
+.wrangler/
+
+# Local release archives kept for rollback (deploy-cf.sh)
+dist-archive/
+
+# Filtered assets copy staged by deploy-cf.sh prepare-assets
+dist-assets/
+
 # Editors / OS
 .vscode/
 .idea/
