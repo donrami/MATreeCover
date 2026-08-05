@@ -61,7 +61,7 @@ description: "Task list: Public Release Preparation"
 
 ### Implementation User Story 1
 
-- [X] T008 [P] [US1] Create `LICENSE` per `contracts/license.md` §1: standard MIT text, project copyright `Copyright (c) 2026 donrami` (confirm exact holder at commit time), preserved CityTreeCover notice (`Copyright (c) 2026 Jakob Schultz` + MIT permission text)
+- [X] T008 [P] [US1] Create `LICENSE` per `contracts/license.md` §1: standard MIT text, project copyright `Copyright (c) 2026 Rami Abu-Hamad` (owner-confirmed), preserved CityTreeCover notice (`Copyright (c) 2026 Jakob Schultz` + MIT permission text)
 - [X] T009 [P] [US1] Rewrite `README.md` per `contracts/readme.md`: English, required structure (one-line pitch, live map link `https://abu-hamad.de/map/`, what-the-map-shows, how-to-read + tree toggle, data/methodology, credits per `contracts/license.md` §2–3, license section linking `./LICENSE`, developer link to `DEVELOPMENT.md`); no commands, code blocks, exit codes, or internal workflow references (FR-001..006, 008, 012)
 - [X] T010 [US1] Create `DEVELOPMENT.md` (FR-009): migrate the dev content from the current README (prerequisites via `MANNHEIM_WORKSPACE`, setup, pipeline subcommands, publish/hosting, RunPod inference, tests, governance OR-004/005, vendored libraries) sanitized per FR-010 — no personal paths, no harness-internal workflow references
 - [X] T011 [US1] Verify README against `contracts/readme.md` "Verification": `grep -F "https://abu-hamad.de/map/" README.md` matches; no fenced code blocks or `$ `/`make `/`python -m`/`bash `/`npx ` line starts in the README; license statement matches `LICENSE`; CityTreeCover and `dl-de/by-2-0` present

@@ -29,7 +29,7 @@ Legal document at repo root.
 | Field | Content | Validation |
 |-------|---------|------------|
 | license text | Standard MIT License text | FR-007: identifier matches README statement (SC-005) |
-| project copyright | `Copyright (c) 2026 <owner>` (owner's GitHub handle `donrami` is the default holder) | — |
+| project copyright | `Copyright (c) 2026 Rami Abu-Hamad` (owner-confirmed) | — |
 | reference notice | CityTreeCover copyright `Copyright (c) 2026 Jakob Schultz` + MIT permission notice, preserved per MIT terms | research B; credit contract `contracts/license.md` |
 
 ### 3. Developer document (`DEVELOPMENT.md`)

@@ -5,7 +5,7 @@ Targets: `LICENSE` (new, repo root), README credits + license sections, `src/sit
 ## 1. Project license file (`LICENSE`)
 
 - Standard MIT License text (SPDX `MIT`).
-- Copyright line: `Copyright (c) 2026 <owner>`. Default holder: the owner's GitHub handle `donrami`; confirm the exact name at implementation time.
+- Copyright line: `Copyright (c) 2026 Rami Abu-Hamad` (owner-confirmed).
 - **Reference notice preservation (mandatory)**: the MIT terms require the reference copyright and permission notice to be included in copies. Append to `LICENSE`:
 
   ```text
