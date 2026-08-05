@@ -115,3 +115,16 @@ qualitativ.
 - Unabhaengige Sichtpruefung der fuenf staerksten Verluste in zuvor korrekten Patches: 70-85 % der bei 0.6 entfernten Flaeche sind echte Baumkronen; der zusaetzliche 0.65-Schritt entfernt ueberwiegend Kronenraender. Beide Schwellen verlieren echte Baeume; 0.6 staerker als der 0.65-Zusatzschritt.
 - Entscheidung (Eigentuemer): die veroeffentlichten Werte bleiben bei Schwelle 0.5. Keine Uebernahme der Kandidaten. Massnahme: allgemeiner Genauigkeitshinweis auf der Website (Feature 010), ohne Nennung einzelner Stadtteile.
 - Zusaetzlicher Befund: vorbestehender `values.py`-Fehler (fftconvolve-Float-Rauschen) fuehrte zu 109 Gebaeuden ohne Wert in der veroeffentlichten Datei; im Pipeline-Code behoben, die Karte bleibt unveraendert (Entscheidung oben).
+
+### Wert-Abweichung der Kandidaten (Dokumentation der Entscheidung)
+
+| Kandidat | Mittlere Abweichung (pp) | Gebäude mit Verschiebung > 0,5 pp | Stadtmittel veroeffentlicht | Stadtmittel Kandidat |
+|----------|--------------------------|-----------------------------------|----------------------------|----------------------|
+| 0.6  | -3.90 | 98.0 % | 22.22 % | 18.33 % |
+| 0.65 | -5.53 | 98.6 % | 22.22 % | 16.69 % |
+
+Bewertung: Bei 0.6 wuerden fast alle Gebaeudewerte (98 %) um durchschnittlich
+3,9 Prozentpunkte fallen, bei 0.65 um 5,5 Prozentpunkte. Die Ueberhoehung der
+veroeffentlichten Werte ist damit in dieser Groessenordnung — der Hinweis auf
+der Website (Feature 010) bleibt die gewaehlte Massnahme; eine Neu-Veröffentlichung
+der Daten ist nicht beschlossen.

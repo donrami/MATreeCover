@@ -247,3 +247,5 @@
 {"ts": "2026-08-05T22:19:13+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44695552, "gpu_used": false, "exit_code": 2, "inputs": []}
 {"ts": "2026-08-05T22:19:14+00:00", "subcommand": "values", "rss_peak_bytes": 180035584, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-05T22:19:15+00:00", "subcommand": "accept", "rss_peak_bytes": 49565696, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T22:39:19+00:00", "subcommand": "verify-value-delta", "rss_peak_bytes": 2807488512, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T23:05:54+00:00", "subcommand": "verify-value-delta", "rss_peak_bytes": 2820964352, "gpu_used": false, "exit_code": 0, "inputs": []}

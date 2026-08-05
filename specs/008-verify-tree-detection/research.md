@@ -117,13 +117,16 @@ recorded.
   direct reading; the floor of 1 keeps every district present with at
   least a minimal signal (small districts are then flagged as
   inconclusive per the edge cases, not silently dropped).
-- Value bands: the published values are extremely skewed (city mean 2.2%,
-  98.78% of buildings < 10% — verified in the archive
-  `statistic.json`). A single uniform sample would contain almost only
-  low-value areas; the model's failure modes (and the district extremes
-  from the Reddit thread) live in the high-value tail, so the bands
-  guarantee coverage there. Fixed bands beat quantiles: stable across
-  runs, and 10/30 match the legend the map already shows.
+- Value bands: the published values are right-skewed with a long tail
+  (verified directly from the derived `buildings.geojson` on 2026-08-05:
+  mean 22.2 %, median 20.8 %, 16.2 % of buildings < 10 %, 24.1 % >= 30 %,
+  p99 58.6 %; an earlier claim of a 2.2 % mean, taken from the reference
+  workspace's archive `statistic.json`, does not describe this pipeline's
+  published values and is retracted here). The 30-100 band holds only a
+  quarter of buildings, so an unstratified sample would under-represent
+  the high-value tail where the district extremes (Reddit thread) live;
+  the bands guarantee coverage there. Fixed bands beat quantiles: stable
+  across runs, 10/30 match the legend the map already shows.
 - Building centroids as the sampling frame: buildings are the map's unit
   of analysis, the centroid lands the patch in the building's actual
   surroundings, and `tables/buildings.geojson` already carries both
@@ -137,8 +140,9 @@ recorded.
   would under-represent dense districts and, unlike building centroids,
   would often land patches on fields/harbor/forest with no building
   context.
-- Pure random sample, no stratification: rejected — would miss the
-  high-value tail almost entirely (2.2% mean).
+- Pure random sample, no stratification: rejected — would under-represent
+  the high-value tail (mean 22.2 %, only a quarter of buildings at or
+  above 30 %).
 - Post-stratification weighting instead of allocation: rejected —
   allocation guarantees per-district presence up front, which is what the
   report needs.
