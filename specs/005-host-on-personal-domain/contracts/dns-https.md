@@ -36,13 +36,22 @@ continuity requirement (FR-014).
 ## 3. Ordered migration (outage-free)
 
 1. **Inventory** (no risk): copy every record from the Hostinger
-   DNS Zone Editor verbatim (A `@`/`www`, MX, TXT SPF/DMARC/DKIM,
-   any `mail` A); corroborate with `dig @1.1.1.1 abu-hamad.de
-   {A,MX,TXT,NS}`. Save as `validation/dns-migration-<ts>.json`.
+   DNS Zone Editor verbatim (A `@`/`www`, MX, TXT, any CNAME) and
+   corroborate with `dig @1.1.1.1 abu-hamad.de {A,MX,TXT,NS}`.
+   Live zone verified 2026-08-05 (dig + Cloudflare scan): A `@`
+   -> `191.96.56.91`, AAAA `@` -> `2a02:4780:b:926:0:939:29e4:2`,
+   `www` CNAME -> `abu-hamad.de`, `ftp` A -> `191.96.56.91`,
+   `autoconfig`/`autodiscover` CNAME -> `*.mail.hostinger.com`,
+   MX 10 `mx1.titan.email` + 20 `mx2.titan.email`, TXT
+   `v=spf1 include:spf.titan.email ~all` (Titan email platform),
+   Titan DKIM TXT (`titan1_*`, `v=DKIM1; k=rsa`), no `_dmarc`/
+   `mail` A records present. The dig inventory + scan is
+   authoritative over generic provider docs. Save as
+   `validation/dns-migration-<ts>.json`.
 2. **Build the Cloudflare zone** (no risk): add `abu-hamad.de`
    (free, full setup); reconcile the imported zone record-for-record
-   against the inventory. Blog A records **DNS-only (grey)** for
-   now; MX/SPF/DMARC/DKIM/mail **DNS-only** always.
+   against the inventory. Blog A/CNAME records **DNS-only (grey)**
+   for now; MX/TXT **DNS-only** always.
 3. **Stage the map**: deploy the Worker + the four routes
    (inert until the zone activates).
 4. **Cutover**: change nameservers at GoDaddy to Cloudflare's two
@@ -74,11 +83,14 @@ Before declaring success, all of these must pass:
   lagging caches).
 - `dig abu-hamad.de A` / `www` return the Hostinger blog IP; the
   blog loads over HTTPS (again after the proxy flip).
-- `dig abu-hamad.de MX` returns `mx1.hostinger.com` (5) and
-  `mx2.hostinger.com` (10); `dig abu-hamad.de TXT` contains the
-  full single SPF line with `include:_spf.mail.hostinger.com`;
-  `dig _dmarc.abu-hamad.de TXT` returns the DMARC policy; DKIM
-  CNAMEs present.
+- `dig abu-hamad.de MX` returns `mx1.titan.email` (10) and
+  `mx2.titan.email` (20); `dig abu-hamad.de TXT` contains the
+  single SPF line `v=spf1 include:spf.titan.email ~all` and the
+  Titan DKIM TXT (`titan1_*`, `v=DKIM1; k=rsa`);
+  `dig _dmarc.abu-hamad.de TXT` returns the pre-migration state
+  (none today — no DMARC was present before the switch);
+  `dig autoconfig.abu-hamad.de CNAME` / `autodiscover` resolve to
+  `*.mail.hostinger.com`.
 - Mail receive: external account → Hostinger mailbox, confirmed in
   webmail (`https://mail.hostinger.com`).
 - Mail send: Hostinger mailbox → external address; headers show

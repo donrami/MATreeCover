@@ -43,8 +43,8 @@ the TLS mode. It must hold at every release.
 
 | Key | Content-Type | Cache-Control |
 |---|---|---|
-| `buildings.pmtiles` | `application/vnd.pmtiles` | `no-cache, no-transform` |
-| `trees.pmtiles` | `application/vnd.pmtiles` | `no-cache, no-transform` |
+| `buildings.pmtiles` | `application/vnd.pmtiles` | `no-store, no-transform` |
+| `trees.pmtiles` | `application/vnd.pmtiles` | `no-store, no-transform` |
 | `buildings.geojson` | `application/geo+json` | `no-cache` |
 
 - Uploaded with `wrangler r2 object put --content-type …
@@ -52,9 +52,20 @@ the TLS mode. It must hold at every release.
   multipart).
 - `no-transform` on the `.pmtiles` objects keeps `Content-Length`
   intact so edge behavior never breaks 206 slicing (R-007).
-- `no-cache` = revalidate with ETag; never `no-store` (would force
-  re-downloads and break SC-004 for repeat visitors), never
-  `max-age` on non-hashed names (stale after deploy).
+- `no-store` on the `.pmtiles` objects: pmtiles.js only sends
+  `cache: "no-store"` on Windows Chrome (its `chromeWindowsNoCache`
+  workaround); on other platforms the browser cache is used for
+  range requests, and Chrome's range cache is keyed by URL only —
+  it can serve a cached 206 for the WRONG byte range, silently
+  corrupting tiles (verified live 2026-08-05). Server-side
+  `no-store` disables browser caching of range responses for all
+  clients. Range responses are small (viewport tiles only), so
+  repeat visits re-fetch ranges — within SC-004 headroom.
+- `no-cache` on `buildings.geojson` (fetched whole, not
+  range-served): revalidate with ETag; never `no-store` there
+  (would force re-downloading the 54 MB payload every visit and
+  break SC-004 for repeat visitors), never `max-age` on
+  non-hashed names (stale after deploy).
 
 **Invariants**:
 
@@ -67,13 +78,18 @@ the TLS mode. It must hold at every release.
 
 | Name | Type | Value | Proxy |
 |---|---|---|---|
-| `abu-hamad.de` | A | Hostinger blog IP | proxied (orange, after zone Active) |
-| `www` | A | Hostinger blog IP | proxied (orange, after zone Active) |
-| `abu-hamad.de` | MX | 5 `mx1.hostinger.com`; 10 `mx2.hostinger.com` | DNS-only |
-| `abu-hamad.de` | TXT | `v=spf1 include:_spf.mail.hostinger.com ~all` | DNS-only |
-| `_dmarc` | TXT | existing DMARC policy (unchanged) | DNS-only |
-| DKIM | CNAME | `hostinger._domainkey…` (from inventory) | DNS-only |
-| `mail` (if used) | A | mail server IP | DNS-only |
+| `abu-hamad.de` | A | `191.96.56.91` (blog, Hostinger) | proxied (orange, after zone Active) |
+| `abu-hamad.de` | AAAA | `2a02:4780:b:926:0:939:29e4:2` | proxied (orange, after zone Active) |
+| `www` | CNAME | `abu-hamad.de` | proxied (orange, after zone Active) |
+| `ftp` | A | `191.96.56.91` | DNS-only |
+| `autoconfig` | CNAME | `autoconfig.mail.hostinger.com` | DNS-only (email client autoconfig) |
+| `autodiscover` | CNAME | `autodiscover.mail.hostinger.com` | DNS-only (email client autodiscover) |
+| `abu-hamad.de` | MX | 10 `mx1.titan.email`; 20 `mx2.titan.email` | DNS-only |
+| `abu-hamad.de` | TXT | `v=spf1 include:spf.titan.email ~all` | DNS-only |
+| `titan1_*` (DKIM) | TXT | `v=DKIM1; k=rsa; p=…` (Titan DKIM, per scan import) | DNS-only |
+| `_dmarc` | TXT | none today — optional hardening only, not part of this feature | DNS-only if added |
+
+All values verified against the live zone 2026-08-05 (`dig`; DKIM selector name per the Cloudflare scan).
 
 - A records MUST be proxied for the `/map*` routes to work (routes
   run on proxied traffic, R-008). Migration order: grey → zone

@@ -221,10 +221,10 @@ echo | openssl s_client -servername abu-hamad.de -connect abu-hamad.de:443 2>/de
 ```sh
 dig +short abu-hamad.de NS                    # Cloudflare NS only
 dig @8.8.8.8 abu-hamad.de NS                  # same (second resolver)
-dig +short abu-hamad.de MX                     # mx1/mx2.hostinger.com, 5/10
-dig +short abu-hamad.de TXT                    # SPF includes _spf.mail.hostinger.com
-dig +short _dmarc.abu-hamad.de TXT             # DMARC policy present
-dig +short abu-hamad.de A                      # Hostinger blog IP
+dig +short abu-hamad.de MX                     # mx1/mx2.titan.email, 10/20
+dig +short abu-hamad.de TXT                    # SPF includes spf.titan.email
+dig +short _dmarc.abu-hamad.de TXT             # pre-migration state (none today)
+dig +short abu-hamad.de A                      # 191.96.56.91 (blog, Hostinger)
 ```
 
 1. **Pass criteria**:

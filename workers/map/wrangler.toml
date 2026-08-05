@@ -8,13 +8,13 @@ compatibility_date = "2025-04-01"
 
 # Routes — path-prefix serving (research R-001/R-005). Only /map*
 # is routed to this Worker; every other path on the hostnames goes
-# to the blog origin (Hostinger). zone_name is resolved at deploy
-# time once the zone exists (T001).
+# to the blog origin (Hostinger). Zone created 2026-08-05
+# (T001); zone_id 361455478e608896e0433922958ce50c.
 routes = [
-  { pattern = "abu-hamad.de/map", zone_name = "abu-hamad.de" },
-  { pattern = "abu-hamad.de/map/*", zone_name = "abu-hamad.de" },
-  { pattern = "www.abu-hamad.de/map", zone_name = "abu-hamad.de" },
-  { pattern = "www.abu-hamad.de/map/*", zone_name = "abu-hamad.de" },
+  { pattern = "abu-hamad.de/map", zone_id = "361455478e608896e0433922958ce50c" },
+  { pattern = "abu-hamad.de/map/*", zone_id = "361455478e608896e0433922958ce50c" },
+  { pattern = "www.abu-hamad.de/map", zone_id = "361455478e608896e0433922958ce50c" },
+  { pattern = "www.abu-hamad.de/map/*", zone_id = "361455478e608896e0433922958ce50c" },
 ]
 
 # Static shell: a filtered copy of the publish bundle (dist/ minus

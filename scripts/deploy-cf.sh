@@ -66,10 +66,36 @@ cmd_storage_check() {
   log "storage check PASS"
 }
 
+# Upload the three data files to R2 (contracts/hosting-config.md
+# §2, deployment.md §3.4): atomic per object, correct content-type
+# and cache headers. Interrupted uploads leave the previous object
+# intact (FR-010).
+cmd_upload_data() {
+  require_dist
+  local entries=(
+    "buildings.pmtiles application/vnd.pmtiles no-store, no-transform"
+    "trees.pmtiles application/vnd.pmtiles no-store, no-transform"
+    "buildings.geojson application/geo+json no-cache"
+  )
+  local entry key ctype ccache
+  for entry in "${entries[@]}"; do
+    read -r key ctype ccache <<< "$entry"
+    [[ -f "$DIST_DIR/$key" ]] || die "missing $DIST_DIR/$key — run 'make publish' first"
+    log "uploading $key ($ctype, $ccache)"
+    npx --yes wrangler@4 r2 object put "$BUCKET/$key" \
+      --file "$DIST_DIR/$key" \
+      --content-type "$ctype" \
+      --cache-control "$ccache" \
+      --remote
+  done
+  log "data upload complete"
+}
+
 case "${1:-}" in
   manifest) cmd_manifest ;;
   storage-check) cmd_storage_check ;;
   prepare-assets) cmd_prepare_assets ;;
+  upload-data) cmd_upload_data ;;
   "") cmd_manifest; cmd_storage_check ;;
-  *) die "unknown subcommand: $1 (expected: manifest | storage-check | prepare-assets)" ;;
+  *) die "unknown subcommand: $1 (expected: manifest | storage-check | prepare-assets | upload-data)" ;;
 esac

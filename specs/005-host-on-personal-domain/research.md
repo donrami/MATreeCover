@@ -244,6 +244,16 @@ MX/SMTP). Blog A records must be **proxied** for the `/map*` routes
 to work (routes run on proxied traffic) — hence the grey-first,
 orange-after-activation sequence; proxying a cert-bearing origin
 requires Full (strict), not Flexible (redirect loops).
+**Correction 2026-08-05 (live inventory + Cloudflare scan are
+authoritative)**: the actual zone uses the Titan email platform —
+MX 10 `mx1.titan.email` + 20 `mx2.titan.email`, SPF
+`v=spf1 include:spf.titan.email ~all`, Titan DKIM TXT (`titan1_*`),
+`www` as a CNAME to the apex, plus AAAA, `ftp` A, and
+`autoconfig`/`autodiscover` CNAMEs to `*.mail.hostinger.com`; no
+`_dmarc`/`mail` A records (verified with `dig`; the Cloudflare scan
+imported the full 10-record set). The migration recreates the live
+record set verbatim; the generic Hostinger shapes above are
+superseded by the inventory.
 
 **Alternatives considered**: *Keep DNS at Hostinger*: Cloudflare
 routes need a proxied record on Cloudflare DNS; impossible.

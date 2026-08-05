@@ -42,7 +42,7 @@ prerequisites for every user story.
   `www.abu-hamad.de/map`, `www.abu-hamad.de/map/*` per
   `contracts/hosting-config.md` §1. **Accept**: `npx wrangler
   deploy --dry-run` succeeds from `workers/map/`.
-- [ ] T003 [P] Create the R2 bucket with `npx wrangler r2 bucket
+- [X] T003 [P] Create the R2 bucket with `npx wrangler r2 bucket
   create matreecover-data` (free tier, `contracts/bundle.md` §1).
   **Accept**: `npx wrangler r2 bucket list` shows the bucket.
 
@@ -63,7 +63,7 @@ need; MUST complete before any user story implementation.
   check (data size vs 10 GB-month) per `contracts/deployment.md`
   §3.1-3.3. **Accept**: running the script with a real `dist/`
   prints a valid manifest and passes the storage check.
-- [ ] T005 [P] Authorize tooling and verify the zone state:
+- [X] T005 [P] Authorize tooling and verify the zone state:
   `npx wrangler login` + `npx wrangler whoami`; confirm the
   `abu-hamad.de` zone shows Active and Universal SSL Active via
   `npx wrangler zones list`. **Accept**: `wrangler whoami`
@@ -89,7 +89,7 @@ viewport, byte-identity SC-007).
   with all relative asset refs (`style.css`, `vendor/*.js`,
   `main.js`) resolving under `/map/`; `/map` and the www variants
   redirect exactly once.
-- [ ] T007 [US1] Deploy the Worker with the four routes to the
+- [X] T007 [US1] Deploy the Worker with the four routes to the
   live zone (`npx wrangler deploy` from `workers/map/`); verify
   live per quickstart Scenario 1 + Scenario 6 redirect checks:
   `/map/` 200, `/map` 301, `www.abu-hamad.de/map/` 301 to the
@@ -108,14 +108,14 @@ levels via Range requests (FR-005, FR-007). **Independent Test**:
 quickstart Scenario 2 (pan/zoom/popup/Bäume toggle at z16-z18,
 206 in the network tab).
 
-- [ ] T008 [US2] Implement the R2 range passthrough in
+- [X] T008 [US2] Implement the R2 range passthrough in
   `workers/map/index.js` for `buildings.pmtiles`,
   `trees.pmtiles`, `buildings.geojson`: forward the client
   `Range` header to `env.DATA.get(key, { range })` and pass
   through R2's 206 + `Content-Range` (research R-003).
   **Accept**: a Range request via `npx wrangler dev` returns 206
   with a correct `Content-Range` for each of the three keys.
-- [ ] T009 [US2] Add the data upload step to
+- [X] T009 [US2] Add the data upload step to
   `scripts/deploy-cf.sh`: `npx wrangler r2 object put` for the
   three data files with `--content-type application/vnd.pmtiles`
   (pmtiles) / `application/geo+json` (geojson) and
