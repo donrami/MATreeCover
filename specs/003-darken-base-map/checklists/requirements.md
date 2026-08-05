@@ -34,4 +34,4 @@
 - All items pass on first validation (2026-08-04).
 - "No implementation details" assessed against Requirements, Success Criteria, and User Scenarios; the Dependencies Evidence section documents current state as evidence, following the established pattern from feature 002.
 - ste-lint prose warnings are advisory only and do not apply to given/when/then acceptance format or spec structure.
-- Ready for `/speckit.plan`.
+- Ready for planning.

@@ -35,4 +35,4 @@
 
 - Clarifications resolved via interview on 2026-08-04: compact value popup
   kept, popup follows building clicks, empty-space click dismisses.
-- All items pass. Ready for `/speckit.plan`.
+- All items pass. Ready for planning.

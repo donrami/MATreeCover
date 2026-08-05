@@ -31,5 +31,5 @@
 
 ## Notes
 
-- All items pass. FR-012 README language set to English (user choice, Q1). Spec is ready for `/speckit.plan`.
+- All items pass. FR-012 README language set to English (user choice, Q1). Spec is ready for planning.
 - ste-lint warnings on this file are expected: the template's Given/When/Then format exceeds STE sentence-length caps by design; planning artifacts are out of the linter's target scope (user-facing prose).

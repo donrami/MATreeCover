@@ -1,8 +1,8 @@
 # Phase 0 Research
 
 **Branch**: `001-replicate-mannheim-tree-cover` | **Date**: 2026-08-03
-**Inputs**: `spec.md`, `2026.01/meta.json`, the mannheim workspace
-inventory at `/home/mainuser/Desktop/mannheim/workspace/mannheim`.
+**Inputs**: `spec.md`, `2026.01/meta.json`, the archived mannheim workspace
+inventory.
 
 This document records every technical decision the plan must commit to.
 Each unknown from the spec or from the mannheim workspace is resolved

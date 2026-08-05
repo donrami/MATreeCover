@@ -2,26 +2,29 @@
 # Deploy the canopy-mask inference endpoint to a RunPod pod and start it.
 #
 # Prereqs: the imagery tiles and best_deeplabv3plus.pth already on the pod
-# (e.g. `rsync -a .../mosaic/extract/ root@HOST:/workspace/mannheim/mosaic/extract/`),
+# (e.g. `rsync -a .../mosaic/extract/ root@<pod-host>:/workspace/mannheim/mosaic/extract/`),
 # pod reachable over the direct-TCP SSH port.
 #
 # Usage: scripts/runpod-deploy.sh [host] [port] [ssh_key]
-#   host    ssh target, default root@HOST_IP
-#   port    ssh port, default 40092
-#   key     identity file, default ~/.ssh/id_ed25519
+#   host    ssh target (required; or RUNPOD_HOST env)
+#   port    ssh port (default: RUNPOD_PORT or 22)
+#   key     identity file (required; or SSH_KEY env)
 #
 # Prints the tunnel + endpoint commands to run `runpod-infer` locally.
 set -euo pipefail
 
-HOST="${1:-root@HOST_IP}"
-PORT="${2:-40092}"
-KEY="${3:-$HOME/.ssh/id_ed25519}"
+HOST="${1:-${RUNPOD_HOST:-}}"
+PORT="${2:-${RUNPOD_PORT:-22}}"
+KEY="${3:-${SSH_KEY:-}}"
+
+[ -n "$HOST" ] || { echo "error: ssh target required (arg 1 or RUNPOD_HOST)" >&2; exit 1; }
+[ -n "$KEY" ] || { echo "error: ssh identity file required (arg 3 or SSH_KEY)" >&2; exit 1; }
 
 SSH=(ssh -p "$PORT" -i "$KEY" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20)
 SCP=(scp -P "$PORT" -i "$KEY" -o StrictHostKeyChecking=accept-new)
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WS="${MANNHEIM_WORKSPACE:-/home/mainuser/Desktop/MATreeCover/data/archive/workspace}"
+WS="${MANNHEIM_WORKSPACE:-data/archive/workspace}"
 
 "${SSH[@]}" "$HOST" "mkdir -p /workspace/mannheim/src/endpoint /workspace/mannheim/mosaic /workspace/mannheim/models"
 "${SCP[@]}" "$REPO_ROOT/src/endpoint/server.py" "$HOST:/workspace/mannheim/src/endpoint/server.py"

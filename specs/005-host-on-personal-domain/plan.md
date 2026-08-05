@@ -8,7 +8,7 @@
 
 Serve the published static map bundle at the path
 `https://abu-hamad.de/map/` on Cloudflare's free plan, while the
-domain root keeps the existing Hostinger services (WordPress blog,
+domain root keeps the existing <hosting-provider> services (WordPress blog,
 email). The map renders AT the path (no redirect to a foreign URL,
 FR-001 as clarified). Mechanism (research R-001..R-003): one
 Cloudflare **Worker** with **routes** `abu-hamad.de/map*` (+ www
@@ -24,8 +24,8 @@ then `wrangler deploy` as the last step; an interrupted upload never
 replaces the live version (FR-010, SC-006); rollback is
 `wrangler rollback` plus re-upload of the previous data from kept
 local archives. The DNS migration (R-008) moves the zone from
-Hostinger to Cloudflare at GoDaddy with the new zone fully populated
-first (A `@`/`www` → Hostinger blog, MX/SPF/DMARC/DKIM → Hostinger
+<hosting-provider> to Cloudflare at <registrar> with the new zone fully populated
+first (A `@`/`www` → <hosting-provider> blog, MX/SPF/DMARC/DKIM → <hosting-provider>
 email), so email and the blog keep working (FR-014); blog records
 start DNS-only and flip to proxied with SSL mode Full (strict) only
 after the zone and Universal SSL are Active. Cache contract
@@ -48,7 +48,7 @@ bundle is unchanged (vanilla HTML/CSS/JS + vendored MapLibre GL
 **Primary Dependencies**: Cloudflare (free plan): Workers routes,
 Workers static assets, R2 (binding, 10 GB free, zero egress),
 Universal SSL. Local: `wrangler` (npx), `curl`/`dig`/`openssl` for
-the FR-013 gate, `rsync` no longer needed. Hostinger keeps the
+the FR-013 gate, `rsync` no longer needed. <hosting-provider> keeps the
 blog and email (untouched, FR-014). No new runtime dependencies in
 the bundle.
 
@@ -68,7 +68,7 @@ re-measurement recorded under `validation/live-perf.json` (SC-004).
 No pytest changes (no data/pipeline change).
 
 **Target Platform**: Public internet — modern browsers (WebGL 2);
-Cloudflare Workers edge (LiteSpeed/Hostinger no longer involved in
+Cloudflare Workers edge (LiteSpeed/<hosting-provider> no longer involved in
 the map path).
 
 **Project Type**: Static-site deployment (operations feature; the
@@ -94,9 +94,9 @@ revalidation round-trips only (R-007, R-010).
 - Deploys MUST be atomic: R2 PUT per object, `wrangler deploy`
   last; interrupted uploads leave the previous version live
   (FR-010, SC-006, R-006).
-- DNS migration MUST keep the Hostinger email and blog working:
+- DNS migration MUST keep the <hosting-provider> email and blog working:
   full record inventory and recreation at Cloudflare BEFORE the
-  GoDaddy nameserver switch; email records DNS-only (FR-014,
+  <registrar> nameserver switch; email records DNS-only (FR-014,
   R-008).
 - Blog A records must be proxied (orange) for `/map*` routes to
   function; SSL mode Full (strict) after Universal SSL is Active
@@ -104,8 +104,8 @@ revalidation round-trips only (R-007, R-010).
 - OR-005: no large files enter git (R2 uploads stream from local
   `dist/`; `dist/` stays gitignored).
 
-**Scale/Scope**: One domain (GoDaddy registrar), one Cloudflare
-zone, one Worker + one R2 bucket, the existing Hostinger blog and
+**Scale/Scope**: One domain (<registrar> registrar), one Cloudflare
+zone, one Worker + one R2 bucket, the existing <hosting-provider> blog and
 email untouched. New repo files: `workers/map/{wrangler.toml,
 index.js, package.json}`, `scripts/deploy-cf.sh`; validation
 records under `validation/`; README deployment section; no `src/`
@@ -115,7 +115,7 @@ changes.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No constitution file exists (`.specify/memory/constitution.md`
+No constitution file exists (`constitution template`
 absent — same as 004), so no constitution-derived gates. The
 de-facto gates are the project's operating rules (Makefile,
 README) and the spec's own constraints:
@@ -135,7 +135,7 @@ README) and the spec's own constraints:
   are transferred byte-identically with sha256 verification
   (R-003, R-006); data URLs stay relative under `/map/`.
 - **FR-014 (email + blog continuity)**: PASS by procedure — the
-  new Cloudflare zone is a record-for-record copy of the Hostinger
+  new Cloudflare zone is a record-for-record copy of the <hosting-provider>
   zone before the nameserver switch; FR-014 gate verifies email
   send/receive and blog after the cutover (R-008).
 - **Spec edge cases**: DNS propagation (dig at two resolvers,
@@ -167,7 +167,7 @@ governance surface.
 
 ```text
 specs/005-host-on-personal-domain/
-├── plan.md              # This file (/speckit.plan command output)
+├── plan.md              # This file (plan command output)
 ├── research.md          # Phase 0 output — Cloudflare topology, DNS migration
 ├── data-model.md        # Phase 1 output — entities E-001..E-005 + release lifecycle
 ├── quickstart.md        # Phase 1 output — Scenarios 1–7 validation guide
@@ -175,9 +175,9 @@ specs/005-host-on-personal-domain/
 │   ├── README.md
 │   ├── deployment.md    # Cloudflare deploy procedure, atomicity, rollback
 │   ├── hosting-config.md# Worker/R2/route config + DNS records table + SSL mode
-│   ├── dns-https.md     # GoDaddy NS switch, record inventory, email continuity
+│   ├── dns-https.md     # <registrar> NS switch, record inventory, email continuity
 │   └── bundle.md        # dist/ split (assets vs R2), sha256 identity
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (tasks command output)
 ```
 
 ### Source Code (repository root)

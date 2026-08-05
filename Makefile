@@ -1,19 +1,20 @@
 SHELL := /bin/bash
 PY := .venv/bin/python
 PIP := .venv/bin/pip
-WORKSPACE ?= /home/mainuser/Desktop/MATreeCover/data/archive/workspace
+WORKSPACE ?= data/archive/workspace
 CLI := $(PY) -m src.pipeline.cli
 MSG ?=
 
 .PHONY: bootstrap check-prereqs commit-spec commit-plan commit-slice commit-milestone \
-	accept publish values trees runpod-infer pmtiles-buildings pmtiles-trees check-or005
+	accept publish values trees runpod-infer pmtiles-buildings pmtiles-trees check-or005 \
+	check-public
 
 ## Setup ------------------------------------------------------------------
 
 bootstrap: ## create venv, install deps, run acceptance suite once
 	@bash scripts/check-prereqs.sh
-	@git rev-parse --verify --quiet refs/heads/001-replicate-mannheim-tree-cover >/dev/null \
-		|| { echo "error: checkout branch 001-replicate-mannheim-tree-cover first"; exit 1; }
+	@git rev-parse --verify --quiet refs/heads/main >/dev/null \
+		|| { echo "error: checkout branch main first"; exit 1; }
 	python3.11 -m venv .venv
 	$(PIP) install --quiet -e ".[dev]"
 	@echo "== running acceptance suite =="
@@ -22,6 +23,9 @@ bootstrap: ## create venv, install deps, run acceptance suite once
 
 check-prereqs: ## Python 3.11, tippecanoe >= 2.x, mannheim workspace readable
 	@bash scripts/check-prereqs.sh
+
+check-public: ## FR-010 gate: no personal paths/credentials in tracked files
+	@bash scripts/check-public.sh
 
 ## Commit discipline (OR-004 / R-013) --------------------------------------
 

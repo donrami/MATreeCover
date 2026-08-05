@@ -4,14 +4,14 @@ Research date: 2026-08-05. Two research streams: (A) repository public-readiness
 
 ## A. Repository audit — current public-readiness state
 
-Audit method: `git ls-files` + `git grep` over tracked files only (127 files); gitignored dirs (`.venv`, `data/`, `dist/`, `.omp/`, `.specify/`, `.spec-workflow/`, `mosaic/`) verified not tracked.
+Audit method: `git ls-files` + `git grep` over tracked files only (127 files); gitignored dirs (`.venv`, `data/`, `dist/`, harness-internal dirs, `mosaic/`) verified not tracked.
 
 ### Findings by severity
 
 | Severity | Count | What |
 |----------|-------|------|
-| high | 13 | Personal absolute path `/home/mainuser/Desktop/MATreeCover/data/archive/workspace` in `README.md`, `Makefile`, `scripts/check-prereqs.sh`, `scripts/runpod-deploy.sh`, `src/pipeline/workspace.py`, `tests/conftest.py`, `specs/001/quickstart.md`; original-workspace path `/home/mainuser/Desktop/mannheim/workspace/mannheim` in `specs/001/{spec,plan,research,tasks}.md`; absolute input-spec paths in `specs/001/plan.md`, `specs/002/plan.md`; **no LICENSE file tracked** despite README claiming MIT |
-| medium | 10 | README RunPod SSH block (`~/.ssh/id_ed25519`, port 40092, `root@HOST`); `scripts/runpod-deploy.sh` same defaults; `workers/map/wrangler.toml` real Cloudflare `zone_id`; `specs/005` owner ops docs with real hosting IPs (`191.96.56.91`, `2a02:4780:...`) and DNS records; `scripts/deploy-cf.sh` hardcoded owner-infra gates; `/speckit.*` and `.specify/*` harness-internal references in 11 files across `specs/001..006`; unfilled plan template in `specs/006` |
+| high | 13 | Personal absolute workspace paths in `README.md`, `Makefile`, `scripts/check-prereqs.sh`, `scripts/runpod-deploy.sh`, `src/pipeline/workspace.py`, `tests/conftest.py`, `specs/001/quickstart.md`; the original-workspace path in `specs/001/{spec,plan,research,tasks}.md`; absolute input-spec paths in `specs/001/plan.md`, `specs/002/plan.md`; **no LICENSE file tracked** despite README claiming MIT |
+| medium | 10 | README RunPod SSH block (SSH key path, personal port, root host placeholder); `scripts/runpod-deploy.sh` same defaults; `workers/map/wrangler.toml` real Cloudflare `zone_id`; `specs/005` owner ops docs with real hosting IPs and DNS records; `scripts/deploy-cf.sh` hardcoded owner-infra gates; harness-internal workflow references in 11 files across `specs/001..006`; unfilled plan template in `specs/006` |
 | low | 8 | Loopback ports 8088/8090 in validation records; commit-hash references; `schultz-web.de` reference link; stale branch guard in Makefile bootstrap; `abu-hamad.de` domain (intentional, owner's public deployment) |
 
 ### Verified clean
@@ -24,7 +24,7 @@ Audit method: `git ls-files` + `git grep` over tracked files only (127 files); g
 ### Decisions from audit
 
 1. **Workspace default strategy**: replace the hardcoded absolute default with a repo-root-relative default (`<repo>/data/archive/workspace`), keeping the `MANNHEIM_WORKSPACE` env override. `workspace.py` resolves against its own file location (robust to cwd), `tests/conftest.py` against the existing `REPO_ROOT`. Locally the archived workspace lives at exactly that relative path, so owner behavior is unchanged. Public readers get a neutral, documented path. All references (Makefile, `check-prereqs.sh`, `runpod-deploy.sh`, `specs/001/quickstart.md`) use the same relative default or the env var.
-2. **specs/ sanitize, do not exclude** (per spec A-5): `specs/` is valuable provenance (data lineage, acceptance criteria) and stays public, scrubbed: personal paths → relative/env-var wording; `/speckit.*`, `.specify/*`, `.spec-workflow` references → removed or generic wording; `specs/005` owner ops details (IPs, DNS, registrar) → redacted to placeholders, architecture retained. Spec A-4 holds: history is not rewritten.
+2. **specs/ sanitize, do not exclude** (per spec A-5): `specs/` is valuable provenance (data lineage, acceptance criteria) and stays public, scrubbed: personal paths → relative/env-var wording; harness-internal workflow references → removed or generic wording; `specs/005` owner ops details (IPs, DNS, registrar) → redacted to placeholders, architecture retained. Spec A-4 holds: history is not rewritten.
 3. **`wrangler.toml` zone_id**: replace the real zone id with a placeholder; owner deploys with a gitignored local override (`wrangler.local.toml`, `--config`) documented in DEVELOPMENT.md.
 4. **Scan gate**: new `scripts/check-public.sh` + `make check-public` target enforces FR-010 (SC-003) with a documented pattern list and zero-finding exit semantics. Runpod defaults (`KEY`, port) switch to env-var/empty placeholders so the gate can be global.
 5. **README dev content**: moves verbatim-but-sanitized into a new `DEVELOPMENT.md` (spec FR-009); nothing is lost.

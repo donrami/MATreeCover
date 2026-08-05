@@ -34,8 +34,8 @@ description: "Task list: Public Release Preparation"
 
 **Purpose**: Branch and planning-artifact commit (OR-004).
 
-- [ ] T001 Create and switch to branch `006-public-release-prep`
-- [ ] T002 Commit planning artifacts (spec, plan, research, data-model, contracts/, quickstart) via `make commit-plan MSG="plan: public release preparation"` (OR-004)
+- [X] T001 Create and switch to branch `006-public-release-prep`
+- [X] T002 Commit planning artifacts (spec, plan, research, data-model, contracts/, quickstart) via `make commit-plan MSG="plan: public release preparation"` (OR-004)
 
 ---
 
@@ -43,11 +43,11 @@ description: "Task list: Public Release Preparation"
 
 **Purpose**: The hygiene gate plus all code-level personal-path fixes. These MUST be complete before any user story: the gate is the FR-010 instrument every story must pass, and the workspace changes are what `DEVELOPMENT.md` (US1) documents truthfully.
 
-- [ ] T003 Create `scripts/check-public.sh` per `contracts/public-hygiene.md`: scan `git ls-files` for patterns P1–P13; exit 0 with `clean: N tracked files scanned` when no findings, exit 1 with `file:line: match` lines otherwise; no network access; every pattern commented with rationale
-- [ ] T004 Update `Makefile`: add `check-public` target (runs `scripts/check-public.sh`, in `.PHONY`); change `WORKSPACE ?=` default to relative `data/archive/workspace`; fix stale bootstrap branch guard `refs/heads/001-replicate-mannheim-tree-cover` → `main`
-- [ ] T005 [P] Change `DEFAULT_WORKSPACE` in `src/pipeline/workspace.py` to a repo-root-relative default (`Path(__file__).resolve().parent.parent.parent / "data/archive/workspace"`), keeping the `MANNHEIM_WORKSPACE` env override (research.md decision 1)
-- [ ] T006 [P] Change `DEFAULT_WORKSPACE` in `tests/conftest.py` to `REPO_ROOT / "data/archive/workspace"`, keeping the `MANNHEIM_WORKSPACE` env override
-- [ ] T007 [P] Change the workspace default in `scripts/check-prereqs.sh` to relative `data/archive/workspace` (keep `MANNHEIM_WORKSPACE` override)
+- [X] T003 Create `scripts/check-public.sh` per `contracts/public-hygiene.md`: scan `git ls-files` for patterns P1–P13; exit 0 with `clean: N tracked files scanned` when no findings, exit 1 with `file:line: match` lines otherwise; no network access; every pattern commented with rationale
+- [X] T004 Update `Makefile`: add `check-public` target (runs `scripts/check-public.sh`, in `.PHONY`); change `WORKSPACE ?=` default to relative `data/archive/workspace`; fix stale bootstrap branch guard `refs/heads/001-replicate-mannheim-tree-cover` → `main`
+- [X] T005 [P] Change `DEFAULT_WORKSPACE` in `src/pipeline/workspace.py` to a repo-root-relative default (`Path(__file__).resolve().parent.parent.parent / "data/archive/workspace"`), keeping the `MANNHEIM_WORKSPACE` env override (research.md decision 1)
+- [X] T006 [P] Change `DEFAULT_WORKSPACE` in `tests/conftest.py` to `REPO_ROOT / "data/archive/workspace"`, keeping the `MANNHEIM_WORKSPACE` env override
+- [X] T007 [P] Change the workspace default in `scripts/check-prereqs.sh` to relative `data/archive/workspace` (keep `MANNHEIM_WORKSPACE` override)
 
 **Checkpoint**: Foundation ready. `make check-public` runs and reports the remaining doc-level findings as a known backlog (cleared in US2). Code-level findings are gone.
 
@@ -61,10 +61,10 @@ description: "Task list: Public Release Preparation"
 
 ### Implementation User Story 1
 
-- [ ] T008 [P] [US1] Create `LICENSE` per `contracts/license.md` §1: standard MIT text, project copyright `Copyright (c) 2026 donrami` (confirm exact holder at commit time), preserved CityTreeCover notice (`Copyright (c) 2026 Jakob Schultz` + MIT permission text)
-- [ ] T009 [P] [US1] Rewrite `README.md` per `contracts/readme.md`: English, required structure (one-line pitch, live map link `https://abu-hamad.de/map/`, what-the-map-shows, how-to-read + tree toggle, data/methodology, credits per `contracts/license.md` §2–3, license section linking `./LICENSE`, developer link to `DEVELOPMENT.md`); no commands, code blocks, exit codes, or internal workflow references (FR-001..006, 008, 012)
-- [ ] T010 [US1] Create `DEVELOPMENT.md` (FR-009): migrate the dev content from the current README (prerequisites via `MANNHEIM_WORKSPACE`, setup, pipeline subcommands, publish/hosting, RunPod inference, tests, governance OR-004/005, vendored libraries) sanitized per FR-010 — no personal paths, no `/speckit.*`/`.specify/*` references
-- [ ] T011 [US1] Verify README against `contracts/readme.md` "Verification": `grep -F "https://abu-hamad.de/map/" README.md` matches; no fenced code blocks or `$ `/`make `/`python -m`/`bash `/`npx ` line starts in the README; license statement matches `LICENSE`; CityTreeCover and `dl-de/by-2-0` present
+- [X] T008 [P] [US1] Create `LICENSE` per `contracts/license.md` §1: standard MIT text, project copyright `Copyright (c) 2026 donrami` (confirm exact holder at commit time), preserved CityTreeCover notice (`Copyright (c) 2026 Jakob Schultz` + MIT permission text)
+- [X] T009 [P] [US1] Rewrite `README.md` per `contracts/readme.md`: English, required structure (one-line pitch, live map link `https://abu-hamad.de/map/`, what-the-map-shows, how-to-read + tree toggle, data/methodology, credits per `contracts/license.md` §2–3, license section linking `./LICENSE`, developer link to `DEVELOPMENT.md`); no commands, code blocks, exit codes, or internal workflow references (FR-001..006, 008, 012)
+- [X] T010 [US1] Create `DEVELOPMENT.md` (FR-009): migrate the dev content from the current README (prerequisites via `MANNHEIM_WORKSPACE`, setup, pipeline subcommands, publish/hosting, RunPod inference, tests, governance OR-004/005, vendored libraries) sanitized per FR-010 — no personal paths, no harness-internal workflow references
+- [X] T011 [US1] Verify README against `contracts/readme.md` "Verification": `grep -F "https://abu-hamad.de/map/" README.md` matches; no fenced code blocks or `$ `/`make `/`python -m`/`bash `/`npx ` line starts in the README; license statement matches `LICENSE`; CityTreeCover and `dl-de/by-2-0` present
 
 **Checkpoint**: US1 complete — README is self-contained for a visitor; quickstart scenarios 2, 4, 5, 6 pass.
 
@@ -78,13 +78,13 @@ description: "Task list: Public Release Preparation"
 
 ### Implementation User Story 2
 
-- [ ] T012 [P] [US2] Sanitize personal paths in `specs/001-replicate-mannheim-tree-cover/`: `/home/mainuser/Desktop/MATreeCover/data/archive/workspace` → relative `data/archive/workspace`; `/home/mainuser/Desktop/mannheim/workspace/mannheim` → `MANNHEIM_WORKSPACE` wording (files: spec.md, plan.md, quickstart.md, research.md, tasks.md)
-- [ ] T013 [P] [US2] Replace absolute input-spec path in `specs/002-fix-building-popup/plan.md` with a relative `specs/…/spec.md` reference
-- [ ] T014 [P] [US2] Remove harness-internal references (`/speckit.*`, `.specify/*`, `.spec-workflow`) from all `specs/001..006` plan.md and `checklists/requirements.md` files (11 files per research.md audit), replacing with neutral wording
-- [ ] T015 [P] [US2] Redact owner ops details in `specs/005-host-on-personal-domain/` per `contracts/public-hygiene.md` manual item 1: hosting IPs (`191.96.56.91`, `2a02:4780:...`), DNS/MX/CNAME records, registrar names → placeholders; keep architecture and decisions
-- [ ] T016 [P] [US2] Replace real `zone_id` in `workers/map/wrangler.toml` with `<your-zone-id>` placeholder; add `workers/map/wrangler.local.toml` to `.gitignore`; document the `--config` local override in `DEVELOPMENT.md`
-- [ ] T017 [P] [US2] Parameterize owner-infra gates in `scripts/deploy-cf.sh` per `contracts/public-hygiene.md` manual item 2: apex/www host, MX/CNAME checks, blog HTTPS check behind variables with neutral defaults
-- [ ] T018 [P] [US2] Replace SSH key/port defaults in `scripts/runpod-deploy.sh` with env-var placeholders (`SSH_KEY`, port passed as argument), keeping the `MANNHEIM_WORKSPACE`-relative default
+- [X] T012 [P] [US2] Sanitize personal paths in `specs/001-replicate-mannheim-tree-cover/`: replace every absolute personal workspace path with the relative `data/archive/workspace` (or `MANNHEIM_WORKSPACE` wording) (files: spec.md, plan.md, quickstart.md, research.md, tasks.md)
+- [X] T013 [P] [US2] Replace absolute input-spec path in `specs/002-fix-building-popup/plan.md` with a relative `specs/…/spec.md` reference
+- [X] T014 [P] [US2] Remove harness-internal workflow references from all `specs/001..005` plan.md and `checklists/requirements.md` files and from 006's own planning docs, replacing with neutral wording
+- [X] T015 [P] [US2] Redact owner ops details in `specs/005-host-on-personal-domain/` per `contracts/public-hygiene.md` manual item 1: hosting IPs (`191.96.56.91`, `2a02:4780:...`), DNS/MX/CNAME records, registrar names → placeholders; keep architecture and decisions
+- [X] T016 [P] [US2] Replace real `zone_id` in `workers/map/wrangler.toml` with `<your-zone-id>` placeholder; add `workers/map/wrangler.local.toml` to `.gitignore`; document the `--config` local override in `DEVELOPMENT.md`
+- [X] T017 [P] [US2] Parameterize owner-infra gates in `scripts/deploy-cf.sh` per `contracts/public-hygiene.md` manual item 2: apex/www host, MX/CNAME checks, blog HTTPS check behind variables with neutral defaults
+- [X] T018 [P] [US2] Replace SSH key/port defaults in `scripts/runpod-deploy.sh` with env-var placeholders (`SSH_KEY`, port passed as argument), keeping the `MANNHEIM_WORKSPACE`-relative default
 - [ ] T019 [US2] Run `make check-public` and fix every remaining finding (including US1 outputs) until exit 0 with `clean` (SC-003, quickstart scenario 1)
 
 **Checkpoint**: US2 complete — the gate is clean; the repository is publishable from a data-hygiene standpoint.
@@ -115,7 +115,7 @@ description: "Task list: Public Release Preparation"
 - [ ] T024 [P] Run the README link-resolution sweep (quickstart scenario 6) for all registry URLs and fix any dead links
 - [ ] T025 Run the full `quickstart.md` (scenarios 1–8) end to end and record results
 - [ ] T026 Run `make check-or005` (G2: no large data files tracked) — must stay green
-- [ ] T027 Final review: read `README.md` as a first-time visitor (SC-001); confirm no `speckit`/`omp`/`.specify`/personal-path strings remain in tracked files (`git grep`); confirm working tree contains only intended changes; commit milestone via `make commit-milestone MSG="milestone: public release preparation"`
+- [ ] T027 Final review: read `README.md` as a first-time visitor (SC-001); confirm no harness-internal or personal-path strings remain in tracked files (`git grep`); confirm working tree contains only intended changes; commit milestone via `make commit-milestone MSG="milestone: public release preparation"`
 
 ---
 

@@ -61,8 +61,7 @@ zoom; Mannheim map only.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No constitution file exists (`.specify/memory/constitution.md`
-absent), so there are no constitution-derived gates. The de-facto
+No constitution file exists, so there are no constitution-derived gates. The de-facto
 gates are the spec's own constraints, evaluated as follows:
 
 - **FR-010 / SC-005 (no data, no network change)**: PASS — the
@@ -88,14 +87,14 @@ unchanged.
 
 ```text
 specs/003-darken-base-map/
-├── plan.md              # This file (/speckit.plan command output)
+├── plan.md              # This file (plan command output)
 ├── research.md          # Phase 0 output — mechanism, measurement, alternatives
 ├── data-model.md        # Phase 1 output — style-document entities and invariants
 ├── quickstart.md        # Phase 1 output — Scenarios 1–5 validation guide
 ├── contracts/           # Phase 1 output
 │   ├── README.md
 │   └── base-map-style.md
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (tasks command output)
 ```
 
 ### Source Code (repository root)

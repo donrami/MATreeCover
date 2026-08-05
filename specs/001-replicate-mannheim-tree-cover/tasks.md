@@ -8,7 +8,7 @@ description: "Task list: Mannheim Tree-Cover Parity"
 
 **Input**: Design documents in `specs/001-replicate-mannheim-tree-cover/`: `plan.md` (required), `spec.md` (required, user stories with priorities), `research.md`, `data-model.md`, `contracts/` (`cli.md`, `manifest.md`, `map-style.md`, `pmtiles-sources.md`, `static-bundle.md`, `README.md`), `quickstart.md`.
 
-**Prerequisites**: Python 3.11, `tippecanoe` ≥ 2.x on `$PATH`, the mannheim workspace at `/home/mainuser/Desktop/mannheim/workspace/mannheim` (read-only).
+**Prerequisites**: Python 3.11, `tippecanoe` ≥ 2.x on `$PATH`, the archived mannheim workspace (read-only).
 
 **Tests**: Requested. The spec's "User Scenarios & Testing" section is mandatory and `plan.md` defines the suites: `tests/acceptance/*` (per-FR-021 checks), `tests/pipeline/test_values_recalc.py` (SC-004), `tests/pipeline/test_image_sanity.py` (SC-005), `tests/pipeline/test_rss.py` (OR-001/SC-009), and `tests/frontend/` smoke checklists (quickstart Scenarios 1–3). All tests are written FIRST and must FAIL before implementation of their story.
 

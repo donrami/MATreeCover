@@ -14,8 +14,8 @@ version live (FR-010, SC-006).
 
 ```text
 Cloudflare zone abu-hamad.de (free, full setup)
-├── DNS: A @ → Hostinger IP (proxied), A www → Hostinger IP (proxied)
-│        MX 5 mx1.hostinger.com / MX 10 mx2.hostinger.com (DNS-only)
+├── DNS: A @ → <hosting-provider> IP (proxied), A www → <hosting-provider> IP (proxied)
+│        MX 5 <mail-provider-mx-1> / MX 10 <mail-provider-mx-2> (DNS-only)
 │        TXT SPF / TXT _dmarc / DKIM CNAMEs (DNS-only)
 ├── Routes (→ one Worker, name: matreecover-map):
 │   abu-hamad.de/map           abu-hamad.de/map/*
@@ -80,7 +80,7 @@ Cloudflare zone abu-hamad.de (free, full setup)
 ## 4. One-time setup (bootstrap — see `dns-https.md`)
 
 DNS inventory → Cloudflare zone created (records grey) → routes +
-Worker staged (inert) → nameservers switched at GoDaddy → zone
+Worker staged (inert) → nameservers switched at <registrar> → zone
 Active → Universal SSL Active → blog records proxied + SSL mode
 Full (strict) → FR-014 gate (email send/receive, blog) passes.
 Only after the FR-013/FR-014 gates pass is the deployment declared

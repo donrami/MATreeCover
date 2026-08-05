@@ -22,11 +22,11 @@ scenario.
 prerequisites for every user story.
 
 - [X] T001 Create the Cloudflare zone and migrate DNS per
-  `contracts/dns-https.md` §3: inventory the Hostinger DNS Zone
+  `contracts/dns-https.md` §3: inventory the <hosting-provider> DNS Zone
   Editor (A `@`/`www`, MX, TXT SPF/DMARC/DKIM, any `mail` A),
   corroborate with `dig @1.1.1.1 abu-hamad.de {A,MX,TXT,NS}`,
   create the zone (free, full setup), reconcile records (blog A
-  grey, email DNS-only), change nameservers at GoDaddy, wait for
+  grey, email DNS-only), change nameservers at <registrar>, wait for
   zone Active + Universal SSL Active, flip blog A to proxied with
   SSL mode Full (strict). **Accept**: `dig abu-hamad.de NS`
   returns Cloudflare NS at two resolvers; the blog loads over
@@ -179,8 +179,8 @@ quickstart Scenario 5.
   section to the Cloudflare procedure: `workers/map/` +
   `scripts/deploy-cf.sh`, canonical URL `/map/`, R2 data path,
   DNS migration pointer to `contracts/dns-https.md`; remove the
-  obsolete Hostinger/nginx-era guidance. **Accept**: README
-  reflects the Cloudflare topology with no stale Hostinger
+  obsolete <hosting-provider>/nginx-era guidance. **Accept**: README
+  reflects the Cloudflare topology with no stale <hosting-provider>
   instructions.
 
 **Checkpoint**: US5 fully functional; procedure repeatable.
@@ -190,7 +190,7 @@ quickstart Scenario 5.
 **Purpose**: full validation and cleanup across all stories.
 
 - [ ] T014 Run the complete quickstart (Scenarios 1-7) against the
-  live site; verify no leftover Hostinger-era deployment artifacts
+  live site; verify no leftover <hosting-provider>-era deployment artifacts
   (`scripts/deploy.sh` removed; no `.htaccess`/symlink references
   outside the explicit "obsolete" notes in docs); confirm `git
   status` shows only intended files. **Accept**: all seven

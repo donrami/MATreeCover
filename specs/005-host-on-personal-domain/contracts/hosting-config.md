@@ -78,14 +78,14 @@ the TLS mode. It must hold at every release.
 
 | Name | Type | Value | Proxy |
 |---|---|---|---|
-| `abu-hamad.de` | A | `191.96.56.91` (blog, Hostinger) | proxied (orange, after zone Active) |
-| `abu-hamad.de` | AAAA | `2a02:4780:b:926:0:939:29e4:2` | proxied (orange, after zone Active) |
+| `abu-hamad.de` | A | `<owner-host-ip>` (IPv4, blog, <hosting-provider>) | proxied (orange, after zone Active) |
+| `abu-hamad.de` | AAAA | `<owner-host-ip>` (IPv6) | proxied (orange, after zone Active) |
 | `www` | CNAME | `abu-hamad.de` | proxied (orange, after zone Active) |
-| `ftp` | A | `191.96.56.91` | DNS-only |
-| `autoconfig` | CNAME | `autoconfig.mail.hostinger.com` | DNS-only (email client autoconfig) |
-| `autodiscover` | CNAME | `autodiscover.mail.hostinger.com` | DNS-only (email client autodiscover) |
-| `abu-hamad.de` | MX | 10 `mx1.titan.email`; 20 `mx2.titan.email` | DNS-only |
-| `abu-hamad.de` | TXT | `v=spf1 include:spf.titan.email ~all` | DNS-only |
+| `ftp` | A | `<owner-host-ip>` (IPv4) | DNS-only |
+| `autoconfig` | CNAME | `<mail-provider-cname>` | DNS-only (email client autoconfig) |
+| `autodiscover` | CNAME | `<mail-provider-cname>` | DNS-only (email client autodiscover) |
+| `abu-hamad.de` | MX | 10 `<mail-provider-mx-1>`; 20 `<mail-provider-mx-2>` | DNS-only |
+| `abu-hamad.de` | TXT | `v=spf1 include:<mail-provider-spf> ~all` | DNS-only |
 | `titan1_*` (DKIM) | TXT | `v=DKIM1; k=rsa; p=…` (Titan DKIM, per scan import) | DNS-only |
 | `_dmarc` | TXT | none today — optional hardening only, not part of this feature | DNS-only if added |
 
@@ -94,7 +94,7 @@ All values verified against the live zone 2026-08-05 (`dig`; DKIM selector name 
 - A records MUST be proxied for the `/map*` routes to work (routes
   run on proxied traffic, R-008). Migration order: grey → zone
   Active + Universal SSL Active → orange → SSL mode **Full
-  (strict)** (Hostinger's Let's Encrypt satisfies the origin-CA
+  (strict)** (<hosting-provider>'s Let's Encrypt satisfies the origin-CA
   requirement; Flexible causes redirect loops, R-008).
 - Email records stay DNS-only (Cloudflare does not proxy MX/SMTP).
 
@@ -103,7 +103,7 @@ All values verified against the live zone 2026-08-05 (`dig`; DKIM selector name 
 - The map path is served over HTTPS with Universal SSL (apex + www)
   — no mixed content (FR-002/FR-003, R-013).
 - Email and blog records are identical to the pre-migration
-  Hostinger zone (FR-014, R-008).
+  <hosting-provider> zone (FR-014, R-008).
 
 ## 4. Verification surface
 

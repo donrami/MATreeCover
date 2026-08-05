@@ -18,8 +18,8 @@ Make the "no personal data in the public repository" requirement machine-checkab
 
 | # | Pattern | Rationale |
 |---|---------|-----------|
-| P1 | `\b/home/[A-Za-z0-9_.-]+/` | Absolute personal home path — leaks the owner's username and machine layout (FR-010) |
-| P2 | `\b/Users/[A-Za-z0-9_.-]+/` | macOS equivalent of P1 |
+| P1 | `/home/[A-Za-z0-9_.-]+/` | Absolute Linux home path — leaks the owner's username and machine layout (FR-010). No leading `\b`: a path is always preceded by a quote, space, or backtick (non-word chars), so a word boundary would never match |
+| P2 | `/Users/[A-Za-z0-9_.-]+/` | macOS equivalent of P1 |
 | P3 | `~/.ssh/` | SSH key path reference in public content |
 | P4 | `id_ed25519` | Concrete SSH key filename |
 | P5 | `BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY` | Embedded private key material |
@@ -37,6 +37,16 @@ Make the "no personal data in the public repository" requirement machine-checkab
 - `abu-hamad.de` — the owner's public domain; the live map URL is user-required in the README (FR-003) and is the canonical deployment target. The **domain** is public; the **ops details** (registrar, DNS records, hosting IPs, MX/CNAME entries) are not and are scrubbed manually (below).
 - Loopback references (`127.0.0.1`, ports `8088`/`8090`) in `validation/` records — harmless local measurement context.
 - `MANNHEIM_WORKSPACE` — the env-var name is the sanctioned public mechanism.
+
+## Exemptions (documented, narrow)
+
+The following tracked files are exempt from the scan because they must quote the forbidden strings to do their job:
+
+1. `.gitignore` — its purpose is to exclude `.specify/`, `.spec-workflow/`, and `.env*` etc. from the repository; naming them is the mechanism, not a leak.
+2. `specs/006-public-release-prep/contracts/public-hygiene.md` — this file defines the patterns P1–P13; it must quote them verbatim.
+3. `scripts/check-public.sh` — the enforcement script itself carries the pattern literals P1–P13; it must quote them verbatim.
+
+All other tracked files, including the remaining planning documents of this feature, avoid quoting the forbidden strings and are scanned normally. The exemption list lives in the script as `EXEMPT_FILES`. Adding or removing an exemption is a contract change: update this document and the script together.
 
 ## Manually enforced items (not regex-able, verified by review in quickstart.md)
 

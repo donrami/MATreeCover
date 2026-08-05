@@ -24,7 +24,7 @@ English (FR-012, user decision). The map UI itself stays German; the README may 
 ## Forbidden content (hard rules)
 
 - Any command, shell prompt, code block, exit code, port number, or path (FR-008, SC-004).
-- Any reference to internal workflow tooling: `speckit`, `.specify`, `.spec-workflow`, `omp` (hygiene contract).
+- Any reference to harness-internal workflow tooling (forbidden patterns in the hygiene contract).
 - Any personal absolute path or credential material (FR-010).
 - Any statement about the license that contradicts `LICENSE` (FR-007).
 - Any URL other than the ones listed in the required structure, unless added deliberately and verified (SC-006).

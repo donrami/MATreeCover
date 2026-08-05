@@ -4,7 +4,7 @@
 
 End-to-end validation guide for the deployment of the published
 bundle to `https://abu-hamad.de/map/` on Cloudflare, with the
-domain root (WordPress blog) and email staying on Hostinger.
+domain root (WordPress blog) and email staying on <hosting-provider>.
 Every scenario is a pass/fail check against the clarified spec's
 user stories, acceptance scenarios, and success criteria
 SC-001..SC-007 plus FR-014. Contracts:
@@ -17,7 +17,7 @@ SC-001..SC-007 plus FR-014. Contracts:
 - Cloudflare account (free plan is sufficient) with the
   `abu-hamad.de` zone added and the Worker + routes staged
   (`contracts/hosting-config.md` §1).
-- GoDaddy access (registrar — nameserver switch) and Hostinger
+- <registrar> access (registrar — nameserver switch) and <hosting-provider>
   hPanel access (DNS zone inventory; blog and email stay there).
 - Local machine: repo checkout, `make publish` working, `npx
   wrangler` (≥ 3.98.0, pinned in `workers/map/package.json`)
@@ -26,13 +26,13 @@ SC-001..SC-007 plus FR-014. Contracts:
 
 ## Setup (one-time bootstrap — `contracts/dns-https.md` §3)
 
-1. Inventory every record from the Hostinger DNS Zone Editor;
+1. Inventory every record from the <hosting-provider> DNS Zone Editor;
    corroborate with `dig @1.1.1.1 abu-hamad.de {A,MX,TXT,NS}`;
    save as `validation/dns-migration-<ts>.json`.
 2. Create the Cloudflare zone (free, full setup); reconcile the
    imported records — blog A records grey, email records DNS-only.
 3. Deploy the Worker and the four routes (inert until activation).
-4. Change nameservers at GoDaddy to Cloudflare's two NS; wait for
+4. Change nameservers at <registrar> to Cloudflare's two NS; wait for
    the zone to flip to Active (first check ~60 s, then growing
    intervals; up to 48 h globally).
 5. After Universal SSL shows Active: flip the blog A records to
@@ -221,24 +221,24 @@ echo | openssl s_client -servername abu-hamad.de -connect abu-hamad.de:443 2>/de
 ```sh
 dig +short abu-hamad.de NS                    # Cloudflare NS only
 dig @8.8.8.8 abu-hamad.de NS                  # same (second resolver)
-dig +short abu-hamad.de MX                     # mx1/mx2.titan.email, 10/20
-dig +short abu-hamad.de TXT                    # SPF includes spf.titan.email
+dig +short abu-hamad.de MX                     # <mail-provider-mx-1>/<mail-provider-mx-2>, 10/20
+dig +short abu-hamad.de TXT                    # SPF includes <mail-provider-spf>
 dig +short _dmarc.abu-hamad.de TXT             # pre-migration state (none today)
-dig +short abu-hamad.de A                      # 191.96.56.91 (blog, Hostinger)
+dig +short abu-hamad.de A                      # <owner-host-ip> (IPv4, blog, <hosting-provider>)
 ```
 
 1. **Pass criteria**:
    - The blog loads at `https://abu-hamad.de/` over HTTPS, before
      and after the proxy flip (TLS mode Full (strict)).
    - Mail receive: send a test message from an external account to
-     a Hostinger mailbox; confirm delivery in webmail
-     (`https://mail.hostinger.com`).
+     a <hosting-provider> mailbox; confirm delivery in webmail
+     (`https://<mail-provider-webmail>`).
    - Mail send: reply to an external address; headers show
      SPF=pass, DKIM=pass, DMARC=pass (e.g. via mail-tester.com).
    - The record inventory in `validation/dns-migration-<ts>.json`
      matches the live Cloudflare zone (FR-014).
-2. The nameserver migration is rolled back at GoDaddy immediately
-   if any of these fail (the Hostinger zone was never modified).
+2. The nameserver migration is rolled back at <registrar> immediately
+   if any of these fail (the <hosting-provider> zone was never modified).
 
 ## What to do when a scenario fails
 

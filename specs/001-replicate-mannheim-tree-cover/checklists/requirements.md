@@ -34,4 +34,4 @@
 - Validation iteration 1 found wording precision issues.
 - Validation iteration 2 passed all 16 items after corrections.
 - No `[NEEDS CLARIFICATION]` markers remain.
-- The specification is ready for `/speckit.plan`.
+- The specification is ready for planning.

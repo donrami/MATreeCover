@@ -27,7 +27,7 @@ else
     fi
 fi
 
-WS="${MANNHEIM_WORKSPACE:-/home/mainuser/Desktop/MATreeCover/data/archive/workspace}"
+WS="${MANNHEIM_WORKSPACE:-data/archive/workspace}"
 if [ ! -r "$WS/boundary.geojson" ] || [ ! -d "$WS/mosaic/extract" ]; then
     echo "FAIL: mannheim workspace not readable at $WS (need boundary.geojson and mosaic/extract/)"
     fail=1

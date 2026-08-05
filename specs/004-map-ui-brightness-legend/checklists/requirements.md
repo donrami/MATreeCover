@@ -34,4 +34,4 @@
 - Validation run 2026-08-04, iteration 1: all items pass.
 - No [NEEDS CLARIFICATION] markers were needed; all unspecified details have reasonable defaults and are documented in the Assumptions section.
 - The Dependencies Evidence section cites implementation facts (file names, style properties) as grounding evidence, following the convention established by specs 001 and 003; the Requirements section itself is technology-agnostic.
-- Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`.
+- Items marked incomplete require spec updates before clarification or planning.

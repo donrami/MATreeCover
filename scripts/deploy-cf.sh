@@ -19,6 +19,21 @@ KEEP_RELEASES=3
 # R2 free tier (research R-012): 10 GB-month storage.
 R2_FREE_STORAGE_BYTES=$((10 * 1024 * 1024 * 1024))
 
+# Owner-infra continuity gate (FR-014): the DNS records checked by
+# `verify-dns` belong to the owner's email/blog services and are NOT
+# committed. Source scripts/deploy-cf.env (gitignored) or set the
+# MATREECOVER_* env vars. Without configuration the continuity
+# checks are skipped with a loud warning (see DEVELOPMENT.md).
+if [ -f "$REPO_ROOT/scripts/deploy-cf.env" ]; then
+  # shellcheck disable=SC1091
+  source "$REPO_ROOT/scripts/deploy-cf.env"
+fi
+MX1="${MATREECOVER_MX1:-}"
+MX2="${MATREECOVER_MX2:-}"
+SPF_INCLUDE="${MATREECOVER_SPF_INCLUDE:-}"
+AUTOCONFIG_CNAME="${MATREECOVER_AUTOCONFIG_CNAME:-}"
+AUTODISCOVER_CNAME="${MATREECOVER_AUTODISCOVER_CNAME:-}"
+
 log() { printf '[deploy-cf] %s\n' "$*"; }
 die() { printf '[deploy-cf] ERROR: %s\n' "$*" >&2; exit 1; }
 
@@ -139,19 +154,28 @@ cmd_verify() {
 # Hostinger email and blog DNS records survive the migration. The
 # email send/receive test is manual (quickstart Scenario 7).
 cmd_verify_dns() {
-  local out fails=0
+  local out fails=0 configured=0
   pass() { log "PASS: $1"; }
   fail() { log "FAIL: $1"; fails=$((fails + 1)); }
 
+  # Owner-infra checks run only when configured (deploy-cf.env or
+  # MATREECOVER_* vars); the canonical map domain checks above are
+  # unconditional because the domain is public.
+  [ -n "$MX1$MX2$SPF_INCLUDE$AUTOCONFIG_CNAME$AUTODISCOVER_CNAME" ] && configured=1
+  if [ "$configured" -eq 0 ]; then
+    log "WARN: owner-infra DNS continuity checks skipped (no MATREECOVER_* config; see DEVELOPMENT.md)"
+    return 0
+  fi
+
   out=$(dig +short abu-hamad.de MX | sort)
-  echo "$out" | grep -q '10 mx1.titan.email.' && echo "$out" | grep -q '20 mx2.titan.email.' \
-    && pass "MX mx1/mx2.titan.email (10/20)" || fail "MX: $out"
+  echo "$out" | grep -q "10 $MX1." && echo "$out" | grep -q "20 $MX2." \
+    && pass "MX $MX1/$MX2 (10/20)" || fail "MX: $out"
   out=$(dig +short abu-hamad.de TXT)
-  echo "$out" | grep -q 'include:spf.titan.email' && pass "SPF includes spf.titan.email" || fail "SPF: $out"
+  echo "$out" | grep -q "include:$SPF_INCLUDE" && pass "SPF includes $SPF_INCLUDE" || fail "SPF: $out"
   out=$(dig +short autoconfig.abu-hamad.de CNAME)
-  [ "$out" = "autoconfig.mail.hostinger.com." ] && pass "autoconfig -> mail.hostinger.com" || fail "autoconfig: $out"
+  [ "$out" = "$AUTOCONFIG_CNAME." ] && pass "autoconfig -> $AUTOCONFIG_CNAME" || fail "autoconfig: $out"
   out=$(dig +short autodiscover.abu-hamad.de CNAME)
-  [ "$out" = "autodiscover.mail.hostinger.com." ] && pass "autodiscover -> mail.hostinger.com" || fail "autodiscover: $out"
+  [ "$out" = "$AUTODISCOVER_CNAME." ] && pass "autodiscover -> $AUTODISCOVER_CNAME" || fail "autodiscover: $out"
   curl -sf -o /dev/null "https://abu-hamad.de/" && pass "blog loads over HTTPS" || fail "blog HTTPS load"
 
   [ "$fails" -gt 0 ] && die "$fails FR-014 gate(s) failed"

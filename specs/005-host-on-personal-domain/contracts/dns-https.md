@@ -14,36 +14,36 @@ continuity requirement (FR-014).
 
 - Map: `https://abu-hamad.de/map/` (canonical; `/map` and
   `www.abu-hamad.de/map*` 301 to it — FR-001, FR-003).
-- Blog root: `https://abu-hamad.de/` (unchanged, Hostinger
+- Blog root: `https://abu-hamad.de/` (unchanged, <hosting-provider>
   WordPress; its own www behavior is pre-existing).
-- Email: unchanged (Hostinger mailboxes, `@abu-hamad.de`).
+- Email: unchanged (<hosting-provider> mailboxes, `@abu-hamad.de`).
 
 ## 2. Registrar and nameserver migration
 
-- Registrar: **GoDaddy** (clarified 2026-08-04). Nameservers are
+- Registrar: **<registrar>** (clarified 2026-08-04). Nameservers are
   changed there.
-- Today the domain's DNS serves Hostinger (blog + email). The
+- Today the domain's DNS serves <hosting-provider> (blog + email). The
   migration moves the authoritative zone to Cloudflare (free
   plan, full setup).
-- GoDaddy path: Domain Portfolio → domain → Domain Settings → DNS
+- <registrar> path: Domain Portfolio → domain → Domain Settings → DNS
   → Nameservers → "I use my own nameservers" → enter Cloudflare's
   two NS hostnames → Save. Propagation: most updates within an
   hour, up to 48 h globally (research R-008).
-- Rollback: point the GoDaddy nameservers back to Hostinger's
+- Rollback: point the <registrar> nameservers back to <hosting-provider>'s
   (e.g. `ns1.dns-parking.com` / `ns2.dns-parking.com`) — the
-  Hostinger zone was never modified.
+  <hosting-provider> zone was never modified.
 
 ## 3. Ordered migration (outage-free)
 
-1. **Inventory** (no risk): copy every record from the Hostinger
+1. **Inventory** (no risk): copy every record from the <hosting-provider>
    DNS Zone Editor verbatim (A `@`/`www`, MX, TXT, any CNAME) and
    corroborate with `dig @1.1.1.1 abu-hamad.de {A,MX,TXT,NS}`.
    Live zone verified 2026-08-05 (dig + Cloudflare scan): A `@`
-   -> `191.96.56.91`, AAAA `@` -> `2a02:4780:b:926:0:939:29e4:2`,
-   `www` CNAME -> `abu-hamad.de`, `ftp` A -> `191.96.56.91`,
-   `autoconfig`/`autodiscover` CNAME -> `*.mail.hostinger.com`,
-   MX 10 `mx1.titan.email` + 20 `mx2.titan.email`, TXT
-   `v=spf1 include:spf.titan.email ~all` (Titan email platform),
+   -> `<owner-host-ip>` (IPv4), AAAA `@` -> `<owner-host-ip>` (IPv6),
+   `www` CNAME -> `abu-hamad.de`, `ftp` A -> `<owner-host-ip>` (IPv4),
+   `autoconfig`/`autodiscover` CNAME -> `<mail-provider-cname>`,
+   MX 10 `<mail-provider-mx-1>` + 20 `<mail-provider-mx-2>`, TXT
+   `v=spf1 include:<mail-provider-spf> ~all` (Titan email platform),
    Titan DKIM TXT (`titan1_*`, `v=DKIM1; k=rsa`), no `_dmarc`/
    `mail` A records present. The dig inventory + scan is
    authoritative over generic provider docs. Save as
@@ -54,7 +54,7 @@ continuity requirement (FR-014).
    for now; MX/TXT **DNS-only** always.
 3. **Stage the map**: deploy the Worker + the four routes
    (inert until the zone activates).
-4. **Cutover**: change nameservers at GoDaddy to Cloudflare's two
+4. **Cutover**: change nameservers at <registrar> to Cloudflare's two
    NS. The zone flips Pending → Active automatically (first check
    ~60 s, then at growing intervals).
 5. **Activate proxying** (only after the zone and Universal SSL are
@@ -71,7 +71,7 @@ continuity requirement (FR-014).
   (research R-008).
 - The map path is served over HTTPS automatically (Worker route on
   the zone's edge certificate).
-- Origin (blog) TLS: Hostinger's free Let's Encrypt satisfies
+- Origin (blog) TLS: <hosting-provider>'s free Let's Encrypt satisfies
   Full (strict) — never Flexible (redirect loops).
 
 ## 5. FR-014 gate (email + blog continuity)
@@ -81,27 +81,27 @@ Before declaring success, all of these must pass:
 - `dig @1.1.1.1 abu-hamad.de NS` and `dig @8.8.8.8 abu-hamad.de NS`
   return only Cloudflare nameservers (two resolvers, catching
   lagging caches).
-- `dig abu-hamad.de A` / `www` return the Hostinger blog IP; the
+- `dig abu-hamad.de A` / `www` return the <hosting-provider> blog IP; the
   blog loads over HTTPS (again after the proxy flip).
-- `dig abu-hamad.de MX` returns `mx1.titan.email` (10) and
-  `mx2.titan.email` (20); `dig abu-hamad.de TXT` contains the
-  single SPF line `v=spf1 include:spf.titan.email ~all` and the
+- `dig abu-hamad.de MX` returns `<mail-provider-mx-1>` (10) and
+  `<mail-provider-mx-2>` (20); `dig abu-hamad.de TXT` contains the
+  single SPF line `v=spf1 include:<mail-provider-spf> ~all` and the
   Titan DKIM TXT (`titan1_*`, `v=DKIM1; k=rsa`);
   `dig _dmarc.abu-hamad.de TXT` returns the pre-migration state
   (none today — no DMARC was present before the switch);
   `dig autoconfig.abu-hamad.de CNAME` / `autodiscover` resolve to
-  `*.mail.hostinger.com`.
-- Mail receive: external account → Hostinger mailbox, confirmed in
-  webmail (`https://mail.hostinger.com`).
-- Mail send: Hostinger mailbox → external address; headers show
+  `<mail-provider-cname>`.
+- Mail receive: external account → <hosting-provider> mailbox, confirmed in
+  webmail (`https://<mail-provider-webmail>`).
+- Mail send: <hosting-provider> mailbox → external address; headers show
   SPF=pass, DKIM=pass, DMARC=pass (e.g. mail-tester.com).
 
 **Invariants**:
 
 - The nameserver switch happens only after the Cloudflare zone is a
-  record-for-record copy of the Hostinger zone (R-008).
+  record-for-record copy of the <hosting-provider> zone (R-008).
 - Email records are never proxied (Cloudflare does not proxy
   MX/SMTP); SPF stays a single record (duplicates are a
   perm-error).
-- The DNS migration does not touch Hostinger-hosted mailboxes or
+- The DNS migration does not touch <hosting-provider>-hosted mailboxes or
   files — it only changes where resolvers look (R-008).

@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_WORKSPACE = Path("/home/mainuser/Desktop/MATreeCover/data/archive/workspace")
+DEFAULT_WORKSPACE = REPO_ROOT / "data/archive/workspace"
 
 
 @pytest.fixture(scope="session")

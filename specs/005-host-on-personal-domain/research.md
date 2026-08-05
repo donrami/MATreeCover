@@ -2,12 +2,12 @@
 
 **Branch**: `005-host-on-personal-domain` | **Date**: 2026-08-04
 **Inputs**: `spec.md` (clarified 2026-08-04: map at
-`https://abu-hamad.de/map`, Cloudflare hosting, GoDaddy registrar,
-Hostinger blog + email continuity), `plan.md` technical context,
+`https://abu-hamad.de/map`, Cloudflare hosting, <registrar> registrar,
+<hosting-provider> blog + email continuity), `plan.md` technical context,
 `src/site/main.js` / `index.html` / `style.json` (relative asset
 refs), `src/pipeline/publish.py` (bundle contents), two web research
-passes (Cloudflare path-based static hosting; GoDaddy→Cloudflare
-nameserver migration with Hostinger email/blog).
+passes (Cloudflare path-based static hosting; <registrar>→Cloudflare
+nameserver migration with <hosting-provider> email/blog).
 
 This is a deployment feature. No `src/` code changes. The spec's
 clarification "Cloudflare — Pages hosts the site shell; a public R2
@@ -25,7 +25,7 @@ URL) is unchanged.
 **Workers route** that maps exactly the `/map*` URL patterns to one
 Worker (`abu-hamad.de/map`, `abu-hamad.de/map/*`, plus the
 `www.abu-hamad.de/map*` equivalents). All other paths continue to
-the origin defined in DNS — the Hostinger WordPress blog at the
+the origin defined in DNS — the <hosting-provider> WordPress blog at the
 root. The canonical URL is `https://abu-hamad.de/map/` (trailing
 slash), with a 301 from `/map`.
 
@@ -35,7 +35,7 @@ a path prefix — confirmed in official docs and an open community
 feature request since 2022). Workers **routes** are the documented
 mechanism for path-prefix mapping: "Routes map URL patterns to
 Workers and proxy only matched paths; unmatched paths continue to
-the origin." The apex A record (Hostinger blog) stays in DNS; the
+the origin." The apex A record (<hosting-provider> blog) stays in DNS; the
 route runs on top of the proxied record and intercepts only
 `/map*`. The bundle's asset references are all relative
 (`style.json`, `vendor/*.js`, `pmtiles://…` — verified in
@@ -170,7 +170,7 @@ objects from the kept local archive.
 atomic by construction: a deployment switches traffic to a new
 version in one step, and the direct-upload flow activates only at
 the completion token. R2 PUT is atomic per object. This satisfies
-FR-010/SC-006 without any symlink machinery (the Hostinger-era
+FR-010/SC-006 without any symlink machinery (the <hosting-provider>-era
 symlink-flip design is obsolete). Rollback via `wrangler rollback`
 is documented and immediate. Data rollback needs the previous
 objects re-uploaded (R2 keys are stable names, overwritten per
@@ -215,30 +215,30 @@ Everything rule*: the community-reported range-via-cache pitfalls
 byte) make direct-R2 the safer choice at this scale; rejected.
 *Content-hashed filenames*: breaks byte-identity (SC-007); rejected.
 
-## R-008 — DNS migration: GoDaddy → Cloudflare, records first (FR-014)
+## R-008 — DNS migration: <registrar> → Cloudflare, records first (FR-014)
 
 **Decision**: Ordered migration with the new zone fully populated
 BEFORE the nameserver switch: (1) inventory every record from the
-Hostinger DNS Zone Editor (A `@`/`www` blog, MX, TXT SPF/DMARC/DKIM,
+<hosting-provider> DNS Zone Editor (A `@`/`www` blog, MX, TXT SPF/DMARC/DKIM,
 any `mail` A) and corroborate with `dig @1.1.1.1`; (2) create the
 Cloudflare zone (free, full setup) and reconcile the imported zone
 record-for-record — blog A records **DNS-only (grey)** first; (3)
 stage the Worker and `/map*` routes (inert until activation); (4)
-change nameservers at GoDaddy (Domain Settings → DNS →
+change nameservers at <registrar> (Domain Settings → DNS →
 Nameservers → "I use my own nameservers" → Cloudflare's two NS);
 (5) after the zone flips to Active and Universal SSL is Active, flip
 the blog records to proxied (orange) with SSL mode **Full (strict)**
-(Hostinger's free Let's Encrypt satisfies the origin-cert
+(<hosting-provider>'s free Let's Encrypt satisfies the origin-cert
 requirement); (6) verify blog + email + /map per the FR-014 gate.
 
 **Rationale**: The NS change at the registrar only changes where
-resolvers look; it cannot alter Hostinger-hosted mailboxes or
+resolvers look; it cannot alter <hosting-provider>-hosted mailboxes or
 files. The outage-free pattern is: the new authoritative zone is a
 faithful copy of the old one before anyone is pointed at it.
-Confirmed record shapes: MX `mx1.hostinger.com` (5) /
-`mx2.hostinger.com` (10); SPF `v=spf1 include:_spf.mail.hostinger.com
+Confirmed record shapes: MX `<mail-provider-mx-1>` (5) /
+`<mail-provider-mx-2>` (10); SPF `v=spf1 include:<mail-provider-spf>
 ~all` (single line — duplicate SPF is a perm-error); DMARC TXT at
-`_dmarc`; DKIM CNAMEs (auto-created at Hostinger, must be recreated
+`_dmarc`; DKIM CNAMEs (auto-created at <hosting-provider>, must be recreated
 at Cloudflare). Email stays **DNS-only** (Cloudflare does not proxy
 MX/SMTP). Blog A records must be **proxied** for the `/map*` routes
 to work (routes run on proxied traffic) — hence the grey-first,
@@ -246,16 +246,16 @@ orange-after-activation sequence; proxying a cert-bearing origin
 requires Full (strict), not Flexible (redirect loops).
 **Correction 2026-08-05 (live inventory + Cloudflare scan are
 authoritative)**: the actual zone uses the Titan email platform —
-MX 10 `mx1.titan.email` + 20 `mx2.titan.email`, SPF
-`v=spf1 include:spf.titan.email ~all`, Titan DKIM TXT (`titan1_*`),
+MX 10 `<mail-provider-mx-1>` + 20 `<mail-provider-mx-2>`, SPF
+`v=spf1 include:<mail-provider-spf> ~all`, Titan DKIM TXT (`titan1_*`),
 `www` as a CNAME to the apex, plus AAAA, `ftp` A, and
-`autoconfig`/`autodiscover` CNAMEs to `*.mail.hostinger.com`; no
+`autoconfig`/`autodiscover` CNAMEs to `<mail-provider-cname>`; no
 `_dmarc`/`mail` A records (verified with `dig`; the Cloudflare scan
 imported the full 10-record set). The migration recreates the live
-record set verbatim; the generic Hostinger shapes above are
+record set verbatim; the generic <hosting-provider> shapes above are
 superseded by the inventory.
 
-**Alternatives considered**: *Keep DNS at Hostinger*: Cloudflare
+**Alternatives considered**: *Keep DNS at <hosting-provider>*: Cloudflare
 routes need a proxied record on Cloudflare DNS; impossible.
 *Proxied from the start*: Universal SSL is not presented until the
 zone is Active — the grey-first sequence avoids a cert window;
@@ -267,7 +267,7 @@ the documented safe default with a public-CA origin; chosen.
 **Decision**: The Worker also owns the `www.abu-hamad.de/map*`
 patterns and 301-redirects them to `https://abu-hamad.de/map/`
 (single redirect, no loop). The `www` **root** remains the
-WordPress blog's own www→apex behavior (Hostinger, unchanged) — the
+WordPress blog's own www→apex behavior (<hosting-provider>, unchanged) — the
 map and the blog each keep one canonical form.
 
 **Rationale**: FR-003 requires the `www` variant of the domain to
@@ -316,7 +316,7 @@ is plain JS (no npm build); assets come straight from `dist/` so
 SC-007 holds. The script keeps the last 3 local archives for data
 rollback.
 
-**Alternatives considered**: *Hostinger-era `scripts/deploy.sh`
+**Alternatives considered**: *<hosting-provider>-era `scripts/deploy.sh`
 (symlink flip)*: obsolete — no shell access on Cloudflare, and the
 platform's atomic deploy replaces the mechanism; deleted in this
 regeneration. *Terraform/CI*: no CI exists in the project; a
@@ -327,17 +327,17 @@ maintainer".
 
 **Decision**: R2 free tier holds the data (~164 MB) with 10 GB head
 room; Class B ops (10M/month) cover tile serving; egress is free.
-The blog and email remain on Hostinger's existing plan (untouched;
+The blog and email remain on <hosting-provider>'s existing plan (untouched;
 their limits are out of scope). Storage head room is checked by the
 deploy script before upload.
 
 **Rationale**: Confirmed R2 free tier: 10 GB-month storage, 1M
 Class A / 10M Class B ops, zero egress. Worker free tier:
 100k invocations/day — only data-file requests invoke the Worker.
-The Hostinger plan's storage is unaffected by this feature (the
-bundle never touches Hostinger).
+The <hosting-provider> plan's storage is unaffected by this feature (the
+bundle never touches <hosting-provider>).
 
-**Alternatives considered**: *Put the whole bundle on Hostinger*:
+**Alternatives considered**: *Put the whole bundle on <hosting-provider>*:
 rejected by the clarification (map hosted on Cloudflare).
 
 ## R-013 — Unsupported-browser and mixed-content behavior preserved (FR-012, FR-003)
@@ -366,7 +366,7 @@ discipline unchanged (plan via `make commit-plan`, slices via
 
 **Rationale**: The project rule OR-005 forbids tracking `*.pmtiles`
 and >50 MiB files; the Cloudflare deploy never requires them in git
-(the Hostinger-era design already respected this; the Cloudflare
+(the <hosting-provider>-era design already respected this; the Cloudflare
 design keeps it).
 
 ## Consolidated decisions
@@ -382,7 +382,7 @@ design keeps it).
 - Cache: `no-cache` + `no-transform` on data, assets default
   revalidate — never stale after a deploy; no edge cache on data.
 - DNS: inventory → recreate at Cloudflare (A blog grey, MX/SPF/
-  DMARC/DKIM DNS-only) → stage routes → GoDaddy NS switch → Active +
+  DMARC/DKIM DNS-only) → stage routes → <registrar> NS switch → Active +
   Universal SSL → orange + Full (strict); FR-014 email/blog gate
   before declaring success.
 - Tooling: `workers/map/` + `scripts/deploy-cf.sh`; no `src/`

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Prepare the repository for public release on GitHub. Rewrite `README.md` as a user-focused document (English): what the map shows, how to read it, a link to the live map at `https://abu-hamad.de/map/`, credits to the reference project (CityTreeCover, MIT) and the data providers (LGL, basemap.de, `dl-de/by-2-0`), and the project license. Add a `LICENSE` file (MIT, preserving the CityTreeCover copyright and permission notice). Move all developer workflow content into a new `DEVELOPMENT.md`. Scrub personal data from every tracked file — the absolute `/home/mainuser/...` workspace defaults (6 code files), owner hosting details in `specs/005`, the Cloudflare `zone_id`, RunPod SSH defaults, and harness-internal `/speckit.*`/`.specify/*` references — and enforce the result with a new scan gate (`make check-public`).
+Prepare the repository for public release on GitHub. Rewrite `README.md` as a user-focused document (English): what the map shows, how to read it, a link to the live map at `https://abu-hamad.de/map/`, credits to the reference project (CityTreeCover, MIT) and the data providers (LGL, basemap.de, `dl-de/by-2-0`), and the project license. Add a `LICENSE` file (MIT, preserving the CityTreeCover copyright and permission notice). Move all developer workflow content into a new `DEVELOPMENT.md`. Scrub personal data from every tracked file — the absolute personal workspace defaults (6 code files), owner hosting details in `specs/005`, the Cloudflare `zone_id`, RunPod SSH defaults, and harness-internal workflow references — and enforce the result with a new scan gate (`make check-public`).
 
 ## Technical Context
 
@@ -50,15 +50,15 @@ No gate violations; no unjustified complexity introduced. Re-check after Phase 1
 
 ```text
 specs/006-public-release-prep/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
+├── plan.md              # This file (plan command output)
+├── research.md          # Phase 0 output (plan command)
+├── data-model.md        # Phase 1 output (plan command)
+├── quickstart.md        # Phase 1 output (plan command)
+├── contracts/           # Phase 1 output (plan command)
 │   ├── readme.md        #   README content contract (FR-001..006, 008, 012)
 │   ├── public-hygiene.md#   Scan-gate pattern contract (FR-010, SC-003)
 │   └── license.md       #   License + credits contract (FR-004..007, 011)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (tasks command output)
 ```
 
 ### Source Code (repository root)

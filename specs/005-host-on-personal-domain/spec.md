@@ -2,7 +2,7 @@
 **Feature Branch**: `005-host-on-personal-domain`
 **Created**: 2026-08-04
 **Status**: Draft
-**Input**: User description: "we need to prepare and perform correctly the deployment of the site on my personal domain from hostinger https://abu-hamad.de/"
+**Input**: User description: "we need to prepare and perform correctly the deployment of the site on my personal domain from <hosting-provider> https://abu-hamad.de/"
 
 ## Clarifications
 
@@ -10,7 +10,7 @@
 
 - Q: Should the map site stay at https://abu-hamad.de/ as its address, or may the domain redirect to an externally hosted site? → A (REVISED 2026-08-04, confirmed): The map must NOT take the domain root — the root stays with the WordPress blog and the abu-hamad.de email. The map lives at the sub-path `https://abu-hamad.de/map` and is hosted on Cloudflare, rendering AT that path (Cloudflare serves /map; the root keeps the blog and email; no redirect to a foreign URL). The earlier answer "site at the domain root" was based on a misunderstanding.
 - Q: Which free/cheap platform serves the site under the custom domain? → A: Cloudflare — Pages hosts the site shell; a public R2 bucket hosts the PMTiles/GeoJSON data files (free tier, Range-serving, atomic deploys).
-- Q: Are you OK with moving the domain's nameservers to Cloudflare (free plan)? → A: Yes, move nameservers to Cloudflare. Note (2026-08-04): the registrar is GoDaddy (not Hostinger), and Hostinger hosts the WordPress blog and, critically, the abu-hamad.de email — email and blog continuity must be preserved across the DNS move.
+- Q: Are you OK with moving the domain's nameservers to Cloudflare (free plan)? → A: Yes, move nameservers to Cloudflare. Note (2026-08-04): the registrar is <registrar> (not <hosting-provider>), and <hosting-provider> hosts the WordPress blog and, critically, the abu-hamad.de email — email and blog continuity must be preserved across the DNS move.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -97,7 +97,7 @@ The maintainer builds a new version of the site and wants to publish it to the p
 - A visitor's browser lacks WebGL 2: the site must show its existing unsupported-browser behavior instead of a blank map.
 - Mixed content: any asset referenced over plain HTTP on the HTTPS page is blocked; all references must be served over HTTPS.
 - Both `abu-hamad.de` and `www.abu-hamad.de` must resolve consistently; no duplicate content or broken redirect loops.
-- Email or blog outage during the DNS migration: moving nameservers to Cloudflare must not break the Hostinger-hosted abu-hamad.de email or the WordPress blog; MX/SPF/DMARC and blog records are migrated to Cloudflare before the switch and verified afterwards (FR-014).
+- Email or blog outage during the DNS migration: moving nameservers to Cloudflare must not break the <hosting-provider>-hosted abu-hamad.de email or the WordPress blog; MX/SPF/DMARC and blog records are migrated to Cloudflare before the switch and verified afterwards (FR-014).
 
 ## Requirements *(mandatory)*
 
@@ -116,14 +116,14 @@ The maintainer builds a new version of the site and wants to publish it to the p
 - **FR-011**: The deployment MUST NOT add analytics, tracking, server-side components, or a database; the site remains a plain static bundle.
 - **FR-012**: The deployment MUST preserve the existing unsupported-browser (no WebGL 2) behavior rather than failing silently.
 - **FR-013**: The deployment MUST verify, before declaring success, that DNS resolves, the certificate is valid, HTTPS serves the site, and partial-content requests work.
-- **FR-014**: The deployment MUST NOT break the existing `abu-hamad.de` email service (Hostinger) or the WordPress blog during the DNS migration; their DNS records (MX, SPF, DMARC; blog host records) are migrated to Cloudflare and verified before the nameserver switch.
+- **FR-014**: The deployment MUST NOT break the existing `abu-hamad.de` email service (<hosting-provider>) or the WordPress blog during the DNS migration; their DNS records (MX, SPF, DMARC; blog host records) are migrated to Cloudflare and verified before the nameserver switch.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Published Site**: the version of the site currently live at the personal domain; visitors interact with exactly one complete version at a time.
 - **Deployment Bundle**: the complete static output of the project's publish step (HTML, styles, scripts, map data, attribution); the unit that is uploaded and replaced atomically.
 - **Personal Domain**: the canonical public address (`abu-hamad.de`) with its DNS records and HTTPS certificate; the stable identity of the live site.
-- **Hosting Environment**: the platform serving the map path (Cloudflare: site shell + R2 data) alongside the existing Hostinger services (WordPress blog, email) at the domain root; constrained by storage, bandwidth, and protocol support (partial content, HTTPS).
+- **Hosting Environment**: the platform serving the map path (Cloudflare: site shell + R2 data) alongside the existing <hosting-provider> services (WordPress blog, email) at the domain root; constrained by storage, bandwidth, and protocol support (partial content, HTTPS).
 
 ## Success Criteria *(mandatory)*
 
@@ -139,7 +139,7 @@ The maintainer builds a new version of the site and wants to publish it to the p
 
 ## Assumptions
 
-- The personal domain `abu-hamad.de` is registered at GoDaddy (registrar). Its DNS currently serves Hostinger-hosted services: a WordPress blog and the abu-hamad.de email. The map site is NOT served from Hostinger's web hosting; it is served by Cloudflare — Pages hosts the site shell, a public R2 bucket hosts the PMTiles/GeoJSON data files (clarified 2026-08-04). Nameservers move from Hostinger to Cloudflare (free plan, set at GoDaddy); MX/SPF/DMARC records for email and the blog's records are migrated to Cloudflare BEFORE the switch so email and the blog keep working. The map's deployment target is a sub-path of the domain, not the root (REVISED 2026-08-04).
+- The personal domain `abu-hamad.de` is registered at <registrar> (registrar). Its DNS currently serves <hosting-provider>-hosted services: a WordPress blog and the abu-hamad.de email. The map site is NOT served from <hosting-provider>'s web hosting; it is served by Cloudflare — Pages hosts the site shell, a public R2 bucket hosts the PMTiles/GeoJSON data files (clarified 2026-08-04). Nameservers move from <hosting-provider> to Cloudflare (free plan, set at <registrar>); MX/SPF/DMARC records for email and the blog's records are migrated to Cloudflare BEFORE the switch so email and the blog keep working. The map's deployment target is a sub-path of the domain, not the root (REVISED 2026-08-04).
 - The deployment target is the sub-path `https://abu-hamad.de/map` (REVISED 2026-08-04), NOT the root — the root remains the WordPress blog and the email service; the map renders at the path (Cloudflare serves it; no redirect to an external URL).
 - The hosting environment provides HTTPS (free certificate) and supports partial-content (Range) requests for the PMTiles layers; the plan verifies both and falls back only if verification fails.
 - The deployable artifact is the static bundle produced by the project's publish step (`dist/`, ~171 MB on disk), with no build step required on the host.

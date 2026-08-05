@@ -9,7 +9,7 @@ This feature introduces no application data entities and no
 persisted application state (FR-011). The entities below document
 the deployment surface: the published map site, the bundle split
 across Cloudflare assets and R2, the personal domain with its DNS
-migration, the preserved Hostinger services, and the Cloudflare
+migration, the preserved <hosting-provider> services, and the Cloudflare
 release lifecycle.
 
 ## E-001 — PublishedMapSite
@@ -65,15 +65,15 @@ and certificate story.
 
 | Field | Value | Notes |
 |---|---|---|
-| registrar | GoDaddy | Nameservers set there (R-008). |
-| nameservers (after) | Cloudflare's two NS | Moved from Hostinger after the new zone is fully populated. |
-| DNS zone | Cloudflare (free, full setup) | A `@`/`www` → Hostinger blog IP; MX `mx1/mx2.hostinger.com`; TXT SPF/DMARC/DKIM; any `mail` A (R-008). |
+| registrar | <registrar> | Nameservers set there (R-008). |
+| nameservers (after) | Cloudflare's two NS | Moved from <hosting-provider> after the new zone is fully populated. |
+| DNS zone | Cloudflare (free, full setup) | A `@`/`www` → <hosting-provider> blog IP; MX `<mail-provider-mx-1>/<mail-provider-mx-2>`; TXT SPF/DMARC/DKIM; any `mail` A (R-008). |
 | certificate | Cloudflare Universal SSL (apex + www), auto | Presented once records are proxied and the zone is Active (R-008). |
 | map path | `/map/` → Worker route | The only path this feature owns. |
 
 **Invariants**:
 
-- The zone is a record-for-record copy of the Hostinger zone
+- The zone is a record-for-record copy of the <hosting-provider> zone
   BEFORE the nameserver switch (outage-free, R-008).
 - Email records stay DNS-only (Cloudflare does not proxy MX/SMTP).
 - Universal SSL covers apex + www; certificate validity verified by
@@ -81,14 +81,14 @@ and certificate story.
 
 ## E-004 — BlogAndEmailServices (preserved, FR-014)
 
-The Hostinger-hosted services at the domain root that the migration
+The <hosting-provider>-hosted services at the domain root that the migration
 must not break.
 
 | Field | Value | Notes |
 |---|---|---|
-| WordPress blog | `https://abu-hamad.de/` (and www) | A record → Hostinger IP; recreated at Cloudflare; proxied only after zone Active + SSL mode Full (strict) (R-008). |
-| email | Hostinger mailboxes (`@abu-hamad.de`) | MX `mx1.hostinger.com` (5) / `mx2.hostinger.com` (10); SPF `v=spf1 include:_spf.mail.hostinger.com ~all`; DMARC `_dmarc` TXT; DKIM CNAMEs — all recreated at Cloudflare, DNS-only (R-008). |
-| mailboxes/files | remain at Hostinger | DNS migration cannot touch them (R-008). |
+| WordPress blog | `https://abu-hamad.de/` (and www) | A record → <hosting-provider> IP; recreated at Cloudflare; proxied only after zone Active + SSL mode Full (strict) (R-008). |
+| email | <hosting-provider> mailboxes (`@abu-hamad.de`) | MX `<mail-provider-mx-1>` (5) / `<mail-provider-mx-2>` (10); SPF `v=spf1 include:<mail-provider-spf> ~all`; DMARC `_dmarc` TXT; DKIM CNAMEs — all recreated at Cloudflare, DNS-only (R-008). |
+| mailboxes/files | remain at <hosting-provider> | DNS migration cannot touch them (R-008). |
 
 **Invariants**:
 
@@ -144,7 +144,7 @@ prune local archives beyond 3                     → retired       (after succe
 
 ```text
 bootstrap      DNS inventory → Cloudflare zone recreated (grey) → routes staged
-               → GoDaddy NS switch → zone Active → Universal SSL Active
+               → <registrar> NS switch → zone Active → Universal SSL Active
                → A records proxied + SSL mode Full (strict) → FR-014 gate passes
 deploy N       R2 put → verify → wrangler deploy → verify live
 failure        release stays staged/verified; previous version live

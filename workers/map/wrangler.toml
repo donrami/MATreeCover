@@ -8,13 +8,14 @@ compatibility_date = "2025-04-01"
 
 # Routes — path-prefix serving (research R-001/R-005). Only /map*
 # is routed to this Worker; every other path on the hostnames goes
-# to the blog origin (Hostinger). Zone created 2026-08-05
-# (T001); zone_id 361455478e608896e0433922958ce50c.
+# to the blog origin. Replace <your-zone-id> with your Cloudflare
+# zone id, or deploy with the gitignored local override:
+#   npx wrangler deploy --config workers/map/wrangler.local.toml
 routes = [
-  { pattern = "abu-hamad.de/map", zone_id = "361455478e608896e0433922958ce50c" },
-  { pattern = "abu-hamad.de/map/*", zone_id = "361455478e608896e0433922958ce50c" },
-  { pattern = "www.abu-hamad.de/map", zone_id = "361455478e608896e0433922958ce50c" },
-  { pattern = "www.abu-hamad.de/map/*", zone_id = "361455478e608896e0433922958ce50c" },
+  { pattern = "abu-hamad.de/map", zone_id = "<your-zone-id>" },
+  { pattern = "abu-hamad.de/map/*", zone_id = "<your-zone-id>" },
+  { pattern = "www.abu-hamad.de/map", zone_id = "<your-zone-id>" },
+  { pattern = "www.abu-hamad.de/map/*", zone_id = "<your-zone-id>" },
 ]
 
 # Static shell: a filtered copy of the publish bundle (dist/ minus

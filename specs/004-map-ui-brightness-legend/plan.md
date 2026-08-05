@@ -118,8 +118,7 @@ checklists. Applies at every zoom level; Mannheim map only.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No constitution file exists (`.specify/memory/constitution.md`
-absent), so there are no constitution-derived gates. The de-facto
+No constitution file exists, so there are no constitution-derived gates. The de-facto
 gates are the project's operating rules (Makefile) and the spec's own
 constraints:
 
@@ -168,7 +167,7 @@ new dependencies, no new projects, no governance surface changes.
 
 ```text
 specs/004-map-ui-brightness-legend/
-├── plan.md              # This file (/speckit.plan command output)
+├── plan.md              # This file (plan command output)
 ├── research.md          # Phase 0 output — mechanism, placement, verification
 ├── data-model.md        # Phase 1 output — entities and invariants
 ├── quickstart.md        # Phase 1 output — Scenarios 1–6 validation guide
@@ -177,7 +176,7 @@ specs/004-map-ui-brightness-legend/
 │   ├── base-map-brightness.md
 │   ├── ui-layout.md
 │   └── legend-gradient.md
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (tasks command output)
 ```
 
 ### Source Code (repository root)

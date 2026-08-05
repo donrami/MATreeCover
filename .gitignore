@@ -26,6 +26,10 @@ __pycache__/
 # Cloudflare worker tooling (workers/map)
 node_modules/
 .wrangler/
+workers/map/wrangler.local.toml
+
+# Owner-infra gate config (FR-014 continuity checks)
+scripts/deploy-cf.env
 
 # Local release archives kept for rollback (deploy-cf.sh)
 dist-archive/

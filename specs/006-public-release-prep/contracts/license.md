@@ -41,8 +41,8 @@ Required credit strings (verified against official sources in `research.md`):
 
 | Provider | Credit string | Required links |
 |----------|---------------|----------------|
-| LGL (buildings, boundary) | `Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0` | `https://www.govdata.de/dl-de/by-2-0` (license text) |
-| basemap.de (base map) | `© GeoBasis-DE / BKG (2026) dl-de/by-2-0` — with `(Daten verändert)` appended where derived data was modified | `https://www.bkg.bund.de` (source note), `https://www.govdata.de/dl-de/by-2-0` (license) |
+| LGL (buildings, boundary) | `Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0` — with `(Daten verändert)` appended, because the buildings are presented as a derived layer (colored by computed values) | `https://www.govdata.de/dl-de/by-2-0` (license text) |
+| basemap.de (base map) | `© GeoBasis-DE / BKG (2026) dl-de/by-2-0` — the tiles are displayed unmodified, so no `(Daten verändert)` marker is required | `https://www.bkg.bund.de` (source note), `https://www.govdata.de/dl-de/by-2-0` (license) |
 
 - Both strings satisfy dl-de/by-2-0 §2: provider name, license annotation (`dl-de/by-2-0`), license-text reference.
 - README credits and `src/site/attribution.html` must name the same providers and reference project (FR-011, SC-007).

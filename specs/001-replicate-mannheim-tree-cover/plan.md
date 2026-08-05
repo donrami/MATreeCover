@@ -2,13 +2,13 @@
 
 **Branch**: `001-replicate-mannheim-tree-cover` | **Date**: 2026-08-03 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `/home/mainuser/Desktop/MATreeCover/specs/001-replicate-mannheim-tree-cover/spec.md`
+**Input**: Feature specification from `specs/001-replicate-mannheim-tree-cover/spec.md`
 
 **Source of truth**: The committed spec (`spec.md`) is authoritative. The
-unfilled `.specify/memory/constitution.md` template is treated as having no
+unfilled constitution template is treated as having no
 binding constraints; the binding constraints are the spec's functional
 requirements (FR-001..FR-025) and operational constraints (OR-001..OR-005).
-The mannheim workspace `/home/mainuser/Desktop/mannheim/workspace/mannheim` is
+The archived mannheim workspace is
 the reuse source per FR-021..FR-023.
 
 - **Published map**: any static web server. No application server, no database, per the out-of-scope list.
@@ -230,7 +230,7 @@ specs/001-replicate-mannheim-tree-cover/
 ├── data-model.md        # Phase 1 output
 ├── quickstart.md        # Phase 1 output
 ├── contracts/           # Phase 1 output
-└── tasks.md             # Phase 2 output (created by /speckit.tasks, not here)
+└── tasks.md             # Phase 2 output (tasks command output)
 ```
 
 ### Source Code (repository root)

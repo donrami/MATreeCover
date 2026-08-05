@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-DEFAULT_WORKSPACE = Path("/home/mainuser/Desktop/MATreeCover/data/archive/workspace")
+DEFAULT_WORKSPACE = Path(__file__).resolve().parent.parent.parent / "data/archive/workspace"
 
 
 def workspace_root() -> Path:

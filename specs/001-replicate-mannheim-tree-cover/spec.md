@@ -20,7 +20,7 @@ Create the smallest complete Mannheim version of the deployed CityTreeCover map.
 - Mannheim buildings colored by their mean tree-cover percentage within a 60 m radius.
 - The reference legend, building interaction, map controls, and optional tree layer.
 - A Mannheim-only default view with the area outside the city boundary obscured.
-- Reuse of accepted artifacts from `/home/mainuser/Desktop/mannheim/workspace/mannheim`.
+- Reuse of accepted artifacts from the archived mannheim workspace.
 - One static German presentation for desktop and mobile browsers.
 - Required map and Mannheim data attribution.
 
@@ -204,7 +204,7 @@ A maintainer evaluates existing Mannheim artifacts before any download or comput
 
 - Reference source: [CityTreeCover](https://github.com/jcscaptures/CityTreeCover).
 - Presentation authority: [StadtBegruenung](https://schultz-web.de/StadtBegruenung/).
-- Reuse source: `/home/mainuser/Desktop/mannheim/workspace/mannheim`.
+- Reuse source: the archived mannheim workspace.
 - Reusable inputs include the Mannheim boundary, buffered boundary, imagery tiles, valid-area mask, and official building geometries.
 - Current evidence identifies 93,024 official building footprints.
 - Release metadata declares 460 extracted imagery tiles. Planning must verify the exact count.

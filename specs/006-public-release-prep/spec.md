@@ -33,7 +33,7 @@ The repository owner makes the repository public and is confident it presents we
 
 **Why this priority**: Public readiness ("high quality") is the frame for the whole feature; it must hold even though the visible deliverable is the README.
 
-**Independent Test**: An automated scan of the repository's public files finds no personal absolute paths (e.g. `/home/<username>/...`), no credential material, and no private host details; a license file exists and matches the license named in the README.
+**Independent Test**: An automated scan of the repository's public files finds no personal absolute paths (e.g. a path under a user's home directory), no credential material, and no private host details; a license file exists and matches the license named in the README.
 
 **Acceptance Scenarios**:
 
@@ -80,7 +80,7 @@ The author of the reference project (CityTreeCover) — or any contributor check
 - **FR-007**: The repository MUST contain a license file whose terms match the license stated in the README.
 - **FR-008**: The README MUST NOT contain developer workflow content: pipeline commands, test commands, exit codes, deployment steps, internal governance references, or vendored-library version listings.
 - **FR-009**: Developer workflow content, if retained, MUST live in a separate, clearly labeled developer document linked from the README, so nothing is lost for contributors.
-- **FR-010**: No tracked file in the public repository MUST contain an absolute personal file path (e.g. `/home/<username>/...`) or credential material (SSH keys, tokens, passwords, private host details).
+- **FR-010**: No tracked file in the public repository MUST contain an absolute personal file path (e.g. a path under a user's home directory) or credential material (SSH keys, tokens, passwords, private host details).
 - **FR-011**: The in-app attribution panel MUST continue to credit the reference project and all data providers (no regression).
 - **FR-012**: The README MUST be written in English (matches the current README and maximizes reach on GitHub); the map's German UI language is unaffected.
 
