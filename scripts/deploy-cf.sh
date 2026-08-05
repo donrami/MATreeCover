@@ -91,11 +91,80 @@ cmd_upload_data() {
   log "data upload complete"
 }
 
+# FR-013 gate (contracts/hosting-config.md §3, quickstart Scenario 6):
+# DNS, canonical redirects, Range 206, cache headers, certificate.
+# Exits non-zero on the first failing check. Run before declaring a
+# deployment successful.
+cmd_verify() {
+  local base="https://abu-hamad.de" out fails=0
+  # Edge pinning: resolve via 1.1.1.1 (verified current) so the
+  # maintainer's local resolver cache cannot false-fail the gate.
+  local ip edge
+  ip=$(dig @1.1.1.1 +short abu-hamad.de A | head -1)
+  [ -n "$ip" ] || die "cannot resolve abu-hamad.de via 1.1.1.1"
+  edge="--resolve abu-hamad.de:443:$ip --resolve www.abu-hamad.de:443:$ip"
+  pass() { log "PASS: $1"; }
+  fail() { log "FAIL: $1"; fails=$((fails + 1)); }
+
+  dig @1.1.1.1 +short abu-hamad.de NS | grep -q cloudflare.com && pass "NS @1.1.1.1 -> Cloudflare" || fail "NS @1.1.1.1"
+  if dig @9.9.9.9 +short abu-hamad.de NS | grep -q cloudflare.com; then
+    pass "NS @9.9.9.9 -> Cloudflare"
+  else
+    log "WARN: NS @9.9.9.9 not yet propagated (resolver cache; settles within 24 h of the NS change — confirm via 1.1.1.1 and the registry)"
+  fi
+
+  out=$(curl -s $edge -o /dev/null -w '%{http_code}' "$base/map/")
+  [ "$out" = "200" ] && pass "/map/ serves 200" || fail "/map/ serves $out"
+  out=$(curl -s $edge -D - -o /dev/null "$base/map" | grep -i '^location:' | tr -d '\r')
+  [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "/map -> /map/ (single 301)" || fail "/map location: $out"
+  out=$(curl -s $edge -D - -o /dev/null "https://www.abu-hamad.de/map/" | grep -i '^location:' | tr -d '\r')
+  [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "www /map/ -> canonical" || fail "www /map/ location: $out"
+
+  out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles")
+  echo "$out" | grep -q '206' && echo "$out" | grep -qi 'content-range: bytes 0-1023/34023835' \
+    && pass "Range 206 with correct Content-Range" || fail "Range: $(echo "$out" | grep -iE '^(HTTP|content-range)' | tr -d '\r')"
+  out=$(curl -s $edge -D - -o /dev/null "$base/map/" | grep -i 'cache-control' | tr -d '\r')
+  [ -n "$out" ] && pass "cache-control present ($out)" || fail "no cache-control on /map/"
+
+  echo | timeout 10 openssl s_client -servername abu-hamad.de -connect "$ip:443" 2>/dev/null \
+    | openssl x509 -noout -checkhost abu-hamad.de >/dev/null 2>&1 && pass "cert valid for apex" || fail "cert check apex"
+  echo | timeout 10 openssl s_client -servername www.abu-hamad.de -connect "$ip:443" 2>/dev/null \
+    | openssl x509 -noout -checkhost www.abu-hamad.de >/dev/null 2>&1 && pass "cert valid for www" || fail "cert check www"
+
+  [ "$fails" -gt 0 ] && die "$fails FR-013 gate(s) failed"
+  log "FR-013 gate PASS"
+}
+
+# FR-014 gate (contracts/dns-https.md §5, quickstart Scenario 7): the
+# Hostinger email and blog DNS records survive the migration. The
+# email send/receive test is manual (quickstart Scenario 7).
+cmd_verify_dns() {
+  local out fails=0
+  pass() { log "PASS: $1"; }
+  fail() { log "FAIL: $1"; fails=$((fails + 1)); }
+
+  out=$(dig +short abu-hamad.de MX | sort)
+  echo "$out" | grep -q '10 mx1.titan.email.' && echo "$out" | grep -q '20 mx2.titan.email.' \
+    && pass "MX mx1/mx2.titan.email (10/20)" || fail "MX: $out"
+  out=$(dig +short abu-hamad.de TXT)
+  echo "$out" | grep -q 'include:spf.titan.email' && pass "SPF includes spf.titan.email" || fail "SPF: $out"
+  out=$(dig +short autoconfig.abu-hamad.de CNAME)
+  [ "$out" = "autoconfig.mail.hostinger.com." ] && pass "autoconfig -> mail.hostinger.com" || fail "autoconfig: $out"
+  out=$(dig +short autodiscover.abu-hamad.de CNAME)
+  [ "$out" = "autodiscover.mail.hostinger.com." ] && pass "autodiscover -> mail.hostinger.com" || fail "autodiscover: $out"
+  curl -sf -o /dev/null "https://abu-hamad.de/" && pass "blog loads over HTTPS" || fail "blog HTTPS load"
+
+  [ "$fails" -gt 0 ] && die "$fails FR-014 gate(s) failed"
+  log "FR-014 gate PASS (email send/receive test is manual — quickstart Scenario 7)"
+}
+
 case "${1:-}" in
   manifest) cmd_manifest ;;
   storage-check) cmd_storage_check ;;
   prepare-assets) cmd_prepare_assets ;;
   upload-data) cmd_upload_data ;;
+  verify) cmd_verify ;;
+  verify-dns) cmd_verify_dns ;;
   "") cmd_manifest; cmd_storage_check ;;
-  *) die "unknown subcommand: $1 (expected: manifest | storage-check | prepare-assets | upload-data)" ;;
+  *) die "unknown subcommand: $1 (expected: manifest | storage-check | prepare-assets | upload-data | verify | verify-dns)" ;;
 esac

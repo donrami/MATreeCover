@@ -21,7 +21,7 @@ scenario.
 **Purpose**: Cloudflare zone + tooling + bucket — the blocking
 prerequisites for every user story.
 
-- [ ] T001 Create the Cloudflare zone and migrate DNS per
+- [X] T001 Create the Cloudflare zone and migrate DNS per
   `contracts/dns-https.md` §3: inventory the Hostinger DNS Zone
   Editor (A `@`/`www`, MX, TXT SPF/DMARC/DKIM, any `mail` A),
   corroborate with `dig @1.1.1.1 abu-hamad.de {A,MX,TXT,NS}`,
@@ -134,7 +134,7 @@ quickstart Scenario 2 (pan/zoom/popup/Bäume toggle at z16-z18,
 (FR-002, FR-003, SC-003) plus the FR-013/FR-014 gates. **Independent
 Test**: quickstart Scenarios 3, 6, 7.
 
-- [ ] T010 [US3] Add the FR-013 verification block to
+- [X] T010 [US3] Add the FR-013 verification block to
   `scripts/deploy-cf.sh` (dig NS/A; `/map/` 200 + no-cache
   header; Range 206 on `buildings.pmtiles`; `/map`/www 301s;
   certificate validity + hostname coverage via `openssl
@@ -152,7 +152,7 @@ Test**: quickstart Scenarios 3, 6, 7.
 **Goal**: SC-004 budgets hold on the live path. **Independent
 Test**: quickstart Scenario 4.
 
-- [ ] T011 [US4] Measure the live site under the published CDP
+- [X] T011 [US4] Measure the live site under the published CDP
   throttle profile (25 Mbps / 50 ms, cold cache per run) against
   `https://abu-hamad.de/map/` and write `validation/live-perf.json`
   with the same schema as `validation/perf-budget.json`.
@@ -168,14 +168,14 @@ interrupted deploy leaves the previous version live; rollback
 works (FR-009, FR-010, SC-005, SC-006). **Independent Test**:
 quickstart Scenario 5.
 
-- [ ] T012 [US5] Verify rollback + interruption safety of
+- [X] T012 [US5] Verify rollback + interruption safety of
   `scripts/deploy-cf.sh`: kill an `r2 object put` mid-transfer
   and confirm the previous object's checksum and the live version
   are unchanged (PUT atomicity); run `npx wrangler rollback` and
   re-upload the previous release's objects from `dist-archive/`;
   confirm `/map/` serves the previous version. **Accept**:
   Scenario 5 pass criteria all green.
-- [ ] T013 [P] [US5] Update the README "Publish + static hosting"
+- [X] T013 [P] [US5] Update the README "Publish + static hosting"
   section to the Cloudflare procedure: `workers/map/` +
   `scripts/deploy-cf.sh`, canonical URL `/map/`, R2 data path,
   DNS migration pointer to `contracts/dns-https.md`; remove the

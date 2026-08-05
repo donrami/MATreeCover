@@ -59,20 +59,32 @@ exit code 3 (OR-001).
 
 Exit codes: 0 success, 1 acceptance/input failure, 2 RunPod gate,
 3 RSS over 12 GiB. No local GPU path exists (OR-003), so no GPU exit
-code is defined.## Publish + static hosting
+code is defined.## Publish + hosting
 
 ```text
 make publish
 ```
 
 `dist/` is a plain static bundle (index.html, style.json, PMTiles,
-boundary mask, attribution). The PMTiles layers need HTTP byte
-serving (Range requests). `python -m http.server` does not support
-Range; use nginx or another Range-capable host:
+boundary mask, attribution) served at `https://abu-hamad.de/map/`
+(canonical URL, trailing slash) by a Cloudflare Worker
+(`workers/map/`) with the large data files (`buildings.pmtiles`,
+`trees.pmtiles`, `buildings.geojson`) in an R2 bucket. Deploy with
+`scripts/deploy-cf.sh`:
 
 ```text
-nginx -c /tmp/nginx-dist.conf   # server { root .../dist; }
+bash scripts/deploy-cf.sh prepare-assets   # stage dist/ minus the >25 MiB data files
+bash scripts/deploy-cf.sh upload-data      # r2 object put (atomic per object)
+npx wrangler deploy --config workers/map/wrangler.toml  # atomic version switch
+bash scripts/deploy-cf.sh verify           # FR-013 gate (DNS, redirects, Range 206, cert)
+bash scripts/deploy-cf.sh verify-dns       # FR-014 gate (email/blog records)
 ```
+
+The PMTiles layers need HTTP byte serving (Range requests); the
+Worker streams them from R2 with 206 passthrough. The domain's DNS
+runs on Cloudflare (nameservers set at GoDaddy); the migration and
+the email/blog continuity checks are documented in
+`specs/005-host-on-personal-domain/contracts/dns-https.md`.
 
 The bundle is ~171 MB on disk (buildings.pmtiles 33 MB, trees.pmtiles
 77 MB, buildings.geojson 54 MB, vendored libs ~1 MB). SC-008 is a time
@@ -81,7 +93,8 @@ paint fetches only the viewport tiles — measured 434 KB of the
 buildings archive on a throttled 25 Mbps / 50 ms link. First usable
 map measured at 2.5 s (budget 10 s); popup, zoom, and toggle
 interactions measured at 80–211 ms (budget 2 s). Record:
-`validation/perf-budget.json`.
+`validation/perf-budget.json`; the live re-measurement lands in
+`validation/live-perf.json`.
 
 There is no application server, no database, and no analytics (FR-001).
 
