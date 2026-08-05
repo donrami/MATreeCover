@@ -1,0 +1,35 @@
+# Cloudflare Worker serving the Mannheim tree-cover map at
+# https://abu-hamad.de/map/ (specs/005-host-on-personal-domain).
+# Route and binding contract: contracts/hosting-config.md §1.
+
+name = "matreecover-map"
+main = "index.js"
+compatibility_date = "2025-04-01"
+
+# Routes — path-prefix serving (research R-001/R-005). Only /map*
+# is routed to this Worker; every other path on the hostnames goes
+# to the blog origin (Hostinger). zone_name is resolved at deploy
+# time once the zone exists (T001).
+routes = [
+  { pattern = "abu-hamad.de/map", zone_name = "abu-hamad.de" },
+  { pattern = "abu-hamad.de/map/*", zone_name = "abu-hamad.de" },
+  { pattern = "www.abu-hamad.de/map", zone_name = "abu-hamad.de" },
+  { pattern = "www.abu-hamad.de/map/*", zone_name = "abu-hamad.de" },
+]
+
+# Static shell: a filtered copy of the publish bundle (dist/ minus
+# the three data files over the 25 MiB asset limit, staged by
+# deploy-cf.sh prepare-assets). The data files are served from R2
+# (US2/T008); assets are served via the ASSETS binding.
+[assets]
+directory = "../../dist-assets"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "none"
+run_worker_first = true
+
+# R2 binding for the large data files (US2/T008; bucket creation is
+# T003 — blocked until R2 is enabled on the account).
+[[r2_buckets]]
+binding = "DATA"
+bucket_name = "matreecover-data"

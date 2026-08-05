@@ -1,0 +1,13 @@
+{
+  "name": "matreecover-map-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker serving the Mannheim tree-cover map at https://abu-hamad.de/map/",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.34.0"
+  }
+}
