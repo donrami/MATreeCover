@@ -14,7 +14,7 @@ SITE_DIR = Path(__file__).resolve().parents[2] / "src" / "site"
 STYLE_PATH = SITE_DIR / "style.json"
 INDEX_PATH = SITE_DIR / "index.html"
 
-EXPECTED_LAYERS = ["basemap", "outside-mask", "buildings-fill", "buildings-line", "trees-fill"]
+EXPECTED_LAYERS = ["basemap", "basemap-inverted", "outside-mask", "buildings-fill", "buildings-line", "trees-fill"]
 PALETTE_STOPS = {
     0: "#ffd524",
     12: "#e6854a",
@@ -63,11 +63,11 @@ def test_unavailable_fallback_and_opacity() -> None:
     style = _style()
     buildings_fill = next(layer for layer in style["layers"] if layer["id"] == "buildings-fill")
     case_expr = buildings_fill["paint"]["fill-color"]
-    assert case_expr[-1] == "#444444"  # FR-009 gray
+    assert case_expr[-1] == "#b8b8b8"  # FR-009 gray (darkened base map)
     opacity = buildings_fill["paint"]["fill-opacity"]
     assert opacity[0] == "case"
     assert opacity[2] == 0.75  # FR-010
-    assert opacity[3] == 0.4
+    assert opacity[3] == 0.8
 
 
 def test_buildings_line_thin_gray() -> None:

@@ -5,7 +5,7 @@ const maplibregl = window.maplibregl;
 const pmtiles = window.pmtiles;
 
 const STYLE_URL = 'style.json';
-const ATTRIBUTION_HTML = 'attribution.html';
+const ATTRIBUTION_PATH = 'attribution';
 const UNAVAILABLE = '\u2013'; // en dash, FR-009
 
 let map = null;
@@ -187,7 +187,7 @@ async function onMapLoad() {
   map.addControl(
     new maplibregl.AttributionControl({
       compact: true,
-      customAttribution: `<a href="${ATTRIBUTION_HTML}">Datenquellen</a>`,
+      customAttribution: `<a href="${ATTRIBUTION_PATH}">Datenquellen</a>`,
     }),
     'bottom-right'
   );
