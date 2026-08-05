@@ -214,3 +214,79 @@ html, body {
     align-items: flex-end;
   }
 }
+
+/* First-visit story modal (US1, FR-010 safe-zone placement) */
+
+.story-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.story-modal {
+  position: relative;
+  margin: 286px auto 0;
+  max-width: 480px;
+  max-height: calc(100vh - 310px);
+  overflow-y: auto;
+  background: var(--panel-bg);
+  border: 1px solid var(--subtle);
+  border-radius: 8px;
+  padding: 18px 20px 16px;
+  color: var(--text);
+}
+
+.story-modal h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-right: 28px;
+}
+
+.story-modal p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.story-modal a {
+  color: var(--text);
+}
+
+.story-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.story-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--subtle);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.story-close:hover,
+.story-close:focus-visible {
+  color: var(--text);
+  border-color: var(--subtle);
+}
+
+/* Narrow screens: modal clears the zoom control (bottom ≈97 px),
+ * stays clear of the bottom strip (top ≈598 px at 768 px viewport) */
+@media (max-width: 480px) {
+  .story-modal {
+    margin-top: 117px;
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 300px);
+  }
+}

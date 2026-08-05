@@ -165,6 +165,90 @@ function wireErrorHandling() {
   });
 }
 
+/* First-visit story modal (US1, FR-004/FR-008/FR-009/FR-014).
+ * Self-contained: no MapLibre API calls, static DOM only. */
+function wireStoryModal() {
+  const backdrop = document.getElementById('story-backdrop');
+  const dialog = document.getElementById('story-dialog');
+  const closeButton = document.getElementById('story-close');
+  if (!backdrop || !dialog || !closeButton) return;
+
+  let previousFocus = null;
+  let inMemoryDismissed = false; // FR-013 fallback when storage unavailable
+
+  // Dismissal persistence (FR-005, contracts/dismissal-state.md):
+  // key present => never re-show in this browser; written only on
+  // explicit dismissal; every access guarded (FR-013).
+  const storage = {
+    read() {
+      try {
+        return window.localStorage.getItem('matreecover.story-dismissed') === '1';
+      } catch (err) {
+        return inMemoryDismissed;
+      }
+    },
+    write() {
+      try {
+        window.localStorage.setItem('matreecover.story-dismissed', '1');
+      } catch (err) {
+        inMemoryDismissed = true;
+      }
+    },
+  };
+
+  if (storage.read()) return; // already dismissed in this browser
+
+  const focusables = () =>
+    [...dialog.querySelectorAll('button, a[href]')]
+      .filter((el) => !el.hidden);
+
+  function close() {
+    backdrop.remove();
+    document.removeEventListener('keydown', onKeydown);
+    closeButton.removeEventListener('click', onCloseClick);
+    storage.write(); // explicit dismissal only (close button / Escape)
+    if (previousFocus && previousFocus.focus) previousFocus.focus();
+  }
+
+  function onKeydown(event) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    // FR-008: trap focus inside the dialog while open
+    const els = focusables();
+    if (els.length === 0) return;
+    const first = els[0];
+    const last = els[els.length - 1];
+    const current = document.activeElement;
+    if (event.shiftKey) {
+      if (current === first || !dialog.contains(current)) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (current === last || !dialog.contains(current)) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function onCloseClick() {
+    close();
+  }
+
+  function open() {
+    previousFocus = document.activeElement;
+    backdrop.hidden = false;
+    dialog.focus(); // FR-009: screen reader announces dialog from aria-labelledby
+    document.addEventListener('keydown', onKeydown);
+    closeButton.addEventListener('click', onCloseClick);
+  }
+
+  open();
+}
+
 async function onMapLoad() {
   let bbox = boundaryBboxFromStyle();
   if (!bbox) bbox = await boundaryBboxFromFile();
@@ -209,6 +293,7 @@ function init() {
     attributionControl: false,
   });
   window.__map = map; // debug handle (smoke checks)
+  wireStoryModal();
   map.on('load', onMapLoad);
 }
 

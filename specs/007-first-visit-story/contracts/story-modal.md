@@ -52,7 +52,7 @@ elements at every width ≥320 px:
 | `#controls` (tools card) | left column, below legend | stacked above the legend strip |
 | NavigationControl (MapLibre) | top-right | top-right |
 | `#attribution` + MapLibre attribution | bottom-right | bottom-right |
-| **`.story-modal`** | **top margin 260 px** (below the left column, bottom ≈ 244 px), centered horizontally, `max-width: 480px`, `max-height: calc(100vh - 284px)` (260 top + 24 bottom reserve clears the attribution row), `overflow-y: auto` | **top margin 60 px** (below the zoom control), centered, `width: calc(100vw - 24px)`, `max-height: calc(100vh - 220px)` (60 top + 160 bottom reserve clears the bottom strip ≈ 152 px), `overflow-y: auto` |
+| **`.story-modal`** | **top margin 286 px** (below the left column, bottom ≈ 266 px), centered horizontally, `max-width: 480px`, `max-height: calc(100vh - 310px)` (286 top + 24 bottom reserve clears the attribution row), `overflow-y: auto` | **top margin 117 px** (below the zoom control, bottom ≈ 97 px), centered, `width: calc(100vw - 24px)`, `max-height: calc(100vh - 300px)` (117 top + 183 bottom reserve clears the bottom strip ≈ 158 px, top ≈ 598 px at 768 px viewport), `overflow-y: auto` |
 
 ### Invariants
 
