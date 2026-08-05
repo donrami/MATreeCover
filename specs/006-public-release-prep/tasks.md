@@ -85,7 +85,7 @@ description: "Task list: Public Release Preparation"
 - [X] T016 [P] [US2] Replace real `zone_id` in `workers/map/wrangler.toml` with `<your-zone-id>` placeholder; add `workers/map/wrangler.local.toml` to `.gitignore`; document the `--config` local override in `DEVELOPMENT.md`
 - [X] T017 [P] [US2] Parameterize owner-infra gates in `scripts/deploy-cf.sh` per `contracts/public-hygiene.md` manual item 2: apex/www host, MX/CNAME checks, blog HTTPS check behind variables with neutral defaults
 - [X] T018 [P] [US2] Replace SSH key/port defaults in `scripts/runpod-deploy.sh` with env-var placeholders (`SSH_KEY`, port passed as argument), keeping the `MANNHEIM_WORKSPACE`-relative default
-- [ ] T019 [US2] Run `make check-public` and fix every remaining finding (including US1 outputs) until exit 0 with `clean` (SC-003, quickstart scenario 1)
+- [X] T019 [US2] Run `make check-public` and fix every remaining finding (including US1 outputs) until exit 0 with `clean` (SC-003, quickstart scenario 1)
 
 **Checkpoint**: US2 complete — the gate is clean; the repository is publishable from a data-hygiene standpoint.
 
@@ -99,9 +99,9 @@ description: "Task list: Public Release Preparation"
 
 ### Implementation User Story 3
 
-- [ ] T020 [US3] Align `src/site/attribution.html` per `contracts/license.md` §4: replace bare `basemap.de` entry with `© GeoBasis-DE / BKG (Jahr des letzten Datenbezugs) dl-de/by-2-0` linked to `govdata.de/dl-de/by-2-0`; keep LGL and CityTreeCover lines unchanged; keep the panel German
-- [ ] T021 [US3] Run the regression suite: `.venv/bin/python -m pytest tests/ -q` — green, or workspace-dependent skips only (quickstart scenario 8)
-- [ ] T022 [US3] Verify attribution renders: open `https://abu-hamad.de/map/` (or local `dist/`), open the attribution panel, confirm LGL (`dl-de/by-2-0`), the official basemap.de string, and CityTreeCover (MIT) are listed and match the README credits (FR-011, SC-007)
+- [X] T020 [US3] Align `src/site/attribution.html` per `contracts/license.md` §4: replace bare `basemap.de` entry with `© GeoBasis-DE / BKG (Jahr des letzten Datenbezugs) dl-de/by-2-0` linked to `govdata.de/dl-de/by-2-0`; keep LGL and CityTreeCover lines unchanged; keep the panel German
+- [X] T021 [US3] Run the regression suite: `.venv/bin/python -m pytest tests/ -q` — green, or workspace-dependent skips only (quickstart scenario 8)
+- [X] T022 [US3] Verify attribution renders: open `https://abu-hamad.de/map/` (or local `dist/`), open the attribution panel, confirm LGL (`dl-de/by-2-0`), the official basemap.de string, and CityTreeCover (MIT) are listed and match the README credits (FR-011, SC-007)
 
 **Checkpoint**: US3 complete — credits consistent in both places; suite green.
 
@@ -111,11 +111,11 @@ description: "Task list: Public Release Preparation"
 
 **Purpose**: Final quality pass across all stories.
 
-- [ ] T023 [P] Capture a map screenshot from the live deployment (`https://abu-hamad.de/map/`) and embed it in the README top half (recommended per `contracts/readme.md`)
-- [ ] T024 [P] Run the README link-resolution sweep (quickstart scenario 6) for all registry URLs and fix any dead links
-- [ ] T025 Run the full `quickstart.md` (scenarios 1–8) end to end and record results
-- [ ] T026 Run `make check-or005` (G2: no large data files tracked) — must stay green
-- [ ] T027 Final review: read `README.md` as a first-time visitor (SC-001); confirm no harness-internal or personal-path strings remain in tracked files (`git grep`); confirm working tree contains only intended changes; commit milestone via `make commit-milestone MSG="milestone: public release preparation"`
+- [X] T023 [P] Capture a map screenshot from the live deployment (`https://abu-hamad.de/map/`) and embed it in the README top half (recommended per `contracts/readme.md`)
+- [X] T024 [P] Run the README link-resolution sweep (quickstart scenario 6) for all registry URLs and fix any dead links
+- [X] T025 Run the full `quickstart.md` (scenarios 1–8) end to end and record results
+- [X] T026 Run `make check-or005` (G2: no large data files tracked) — must stay green
+- [X] T027 Final review: read `README.md` as a first-time visitor (SC-001); confirm no harness-internal or personal-path strings remain in tracked files (`git grep`); confirm working tree contains only intended changes; commit milestone via `make commit-milestone MSG="milestone: public release preparation"`
 
 ---
 

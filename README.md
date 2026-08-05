@@ -8,6 +8,8 @@ No account. No tracking. Nothing to install.
 
 **[https://abu-hamad.de/map/](https://abu-hamad.de/map/)**
 
+![Mannheim tree cover map](screenshot/map.png)
+
 ## What this map shows
 
 Every building in Mannheim is colored according to how much tree cover
