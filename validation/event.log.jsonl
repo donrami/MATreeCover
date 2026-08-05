@@ -220,3 +220,11 @@
 {"ts": "2026-08-05T17:06:35+00:00", "subcommand": "verify-sample", "rss_peak_bytes": 158466048, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-05T18:04:49+00:00", "subcommand": "verify-report", "rss_peak_bytes": 88866816, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-05T18:08:10+00:00", "subcommand": "verify-report", "rss_peak_bytes": 89292800, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:44:58+00:00", "subcommand": "accept", "rss_peak_bytes": 49668096, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:44:59+00:00", "subcommand": "accept", "rss_peak_bytes": 49565696, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:45:00+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44863488, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-05T18:45:01+00:00", "subcommand": "values", "rss_peak_bytes": 181170176, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-05T18:45:01+00:00", "subcommand": "accept", "rss_peak_bytes": 49737728, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:45:22+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44732416, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:45:22+00:00", "subcommand": "verify-render", "rss_peak_bytes": 44892160, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-05T18:45:22+00:00", "subcommand": "verify-value-delta", "rss_peak_bytes": 45195264, "gpu_used": false, "exit_code": 0, "inputs": []}
