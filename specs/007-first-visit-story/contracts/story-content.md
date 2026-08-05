@@ -7,7 +7,7 @@
 ## Purpose
 
 Fix the modal's German story copy: the four required elements
-(FR-002), the central-value sentence (FR-003), and the two working
+(FR-002), the central-value sentence (FR-003), and the three working
 reference links that open in a new tab (FR-006). Content is static
 HTML shipped with the page — never fetched at runtime (FR-011).
 
@@ -19,9 +19,11 @@ HTML shipped with the page — never fetched at runtime (FR-011).
 2. **SPIEGEL article link**: link text carries the article title
    "Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen".
 3. **CityTreeCover link**: link text names the reference project.
-4. **Heatwave context**: why tree cover matters in the June/July
+4. **Source-repository link**: link text "Quellcode auf GitHub",
+   target https://github.com/donrami/MATreeCover.
+5. **Heatwave context**: why tree cover matters in the June/July
    2026 heatwave in Germany.
-5. **Central value (FR-003)**: one or two sentences stating that
+6. **Central value (FR-003)**: one or two sentences stating that
    buildings are colored by the average tree cover in their 60-m
    surroundings — matching the legend text already on the page
    ("Durchschnittlicher Baumanteil im 60-m-Umkreis").
@@ -32,10 +34,11 @@ HTML shipped with the page — never fetched at runtime (FR-011).
 |---|---|---|
 | SPIEGEL article | `https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226` | `target="_blank" rel="noopener"` |
 | CityTreeCover | `https://github.com/jcscaptures/CityTreeCover` | `target="_blank" rel="noopener"` |
+| Source repository | `https://github.com/donrami/MATreeCover` | `target="_blank" rel="noopener"` |
 
-Both links open in a new tab; the map tab is never navigated away
-(FR-006). `rel="noopener"` prevents the new tab from reaching the
-opener.
+All three links open in a new tab; the map tab is never navigated
+away (FR-006). `rel="noopener"` prevents the new tab from reaching
+the opener.
 
 ## Facts and their sources
 
@@ -65,11 +68,12 @@ opener.
 > natürliche Schatten der Stadt. Diese Karte zeigt, wo Bäume fehlen:
 > Rote und orange Gebäude stehen in Umgebungen mit wenig Schatten.
 >
-> [Zum SPIEGEL-Artikel] · [Zum Referenzprojekt CityTreeCover]
+> [Zum SPIEGEL-Artikel] · [Zum Referenzprojekt CityTreeCover] ·
+> [Quellcode auf GitHub]
 
 Implementation may adjust phrasing, but must keep every required
-element and both link targets; the copy stays short (spec: "short
-story") and German.
+element and all three link targets; the copy stays short (spec:
+"short story") and German.
 
 ## Invariants
 

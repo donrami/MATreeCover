@@ -46,7 +46,8 @@ implementation details live in [data-model.md](data-model.md) and
       [story-content.md](contracts/story-content.md)):
       map-origin narrative (SPIEGEL → CityTreeCover → Mannheim
       replication), SPIEGEL article link with the article title,
-      CityTreeCover link, June/July 2026 heatwave context.
+      CityTreeCover link, source-repository link ("Quellcode auf
+      GitHub"), June/July 2026 heatwave context.
 - [ ] The central-value sentence states that buildings are colored
       by average tree cover in the 60-m surroundings (matches the
       legend text "Durchschnittlicher Baumanteil im 60-m-Umkreis").
@@ -55,6 +56,8 @@ implementation details live in [data-model.md](data-model.md) and
       schützen" (DER SPIEGEL).
 - [ ] Activate the CityTreeCover link: opens in a **new tab**,
       resolves to `github.com/jcscaptures/CityTreeCover`.
+- [ ] Activate the source-repository link: opens in a **new tab**,
+      resolves to `github.com/donrami/MATreeCover`.
 - [ ] Return to the map tab: the map is unchanged and fully usable.
 
 ### Scenario 3 — Dismissal and persistence (FR-004, FR-005, SC-002, SC-004)

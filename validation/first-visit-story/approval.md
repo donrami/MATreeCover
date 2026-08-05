@@ -36,3 +36,11 @@ It is not the literal link text.
 
 Any phrasing deviation from the approved copy voids this approval.
 The user must re-approve before merge.
+
+## Extension: source-repository link (2026-08-05)
+
+The user approved adding a third link to the modal link row: text
+"Quellcode auf GitHub", target https://github.com/donrami/MATreeCover
+(public, HTTP 200, verified 2026-08-05), `target="_blank"
+rel="noopener"`. This extends the T006 approval to the new link row;
+the story body paragraphs remain the approved verbatim copy.

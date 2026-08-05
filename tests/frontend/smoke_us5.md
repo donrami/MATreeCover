@@ -33,20 +33,24 @@ normative. The modal implements it verbatim.
 
 ### Scenario 2 — Story complete, links work (FR-002, FR-003, FR-006, SC-003)
 
-- [X] The modal contains all required elements: the map-origin
+- [ ] The modal contains all required elements: the map-origin
       narrative (SPIEGEL article → CityTreeCover reference project →
       this Mannheim replication), the SPIEGEL article link, the
-      CityTreeCover link, and the June/July 2026 heatwave context.
-- [X] The central-value sentence states that buildings are colored by
+      CityTreeCover link, the source-repository link ("Quellcode auf
+      GitHub"), and the June/July 2026 heatwave context.
+- [ ] The central-value sentence states that buildings are colored by
       the average tree cover in their 60-m surroundings, matching the
       legend text "Durchschnittlicher Baumanteil im 60-m-Umkreis".
-- [X] Both links carry `target="_blank" rel="noopener"` and the
-      article title / project name as link text (SPIEGEL: "Hitze in
-      Europa: Wie gut Stadtbäume vor extremer Wärme schützen";
-      CityTreeCover: the project name).
-- [X] Activating the SPIEGEL link opens a new tab resolving the
+- [ ] All three links carry `target="_blank" rel="noopener"` and the
+      article title / project name / "Quellcode auf GitHub" as link
+      text (SPIEGEL: "Hitze in Europa: Wie gut Stadtbäume vor
+      extremer Wärme schützen"; CityTreeCover: the project name;
+      source repository: "Quellcode auf GitHub").
+- [ ] Activating the SPIEGEL link opens a new tab resolving the
       article (HTTP 200); activating the CityTreeCover link opens a
-      new tab resolving `github.com/jcscaptures/CityTreeCover`.
+      new tab resolving `github.com/jcscaptures/CityTreeCover`;
+      activating the source-repository link opens a new tab resolving
+      `github.com/donrami/MATreeCover`.
 - [X] Returning to the map tab shows the map unchanged and fully
       usable.
 
@@ -79,8 +83,9 @@ normative. The modal implements it verbatim.
 - [X] On first load, focus moves into the modal automatically; a
       screen reader announces the dialog name "Wie diese Karte
       entstanden ist" from `aria-labelledby`.
-- [X] Tab cycles within the modal (close button ↔ reference links);
-      focus never leaves the modal while it is open.
+- [ ] Tab cycles within the modal (close button ↔ reference links,
+      including the source-repository link); focus never leaves the
+      modal while it is open.
 - [X] Escape closes the modal and focus returns to the page (body).
 - [X] The story text is real text content (paragraphs and links),
       never `aria-hidden` or image-only.

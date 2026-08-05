@@ -16,6 +16,7 @@
 - Q: Who writes the German story text? → A: Implementer drafts the copy; user reviews and approves final wording before merge.
 - Q: Which dash forms are banned? → A: Em-dash (—) and en-dash (–) both banned; hyphen (-) allowed only inside compounds (e.g. "60-m-Umkreis").
 - Q: How is AI-pattern-free prose verified? → A: Both: mechanical checks in acceptance (dash grep plus banned-phrase list) and a human prose review.
+- Q: Should the modal link to the project's own source repository? → A: Yes. Third link in the link row, text "Quellcode auf GitHub", target https://github.com/donrami/MATreeCover (public, resolves HTTP 200, verified 2026-08-05), `target="_blank" rel="noopener"` like the other two links (FR-006). This extends the T006 final-wording approval to the new link row.
 
 ## Scope
 
@@ -77,7 +78,7 @@ A visitor who already read and dismissed the story returns to the map page days 
 
 ### User Story 3 - Visitor Follows the References (Priority: P2)
 
-A reader wants to see the sources. From the modal, the visitor opens the Spiegel article and the CityTreeCover project. Both open in a new tab; the map page and its state are not lost.
+A reader wants to see the sources. From the modal, the visitor opens the Spiegel article, the CityTreeCover project, and the map's own source repository. All open in a new tab; the map page and its state are not lost.
 
 **Why priority**: The references are a core content requirement, not decoration. Broken or misdirecting links would make the story untrustworthy.
 
@@ -87,7 +88,8 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
 
 1. **Given** the modal is open, **When** the visitor activates the Spiegel article link, **Then** the article opens in a new tab and the link resolves to the DER SPIEGEL article "Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen".
 2. **Given** the modal is open, **When** the visitor activates the CityTreeCover link, **Then** the project page opens in a new tab and the link resolves to the reference project's repository.
-3. **Given** one or both references are open in new tabs, **When** the visitor returns to the map tab, **Then** the map is unchanged and fully usable.
+3. **Given** the modal is open, **When** the visitor activates the source-repository link ("Quellcode auf GitHub"), **Then** the repository page opens in a new tab and the link resolves to github.com/donrami/MATreeCover.
+4. **Given** one or more references are open in new tabs, **When** the visitor returns to the map tab, **Then** the map is unchanged and fully usable.
 
 ### Edge Cases
 
@@ -96,7 +98,7 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
 - Keyboard users: modal can be opened-read-closed entirely by keyboard; Escape closes it; focus moves into the modal on open and returns to the page on close.
 - Screen readers: the modal is announced as a dialog with a name; the story text is readable as content, not only as visual marks.
 - Text zoom / large font settings: story content remains readable; the modal scrolls instead of clipping.
-- Links: both references open in new tabs so the map is never navigated away.
+- Links: all reference links (Spiegel article, CityTreeCover, source repository) open in new tabs so the map is never navigated away.
 - Modal open while the map loads: the map renders behind the modal; closing the modal causes no reflow or reload.
 - The attribution page (separate page in the site) must never show the modal.
 
@@ -109,6 +111,7 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
   - how the map came to be (the Spiegel article, the CityTreeCover reference project, and this Mannheim map as a replication of that approach);
   - a reference to the Spiegel article "Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen" with a working link;
   - a reference to the CityTreeCover reference project with a working link;
+  - a reference to the project's own source repository ("Quellcode auf GitHub", https://github.com/donrami/MATreeCover) with a working link;
   - the context of the June/July 2026 heatwave in Germany and why tree cover matters in it.
 - **FR-003**: The story MUST explain the map's central value in one or two sentences: buildings are colored by the average tree cover in their 60-m surroundings, matching the legend text already on the page.
 - **FR-004**: The modal MUST be dismissible by a visible close button and by pressing the Escape key.
@@ -127,7 +130,7 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
 ### Key Entities *(include if feature involves data)*
 
 - **First-Visit Dismissal State**: an on-device record per browser that the story was already dismissed; determines whether the modal shows on page load. No data leaves the device.
-- **Story Content**: the German narrative shown in the modal — map origin (article → reference project → this map), the 60-m tree-cover explanation, the two reference links, and the June/July 2026 heatwave context. Written as natural human prose: no em-dash or en-dash, hyphens only inside compounds, no AI-typical phrases; drafted by the implementer, final wording approved by the user.
+- **Story Content**: the German narrative shown in the modal — map origin (article → reference project → this map), the 60-m tree-cover explanation, the three reference links (Spiegel article, CityTreeCover, source repository), and the June/July 2026 heatwave context. Written as natural human prose: no em-dash or en-dash, hyphens only inside compounds, no AI-typical phrases; drafted by the implementer, final wording approved by the user.
 
 ## Success Criteria *(mandatory)*
 
@@ -135,7 +138,7 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
 
 - **SC-001**: 100% of first-time visitors (no stored dismissal) see the modal automatically on page load, in German.
 - **SC-002**: After an explicit dismissal, the modal appears zero further times across repeated visits and reloads in the same browser.
-- **SC-003**: The modal contains all required story elements — Spiegel article reference with working link, CityTreeCover reference with working link, map-origin narrative, and June/July 2026 heatwave context — verifiable by inspection and by activating both links.
+- **SC-003**: The modal contains all required story elements — Spiegel article reference with working link, CityTreeCover reference with working link, source-repository reference with working link ("Quellcode auf GitHub"), map-origin narrative, and June/July 2026 heatwave context — verifiable by inspection and by activating all three links.
 - **SC-004**: A first-time visitor can dismiss the modal with a single action (close button or Escape) and the map is fully interactive immediately after, with no layout shift.
 - **SC-005**: No regression: existing map interactions (pan, zoom, Bäume toggle, Helligkeit slider, building popup) pass the existing smoke checklist unchanged.
 - **SC-006**: The modal is fully operable by keyboard and announced as a dialog by screen readers; focus enters the modal on open and returns to the page on close.
@@ -161,5 +164,6 @@ A reader wants to see the sources. From the modal, the visitor opens the Spiegel
 - Map page is a static, no-build site: `src/site/index.html` (`lang="de"`, title "Baumfläche"), `src/site/main.js`, `src/site/style.css`; page ships a strict Content-Security-Policy (`script-src 'self'`), so modal behavior and story content must live in the existing page bundle, not in inline scripts or fetched resources.
 - Existing UI elements the modal must not collide with: legend card (`#left-stack`), Bäume toggle and Helligkeit slider (`#controls`), zoom controls, attribution slot (`#attribution`) — the no-overlap constraint established by feature 004 applies.
 - Reference project: CityTreeCover by Jakob Schultz, https://github.com/jcscaptures/CityTreeCover (MIT License, credited in the repo LICENSE); its README states the project emerged from reading the Spiegel article and was built during the July 2026 heatwave in Germany.
-- Spiegel article: "Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen", DER SPIEGEL (Wissenschaft/Natur), July 2026, https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226 — the same article the reference project cites as its origin; article reports city trees protect against extreme heat, with roughly 30% of the 60-m surroundings recommended as shaded area (Croeser, Rahman & Ghosh, 2026).
+- Spiegel article: "Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen", DER SPIEGEL (Wissenschaft/Natur), July 2026, https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226 — same article reference project cites as its origin; article reports city trees protect against extreme heat, roughly 30% 60-m surroundings recommended as shaded area (Croeser, Rahman & Ghosh, 2026).
+- Project source repository: https://github.com/donrami/MATreeCover (public, verified resolving HTTP 200 on 2026-08-05); link text "Quellcode auf GitHub", `target="_blank" rel="noopener"`.
 - Existing smoke tests (`tests/`, `acceptance/`) cover map interactions and must remain green.

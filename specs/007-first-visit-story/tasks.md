@@ -99,6 +99,7 @@
 - [X] T012 [P] Run all five smoke checklists (`tests/frontend/smoke_us1.md`–`smoke_us5.md`) and confirm green — `smoke_us1.md`–`smoke_us4.md` must be unchanged (regression surface, FR-014)
 - [X] T013 [P] Record validation evidence into `validation/first-visit-story/` (matching the 004 precedent `validation/brightness-slider/`): `overlap.json` (overlap matrix including the open modal rect at widths 320/480/768/1280/1920 px) and the network-panel observation of zero new requests and the single `matreecover.story-dismissed` storage write (FR-010/FR-011, quickstart scenarios 6–7)
 - [X] T014 Commit per OR-004: `make commit-slice` after each story slice (US1 incl. the approved story wording, US2, US3) and `make commit-milestone` after the final validation pass (T011–T013), with the commit-check script passing (clean worktree per slice)
+- [X] T015 Add the source-repository link to the modal link row per clarification 2026-08-05: third link, text "Quellcode auf GitHub", target https://github.com/donrami/MATreeCover (public, resolves HTTP 200), `target="_blank" rel="noopener"`; extends the T006-approved copy (link row) and the focus trap to three links; update `contracts/story-content.md`, `tests/frontend/smoke_us5.md`, `specs/.../spec.md` (done in clarify pass); re-verify FR-015 gates, overlap matrix, and link resolution
 
 **Checkpoint**: Feature complete — quickstart 1–9 green, all five smoke checklists green, evidence recorded under `validation/first-visit-story/`, story wording approved by the user, commits per OR-004
 

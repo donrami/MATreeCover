@@ -2,6 +2,7 @@
   "feature": "007-first-visit-story",
   "branch": "007-first-visit-story",
   "recorded": "2026-08-05",
+  "note": "re-recorded after T015 (source-repository link added to modal link row); all pairs empty",
   "widths": [
     320,
     480,
@@ -51,7 +52,8 @@
           "b": 585
         }
       ],
-      "pairs": []
+      "pairs": [],
+      "modalScrolls": true
     },
     {
       "width": 480,
@@ -94,7 +96,8 @@
           "b": 585
         }
       ],
-      "pairs": []
+      "pairs": [],
+      "modalScrolls": true
     },
     {
       "width": 768,
@@ -137,7 +140,8 @@
           "b": 744
         }
       ],
-      "pairs": []
+      "pairs": [],
+      "modalScrolls": true
     },
     {
       "width": 1280,
@@ -180,7 +184,8 @@
           "b": 744
         }
       ],
-      "pairs": []
+      "pairs": [],
+      "modalScrolls": true
     },
     {
       "width": 1920,
@@ -223,7 +228,8 @@
           "b": 744
         }
       ],
-      "pairs": []
+      "pairs": [],
+      "modalScrolls": true
     }
   ]
 }
