@@ -11,64 +11,65 @@
 <body>
   <div id="map" role="application" aria-label="Karte der Baumflächen in Mannheim"></div>
 
-  <div id="left-stack">
-  <aside id="legend" aria-label="Legende">
-    <h1>Baumfläche</h1>
-    <p class="legend-desc">Durchschnittlicher Baumanteil im 60-m-Umkreis</p>
-    <div class="legend-gradient" role="img" aria-label="Farbverlauf von 0 bis 100 Prozent Baumfläche">
-      <div class="legend-gradient-bar" aria-hidden="true"></div>
-      <ol class="legend-gradient-ticks" aria-hidden="true">
-        <li style="left:0%">0</li>
-        <li style="left:15%">15</li>
-        <li style="left:30%">30</li>
-        <li style="left:50%">50</li>
-        <li style="left:100%">100</li>
-      </ol>
+  <!-- Feature 012: single shared legend/summary surface (FR-008).
+       is-collapsed = collapsed by default on mobile (FR-001); desktop
+       expands it in main.js to match the previous default view. The
+       header is always present so the tools stay visible while
+       collapsed (FR-004); the body is the collapsible part. -->
+  <section id="surface" class="surface is-collapsed" aria-label="Legende und Werkzeuge">
+    <header class="surface-header">
+      <h1 class="surface-title">Baumfläche</h1>
+      <div class="surface-tools">
+        <button id="baeume" type="button" aria-pressed="false">Bäume</button>
+        <label class="brightness" for="brightness-slider">
+          <span>Helligkeit</span>
+          <input type="range" id="brightness-slider" min="5" max="100" value="65">
+        </label>
+      </div>
+      <button id="surface-toggle" type="button" class="surface-toggle"
+        aria-expanded="false" aria-controls="surface-body" aria-label="Legende einblenden">
+        <span class="surface-toggle-chevron" aria-hidden="true"></span>
+      </button>
+    </header>
+    <div class="surface-body" id="surface-body">
+      <div class="surface-body-inner">
+        <aside id="legend" aria-label="Legende">
+        <p class="legend-desc">Durchschnittlicher Baumanteil im 60-m-Umkreis</p>
+        <div class="legend-gradient" role="img" aria-label="Farbverlauf von 0 bis 100 Prozent Baumfläche">
+          <div class="legend-gradient-bar" aria-hidden="true"></div>
+          <ol class="legend-gradient-ticks" aria-hidden="true">
+            <li style="left:0%">0</li>
+            <li style="left:15%">15</li>
+            <li style="left:30%">30</li>
+            <li style="left:50%">50</li>
+            <li style="left:100%">100</li>
+          </ol>
+        </div>
+        <ol class="legend-stops sr-only">
+          <li>0</li>
+          <li>15</li>
+          <li>30</li>
+          <li>50</li>
+          <li>100</li>
+        </ol>
+        <p class="legend-units">Prozent</p>
+        <p class="legend-note">Werte sind automatische Schätzungen aus Luftbildern. <a href="attribution">Details unter Datenquellen</a></p>
+      </aside>
+      <div id="city-panel" class="city-panel" hidden></div>
+      </div>
     </div>
-    <ol class="legend-stops sr-only">
-      <li>0</li>
-      <li>15</li>
-      <li>30</li>
-      <li>50</li>
-      <li>100</li>
-    </ol>
-    <p class="legend-units">Prozent</p>
-    <p class="legend-note">Werte sind automatische Schätzungen aus Luftbildern. <a href="attribution">Details unter Datenquellen</a></p>
-  </aside>
-
-  <div id="controls">
-    <button id="baeume" type="button" aria-pressed="false">Bäume</button>
-    <label class="brightness" for="brightness-slider">
-      <span>Helligkeit</span>
-      <input type="range" id="brightness-slider" min="5" max="100" value="65">
-    </label>
-  </div>
-
-  <div id="city-panel" class="city-panel" hidden></div>
-  </div>
+  </section>
 
   <div id="attribution"></div>
-
   <a class="legal-link" href="impressum">Impressum</a>
 
   <div class="story-backdrop" id="story-backdrop" hidden>
-    <div class="story-modal" id="story-dialog" role="dialog"
-         aria-modal="true" aria-labelledby="story-title" tabindex="-1">
+    <div class="story-modal" id="story-dialog" role="dialog" aria-modal="true" aria-labelledby="story-title" tabindex="-1">
       <h2 id="story-title">Wie diese Karte entstanden ist</h2>
-      <button id="story-close" type="button" class="story-close"
-              aria-label="Schließen">✕</button>
-      <p>Jedes Gebäude ist nach dem durchschnittlichen Baumanteil in seinem
-        60-m-Umkreis eingefärbt: Je grüner, desto mehr Bäume in der Umgebung.</p>
-      <p>Im Juli 2026 berichtete der SPIEGEL, wie gut Stadtbäume vor extremer
-        Hitze schützen: Rund 30 Prozent des 60-m-Umkreises sollten beschattet
-        sein. Aus der Lektüre entstand das Referenzprojekt
-        <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>,
-        das Gebäude nach dem Baumanteil ihrer Umgebung einfärbt. Diese Karte
-        überträgt die Idee auf Mannheim.</p>
-      <p>Im Juni und Juli 2026 erlebte Deutschland eine Hitzewelle. In dicht
-        bebauten Vierteln wird es besonders heiß. Bäume sind der natürliche
-        Schatten der Stadt. Diese Karte zeigt, wo Bäume fehlen: Rote und
-        orange Gebäude stehen in Umgebungen mit wenig Schatten.</p>
+      <button id="story-close" type="button" class="story-close" aria-label="Schließen">✕</button>
+      <p>Jedes Gebäude ist nach dem durchschnittlichen Baumanteil in seinem 60-m-Umkreis eingefärbt: Je grüner, desto mehr Bäume in der Umgebung.</p>
+      <p>Im Juli 2026 berichtete der SPIEGEL, wie gut Stadtbäume vor extremer Hitze schützen: Rund 30 Prozent des 60-m-Umkreises sollten beschattet sein. Aus der Lektüre entstand das Referenzprojekt <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>, das Gebäude nach dem Baumanteil ihrer Umgebung einfärbt. Diese Karte überträgt die Idee auf Mannheim.</p>
+      <p>Im Juni und Juli 2026 erlebte Deutschland eine Hitzewelle. In dicht bebauten Vierteln wird es besonders heiß. Bäume sind der natürliche Schatten der Stadt. Diese Karte zeigt, wo Bäume fehlen: Rote und orange Gebäude stehen in Umgebungen mit wenig Schatten.</p>
       <p class="story-links">
         <a href="https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226" target="_blank" rel="noopener">Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen</a>
         <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>

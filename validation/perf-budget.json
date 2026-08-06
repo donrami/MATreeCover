@@ -29,10 +29,11 @@
     "trees_toggle_on": 122,
     "trees_toggle_off": 123,
     "district_click": 104,
-    "panel_render": 0
+    "panel_render": 0,
+    "surface_toggle": 16
   },
   "interaction_budget_ms": 2000,
-  "interactions_within_budget": "7/7",
+  "interactions_within_budget": "8/8",
   "interactions_pass": true,
   "initial_payload_bytes": {
     "total_page": 3887631,

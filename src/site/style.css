@@ -22,30 +22,141 @@ html, body {
   background: var(--map-bg);
 }
 
-/* Left stack — legend above tools card; flex column so the two can
- * never overlap regardless of content height (FR-008, research R-003). */
-#left-stack {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-/* Legend — top-left card */
-#legend {
+/* ============================================================
+ * Legend/summary surface (feature 012, FR-008)
+ * One shared component: a persistent header (title + tools +
+ * toggle) plus a collapsible body (full legend + city overview).
+ * Geometry switches on the 768 px breakpoint (R-8): a fixed
+ * bottom sheet on mobile, a top-left panel on desktop. State is
+ * the DOM class `is-collapsed` on #surface, toggled by
+ * #surface-toggle in main.js (FR-002, FR-004).
+ * ============================================================ */
+#surface {
   background: var(--panel-bg);
   border: 1px solid var(--subtle);
-  border-radius: 8px;
-  padding: 10px 14px;
-  max-width: 220px;
   color: var(--text);
+  z-index: 20;
 }
 
-#legend h1 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+/* Persistent header — holds the tools so they stay visible and
+ * operable while the body is collapsed (FR-004). */
+.surface-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.surface-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.surface-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+#baeume {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--subtle);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#baeume.active {
+  border-color: #39C43D;
+  color: #39C43D;
+}
+
+.brightness {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--subtle);
+}
+
+.brightness input[type="range"] {
+  width: 160px;
+  accent-color: #39C43D;
+  cursor: pointer;
+}
+
+/* Expand/collapse toggle — chevron points up while collapsed
+ * (tap to expand) and rotates to point down when expanded. */
+.surface-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  color: var(--subtle);
+  cursor: pointer;
+  flex: none;
+}
+
+.surface-toggle:hover,
+.surface-toggle:focus-visible {
+  color: var(--text);
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
+.surface-toggle-chevron {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid currentColor; /* up when collapsed */
+  transition: transform 0.2s ease;
+}
+
+#surface:not(.is-collapsed) .surface-toggle-chevron {
+  transform: rotate(180deg); /* down when expanded */
+}
+
+/* Collapsible body — slides/opacity with an internal scroll cap.
+ * Composable max-height keeps the collapsed sheet to header height
+ * (map dominant, SC-001); transform+opacity give the native-feel
+ * slide (FR-008). */
+.surface-body {
+  overflow-y: auto;
+  transition: transform 0.28s ease, opacity 0.28s ease, max-height 0.28s ease;
+}
+
+#surface:not(.is-collapsed) .surface-body {
+  border-top: 1px solid var(--subtle);
+}
+
+#surface.is-collapsed .surface-body {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  overflow: hidden;
+  border-top: none;
+}
+
+.surface-body-inner {
+  padding: 10px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Legend content inside the surface body (no longer its own card). */
+#legend {
+  color: var(--text);
+}
 
 #legend .legend-desc {
   font-size: 0.8rem;
@@ -61,8 +172,8 @@ html, body {
   border-radius: 3px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: linear-gradient(90deg,
-    #ffd524 0%, #e6854a 12%, #a97e65 24%, #0674aa 24.08%,
-    #1db6ff 32%, #39c2ff 40%, #56ceff 48%, #6ad4ff 80%, #6ad4ff 100%);
+    #ffd524 0%, #e6854a 12%, #a97e65 24%, #a97e65 29.9%, #0674aa 30%,
+    #1db6ff 45%, #39c2ff 60%, #56ceff 75%, #6ad4ff 90%, #6ad4ff 100%);
 }
 
 .legend-gradient-ticks {
@@ -100,47 +211,23 @@ html, body {
 .legend-note { margin-top: 10px; font-size: 0.7rem; line-height: 1.4; color: var(--subtle); }
 .legend-note a { color: var(--text); text-decoration: underline; }
 
-/* Controls — tools card (Bäume + Helligkeit) in the left column below
- * the legend; never shares the top-right corner with the navigation
- * control (FR-008). */
-#controls {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  background: var(--panel-bg);
-  border: 1px solid var(--subtle);
-  border-radius: 6px;
-  padding: 8px 12px;
-}
-
-#baeume {
-  background: var(--panel-bg);
+/* City overview panel (feature 011, US3): plain block inside the
+ * surface body; rendered from style.json metadata, hidden when the
+ * metadata is missing (city-overview.md). */
+.city-panel {
   color: var(--text);
-  border: 1px solid var(--subtle);
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  cursor: pointer;
 }
 
-#baeume.active {
-  border-color: #39C43D;
-  color: #39C43D;
+.city-panel .panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
-#controls .brightness {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.city-panel p {
   font-size: 0.78rem;
-  color: var(--subtle);
-}
-
-#controls .brightness input[type="range"] {
-  width: 160px;
-  accent-color: #39C43D;
-  cursor: pointer;
+  line-height: 1.5;
+  color: var(--text);
 }
 
 /* Attribution slot (buildings-load failure surface, pmtiles-sources contract) */
@@ -157,6 +244,10 @@ html, body {
 }
 
 #attribution a { color: var(--subtle); }
+
+/* The slot is only populated when the buildings layer fails; an empty
+ * slot must not render a stray dark chip over the map. */
+#attribution:empty { display: none; }
 
 /* Impressum link — always visible bottom-left (DDG § 5), styled like
  * the attribution chip so it reads as part of the map chrome. */
@@ -235,72 +326,160 @@ html, body {
 
 .district-popup .popup-value { font-weight: 600; }
 
-/* City overview panel (feature 011, US3): compact third card in the
- * left stack; rendered from style.json metadata, hidden when the
- * metadata is missing (city-overview.md). */
-.city-panel {
-  background: var(--panel-bg);
-  border: 1px solid var(--subtle);
-  border-radius: 8px;
-  padding: 10px 14px;
-  max-width: 220px;
-  color: var(--text);
-}
-
-.city-panel .panel-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.city-panel p {
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: var(--text);
-}
-
-/* Narrow screens: stack collapses to a bottom strip (legend at the
- * bottom, tools card above it) — still no overlap with the zoom
- * control or attribution (FR-008), and raised to clear the
- * bottom-left Impressum link (chip height ≈ 20 px at bottom: 4 px). */
-@media (max-width: 480px) {
-  #left-stack {
-    top: auto;
-    bottom: 34px;
-    left: 12px;
-    right: 12px;
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  #legend {
-    max-width: none;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 10px;
-  }
-
-  #legend h1 { font-size: 0.95rem; margin-bottom: 0; }
-  #legend .legend-desc,
-  #legend .legend-units { display: none; }
-
-  /* The attribution note wraps to its own line in the bottom strip
-   * instead of overflowing the narrow viewport (FR-013). */
-  #legend .legend-note { flex-basis: 100%; margin-top: 0; }
-
-  .legend-gradient { flex: 1; min-width: 120px; max-width: 260px; margin-left: auto; }
-
-  #controls {
-    align-items: flex-end;
-  }
-
-  /* City overview panel (feature 011): compact card inside the bottom
-   * strip, no horizontal overflow (city-overview.md, FR-013). */
-  .city-panel {
+/* ============================================================
+ * Mobile: bottom sheet (R-8). Fixed full-width sheet at the bottom;
+ * the map stays full-bleed behind it. Collapsed by default (FR-001,
+ * the HTML carries is-collapsed). Safe-area padding clears notches
+ * and the home indicator (FR-007, SC-005).
+ * ============================================================ */
+@media (max-width: 767.98px) {
+  #surface {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .surface-header {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* Collapsed strip wraps naturally: wide mobile widths (e.g. landscape
+   * phones) fit title + tools + toggle on one compact row, narrow phones
+   * wrap to two rows. Either way the strip stays under 20% of the
+   * viewport (SC-001), keeps tools thumb-reachable, and never overflows. */
+  .surface-title { flex: 0 0 auto; }
+  .surface-toggle { flex: 0 0 auto; }
+  .surface-tools {
+    flex: 1 1 auto;
+    min-width: 200px;
+    margin-left: 0;
+    flex-wrap: nowrap;
+  }
+
+  /* Very narrow phones (< 350 px): title + tools + toggle cannot share a
+   * row, so pin title + toggle on the first row and the tools on a
+   * full-width second row. This keeps the collapsed strip under 20% of
+   * the viewport on small phones (SC-001). */
+  @media (max-width: 350px) {
+    .surface-title { order: 1; }
+    .surface-toggle { order: 2; margin-left: auto; }
+    .surface-tools { order: 3; flex-basis: 100%; }
+  }
+
+  /* The brightness label grows to fill its row and never forces the
+   * header to overflow the viewport (edge case, small/landscape). Inline
+   * label keeps the tools row compact so the collapsed strip stays under
+   * 20% of the viewport height on short phones (SC-001). */
+  .brightness {
+    flex: 1 1 130px;
+    min-width: 120px;
+    max-width: 240px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brightness input[type="range"] {
+    width: 100%;
+  }
+
+  /* Expanded body: internal scroll, capped to the visible viewport as
+   * the browser address bar shows/hides (dvh, with a vh fallback). */
+  #surface:not(.is-collapsed) .surface-body {
+    max-height: min(55dvh, calc(100dvh - env(safe-area-inset-bottom)));
+  }
+
+  @supports not (height: 100dvh) {
+    #surface:not(.is-collapsed) .surface-body {
+      max-height: 55vh;
+    }
+  }
+
+  /* Native-size, thumb-reachable tools (FR-003): every interactive
+   * control >= 44x44 px with >= 8 px spacing (surface-header and
+   * surface-tools use gap: 8px). MapLibre zoom buttons default to
+   * 29 px and are enlarged here (R-3). */
+  #baeume,
+  .surface-toggle,
+  .brightness input[type="range"] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .maplibregl-ctrl-top-right .maplibregl-ctrl button,
+  .maplibregl-popup-close-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Attribution (map data/copyright) and Impressum live top-left on
+   * mobile: the bottom sheet never reaches the top-left corner, so
+   * both stay visible with the sheet collapsed or expanded (FR-005,
+   * DDG § 5). This also moves MapLibre's own AttributionControl
+   * container (`.maplibregl-ctrl-bottom-right`), which would
+   * otherwise sit under the sheet. The Impressum chip (fixed height)
+   * sits on top; the attribution box grows downward freely, and its
+   * long text wraps within max-width. The zoom control stays top-right. */
+  .legal-link {
+    top: 8px;
+    left: 8px;
+    bottom: auto;
+    right: auto;
+  }
+
+  .maplibregl-ctrl-bottom-right {
+    top: 36px;
+    left: 8px;
+    right: auto;
+    bottom: auto;
+    /* Keep clear of the zoom control column on the right (FR-005). */
+    max-width: calc(100vw - 110px);
+  }
+
+  /* Buildings-failure message slot: only populated when the buildings
+   * layer fails. Sits below the attribution control and stays clear of
+   * the zoom column (FR-005). */
+  #attribution {
+    top: 152px;
+    left: 8px;
+    bottom: auto;
+    right: auto;
+    max-width: calc(100vw - 110px);
+  }
+}
+
+/* ============================================================
+ * Desktop: top-left collapsible panel (R-8). Same component set as
+ * mobile (FR-008); expanded by default (main.js removes is-collapsed
+ * on load). Collapsing hides the body so the map reclaims the space.
+ * ============================================================ */
+@media (min-width: 768px) {
+  #surface {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    border-radius: 8px;
+    max-width: 280px;
+  }
+
+  #surface:not(.is-collapsed) .surface-body {
+    max-height: calc(100vh - 96px);
+  }
+}
+
+/* Reduced motion (FR-008): every surface state change is instant,
+ * non-animated. */
+@media (prefers-reduced-motion: reduce) {
+  #surface,
+  #surface * {
+    transition: none !important;
+    animation: none !important;
   }
 }
 
@@ -372,10 +551,10 @@ html, body {
 
 /* Narrow screens: modal clears the zoom control (bottom ≈97 px),
  * stays clear of the bottom strip (top ≈598 px at 768 px viewport) */
-@media (max-width: 480px) {
+@media (max-width: 767.98px) {
   .story-modal {
     margin-top: 117px;
     width: calc(100vw - 24px);
-    max-height: calc(100vh - 300px);
+    max-height: calc(100dvh - 300px);
   }
 }

@@ -128,6 +128,7 @@ function openDistrictPopup(event, feature) {
       className: 'district-popup',
       closeOnClick: false,
     });
+    localizePopupClose(districtPopup);
   }
   districtPopup
     .setLngLat(event.lngLat)
@@ -374,6 +375,88 @@ function wireStoryModal() {
   open();
 }
 
+/* Feature 012 (contracts/surface-interaction.md): the shared
+ * legend/summary surface toggle. Flips `is-collapsed` on #surface,
+ * mirrors state on the button (aria-expanded, aria-controls), and
+ * calls map.setPadding so building and district popups stay fully
+ * visible above the surface (FR-006, FR-008). */
+function wireSurfaceToggle() {
+  const surface = document.getElementById('surface');
+  const toggle = document.getElementById('surface-toggle');
+  if (!surface || !toggle) return;
+
+  /* Apply popup-clearance padding. Only the mobile bottom sheet needs
+   * bottom padding (popups open above it). The desktop panel is
+   * top-left, so bottom padding would only shove the map up; popups
+   * clear a top-left panel naturally (FR-006, US3). Measured after
+   * the expand/collapse transition settles (0.28 s). */
+  const syncPadding = () => {
+    if (!map) return;
+    const collapsed = surface.classList.contains('is-collapsed');
+    const mobileSheet = window.matchMedia('(max-width: 767.98px)').matches;
+    setTimeout(() => {
+      map.setPadding({ bottom: collapsed || !mobileSheet ? 0 : surface.offsetHeight });
+    }, 300);
+  };
+
+  const apply = () => {
+    const collapsed = surface.classList.contains('is-collapsed');
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', collapsed ? 'Legende einblenden' : 'Legende ausblenden');
+    syncPadding();
+  };
+
+  toggle.addEventListener('click', () => {
+    surface.classList.toggle('is-collapsed');
+    apply();
+  });
+  // Keep popup clearance accurate if the sheet size changes (e.g. the
+  // city panel renders, the window resizes across the breakpoint).
+  window.addEventListener('resize', () => {
+    if (map && !surface.classList.contains('is-collapsed')) syncPadding();
+  });
+  apply(); // sync initial ARIA state + padding to the HTML default
+}
+
+/* Feature 012 localization: MapLibre's default controls ship English
+ * tooltips (zoom in/out, compass, attribution toggle, popup close).
+ * Every tooltip on the site must be German (FR-011, FR-014). */
+function setGermanLabel(el, label) {
+  if (!el) return;
+  el.setAttribute('aria-label', label);
+  el.title = label;
+}
+
+function localizePopupClose(popup) {
+  if (!popup) return;
+  popup.on('open', () => {
+    const root = popup.getElement();
+    setGermanLabel(root && root.querySelector('.maplibregl-popup-close-button'), 'Schließen');
+  });
+}
+
+/* Localize MapLibre tooltips and, on mobile, collapse the attribution
+ * to the compact button by default (screen overload, user wish). */
+function localizeMapLibreControls() {
+  setGermanLabel(document.querySelector('.maplibregl-ctrl-zoom-in'), 'Vergrößern');
+  setGermanLabel(document.querySelector('.maplibregl-ctrl-zoom-out'), 'Verkleinern');
+  setGermanLabel(document.querySelector('.maplibregl-ctrl-compass'), 'Norden ausrichten');
+  setGermanLabel(document.querySelector('.maplibregl-ctrl-attrib-button'), 'Quellenangaben');
+  localizePopupClose(buildingPopup);
+  localizePopupClose(districtPopup);
+  // Mobile (< 768 px): attribution starts collapsed (ⓘ button only).
+  // Removing both open markers keeps it collapsed; the ⓘ tap still
+  // expands it via MapLibre's own toggle.
+  if (window.matchMedia('(max-width: 767.98px)').matches) {
+    const attrib = document.querySelector('.maplibregl-ctrl-attrib');
+    if (attrib) {
+      attrib.classList.add('maplibregl-compact');
+      attrib.classList.remove('maplibregl-compact-show');
+      attrib.removeAttribute('open');
+    }
+  }
+}
+
 async function onMapLoad() {
   let bbox = boundaryBboxFromStyle();
   if (!bbox) bbox = await boundaryBboxFromFile();
@@ -406,6 +489,7 @@ async function onMapLoad() {
   wireBrightnessSlider();
   wireErrorHandling();
   renderCityPanel();
+  localizeMapLibreControls();
 }
 
 function init() {
@@ -421,6 +505,16 @@ function init() {
   window.__map = map; // debug handle (smoke checks)
   window.__renderCityPanel = renderCityPanel; // debug handle (perf re-measurement)
   wireStoryModal();
+
+  // Feature 012 (FR-008): the surface is collapsed by default on
+  // mobile (FR-001, HTML class); on desktop it starts expanded to
+  // match the previous default view. State stays session-only.
+  const surface = document.getElementById('surface');
+  if (surface && window.matchMedia('(min-width: 768px)').matches) {
+    surface.classList.remove('is-collapsed');
+  }
+  wireSurfaceToggle();
+
   map.on('load', onMapLoad);
 }
 

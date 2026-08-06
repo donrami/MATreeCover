@@ -1,8 +1,8 @@
 """US1 style contract test (T012) — `contracts/map-style.md`.
 
 Asserts the five layers in order, the verbatim palette stops
-0/12/24/24.08/32/40/48/80, the hidden trees layer, the legend labels,
-and JSON round-trip stability.
+0/12/24/29.9/30/45/60/75/90/100, the hidden trees layer, the legend
+labels, and JSON round-trip stability.
 """
 
 from __future__ import annotations
@@ -19,11 +19,13 @@ PALETTE_STOPS = {
     0: "#ffd524",
     12: "#e6854a",
     24: "#a97e65",
-    24.08: "#0674aa",
-    32: "#1db6ff",
-    40: "#39c2ff",
-    48: "#56ceff",
-    80: "#6ad4ff",
+    29.9: "#a97e65",
+    30: "#0674aa",
+    45: "#1db6ff",
+    60: "#39c2ff",
+    75: "#56ceff",
+    90: "#6ad4ff",
+    100: "#6ad4ff",
 }
 LEGEND_LABELS = ["0", "15", "30", "50", "100"]
 
@@ -137,3 +139,85 @@ def test_city_panel_present() -> None:
     """Feature 011 (city-overview.md): #city-panel card in the left stack."""
     html = INDEX_PATH.read_text(encoding="utf-8")
     assert 'id="city-panel"' in html
+
+
+# =====================================================================
+# Feature 012 — Mobile-First Native UX (contracts/ in feature 012).
+# Static DOM/CSS assertions for the shared #surface component.
+# =====================================================================
+
+STYLE_CSS = SITE_DIR / "style.css"
+
+
+def test_surface_markup_present() -> None:
+    """Feature 012 (FR-008): one shared surface with a persistent header
+    and a collapsible body."""
+    html = INDEX_PATH.read_text(encoding="utf-8")
+    assert 'id="surface"' in html
+    assert 'class="surface-header"' in html
+    assert 'id="surface-body"' in html
+    assert 'id="surface-toggle"' in html
+    assert 'aria-controls="surface-body"' in html
+
+
+def test_surface_collapsed_by_default() -> None:
+    """Feature 012 (FR-001, SC-001): mobile loads with the surface
+    collapsed so the map is the dominant surface."""
+    html = INDEX_PATH.read_text(encoding="utf-8")
+    assert 'class="surface is-collapsed"' in html
+
+
+def test_map_full_bleed() -> None:
+    """Feature 012: the map stays full-bleed in every layout."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert "#map {" in css
+    assert "position: absolute" in css
+    assert "inset: 0" in css
+
+
+def test_reduced_motion_block_present() -> None:
+    """Feature 012 (FR-008): reduced motion makes surface transitions
+    instant and non-animated."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert "prefers-reduced-motion" in css
+    assert "transition: none" in css
+
+
+def test_mobile_breakpoint_is_768px() -> None:
+    """Feature 012 (R-8): a single 768 px breakpoint (mobile bottom sheet
+    below, desktop panel at/above)."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert "@media (max-width: 767.98px)" in css
+    assert "@media (min-width: 768px)" in css
+
+
+def test_mobile_touch_targets_min_44px() -> None:
+    """Feature 012 (FR-003): on mobile, interactive controls are
+    >= 44x44 px touch targets."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert "min-width: 44px" in css
+    assert "min-height: 44px" in css
+    assert "#baeume" in css
+    assert ".surface-toggle" in css
+    assert 'input[type="range"]' in css
+
+
+def test_tools_in_surface_header() -> None:
+    """Feature 012 (FR-004): Bäume and Helligkeit live in the persistent
+    surface header so they stay visible while the surface is collapsed."""
+    html = INDEX_PATH.read_text(encoding="utf-8")
+    assert 'id="baeume"' in html
+    assert 'id="brightness-slider"' in html
+    # header comes before the collapsible body in the DOM
+    header = html.index('class="surface-header"')
+    body = html.index('id="surface-body"')
+    assert header < body
+
+
+def test_new_copy_no_em_or_en_dashes() -> None:
+    """Feature 012 (FR-011, SC-009): all new user-facing copy is German
+    with zero em-dashes and zero en-dashes (hyphens inside compounds only)."""
+    html = INDEX_PATH.read_text(encoding="utf-8")
+    assert "\u2014" not in html  # em dash
+    assert "\u2013" not in html  # en dash
+
