@@ -27,6 +27,13 @@ the `Bäume` button toggles the detected tree layer.
 - **Click a building**: a small popup shows its exact percentage.
 - **`Bäume` toggle**: switches the detected tree areas on and off, so
   you can compare the colored buildings with the actual tree canopy.
+- **Click a Stadtteil**: every one of the 38 districts opens a popup
+  with its building count, average tree cover, and the share below the
+  30 % guideline. The building popup also shows which district a
+  building belongs to and the district average.
+- **City overview**: the "Mannheim im Überblick" card shows the city
+  averages: mean tree cover, the share of buildings with sufficient
+  shade, and the number of detected tree areas.
 
 ## Where the data comes from
 
@@ -50,6 +57,7 @@ Map data:
   [govdata.de/dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
 - Base map: © GeoBasis-DE / BKG (2026) dl-de/by-2-0 —
   [bkg.bund.de](https://www.bkg.bund.de).
+- Stadtteile: Stadt Mannheim, GDI-MA, dl-de/by-2-0 (Daten verändert).
 
 ## License
 

@@ -14,7 +14,7 @@ SITE_DIR = Path(__file__).resolve().parents[2] / "src" / "site"
 STYLE_PATH = SITE_DIR / "style.json"
 INDEX_PATH = SITE_DIR / "index.html"
 
-EXPECTED_LAYERS = ["basemap", "basemap-inverted", "outside-mask", "buildings-fill", "buildings-line", "trees-fill"]
+EXPECTED_LAYERS = ["basemap", "basemap-inverted", "outside-mask", "stadtteile-fill", "buildings-fill", "buildings-line", "trees-fill"]
 PALETTE_STOPS = {
     0: "#ffd524",
     12: "#e6854a",
@@ -99,6 +99,22 @@ def test_sources_present() -> None:
     assert sources["buildings"]["url"] == "pmtiles://buildings.pmtiles"
     assert sources["trees"]["url"] == "pmtiles://trees.pmtiles"
     assert sources["boundary"]["type"] == "geojson"
+    assert sources["stadtteile"]["type"] == "geojson"  # feature 011
+    assert sources["stadtteile"]["data"] == "stadtteile.geojson"
+
+
+def test_stadtteile_fill_transparent_between_mask_and_buildings() -> None:
+    """Feature 011: transparent fill below buildings-fill — hit-testable
+    without changing the default render (research R-4, SC-004)."""
+    style = _style()
+    ids = [layer["id"] for layer in style["layers"]]
+    assert ids.index("stadtteile-fill") == ids.index("outside-mask") + 1
+    assert ids.index("stadtteile-fill") < ids.index("buildings-fill")
+    layer = next(layer for layer in style["layers"] if layer["id"] == "stadtteile-fill")
+    assert layer["type"] == "fill"
+    assert layer["source"] == "stadtteile"
+    assert layer["paint"]["fill-opacity"] == 0  # transparent, still queryable
+    assert "line-color" not in layer["paint"]  # no stroke
 
 
 def test_json_roundtrip() -> None:
@@ -115,3 +131,9 @@ def test_legend_labels_present() -> None:
 def test_title_baumflaeche() -> None:
     html = INDEX_PATH.read_text(encoding="utf-8")
     assert "<title>Baumfläche</title>" in html  # FR-013
+
+
+def test_city_panel_present() -> None:
+    """Feature 011 (city-overview.md): #city-panel card in the left stack."""
+    html = INDEX_PATH.read_text(encoding="utf-8")
+    assert 'id="city-panel"' in html

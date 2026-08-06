@@ -1,0 +1,615 @@
+{
+ "DOI:10.1016/j.landurbplan.2010.05.006": {
+  "paperId": "9f6db5657f17562d79b51781609452dc7aae6225",
+  "externalIds": {
+   "MAG": "2074398030",
+   "DOI": "10.1016/J.LANDURBPLAN.2010.05.006",
+   "CorpusId": 85353154
+  },
+  "url": "https://www.semanticscholar.org/paper/9f6db5657f17562d79b51781609452dc7aae6225",
+  "title": "Urban greening to cool towns and cities: a systematic review of the empirical evidence.",
+  "venue": "",
+  "year": 2010,
+  "openAccessPdf": {
+   "url": "",
+   "status": "CLOSED",
+   "license": null,
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1016/J.LANDURBPLAN.2010.05.006?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/J.LANDURBPLAN.2010.05.006, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "36716776",
+    "name": "D. Bowler"
+   },
+   {
+    "authorId": "1412804305",
+    "name": "Lisette M. Buyung-Ali"
+   },
+   {
+    "authorId": "48161138",
+    "name": "T. Knight"
+   },
+   {
+    "authorId": "145770985",
+    "name": "A. Pullin"
+   }
+  ],
+  "abstract": null
+ },
+ "DOI:10.1088/1748-9326/abdcf1": {
+  "paperId": "e0c44a79188d256c7444be78ccf428629aef073b",
+  "externalIds": {
+   "MAG": "3121594490",
+   "DOI": "10.1088/1748-9326/abdcf1",
+   "CorpusId": 234125394
+  },
+  "url": "https://www.semanticscholar.org/paper/e0c44a79188d256c7444be78ccf428629aef073b",
+  "title": "Cooling hot cities: a systematic and critical review of the numerical modelling literature",
+  "venue": "Environmental Research Letters",
+  "year": 2021,
+  "openAccessPdf": {
+   "url": "https://doi.org/10.1088/1748-9326/abdcf1",
+   "status": "GOLD",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1088/1748-9326/abdcf1?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1088/1748-9326/abdcf1, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "9691121",
+    "name": "E. S. Krayenhoff"
+   },
+   {
+    "authorId": "80165271",
+    "name": "A. Broadbent"
+   },
+   {
+    "authorId": "2111486204",
+    "name": "Lei Zhao"
+   },
+   {
+    "authorId": "50450180",
+    "name": "M. Georgescu"
+   },
+   {
+    "authorId": "2253257393",
+    "name": "Ariane Middel"
+   },
+   {
+    "authorId": "38171333",
+    "name": "J. Voogt"
+   },
+   {
+    "authorId": "2882770",
+    "name": "A. Martilli"
+   },
+   {
+    "authorId": "3243784",
+    "name": "D. Sailor"
+   },
+   {
+    "authorId": "11669518",
+    "name": "E. Erell"
+   }
+  ],
+  "abstract": "Infrastructure-based heat reduction strategies can help cities adapt to high temperatures, but simulations of their cooling potential yield widely varying predictions. We systematically review 146 studies from 1987 to 2017 that conduct physically based numerical modelling of urban air temperature reduction resulting from green-blue infrastructure and reflective materials. Studies are grouped into two modelling scales: neighbourhood scale, building-resolving (i.e. microscale); and city scale, neighbourhood-resolving (i.e. mesoscale). Street tree cooling has primarily been assessed at the microscale, whereas mesoscale modelling has favoured reflective roof treatments, which are attributed to model physics limitations at each scale. We develop 25 criteria to assess contextualization and reliability of each study based on metadata reporting and methodological quality, respectively. Studies have shortcomings with respect to neighbourhood characterization, reporting areal coverages of heat mitigation implementations, evaluation of base case simulations, and evaluation of modelled physical processes relevant to heat reduction. To aid comparison among studies, we introduce two metrics: the albedo cooling effectiveness (ACE), and the vegetation cooling effectiveness (VCE). A sub-sample of 47 higher quality studies suggests that high reflectivity coatings or materials offer \u22480.2 \u00b0C\u20130.6 \u00b0C cooling per 0.10 neighbourhood albedo increase, and that trees yield \u22480.3 \u00b0C cooling per 0.10 canopy cover increase, for afternoon clear-sky summer conditions. VCE of low vegetation and green roofs varies more strongly between studies. Both ACE and VCE exhibit a striking dependence on model choice and model scale, particularly for albedo and roof-level implementations, suggesting that much of the variation of cooling magnitudes between studies may be attributed to model physics representation. We conclude that evaluation of the base case simulation is not a sufficient prerequisite for accurate simulation of heat mitigation strategy cooling. We identify a three-phase framework for assessment of the suitability of a numerical model for a heat mitigation experiment, which emphasizes assessment of urban canopy layer mixing and of the physical processes associated with the heat reduction implementation. Based on our findings, we include recommendations for optimal design and communication of urban heat mitigation simulation studies."
+ },
+ "DOI:10.1016/j.socscimed.2006.07.030": {
+  "paperId": "888aa6a0efa38f1aab7196a1719a3ce9b8642bac",
+  "externalIds": {
+   "MAG": "2106784657",
+   "DOI": "10.1016/J.SOCSCIMED.2006.07.030",
+   "CorpusId": 8026145,
+   "PubMed": "16996668"
+  },
+  "url": "https://www.semanticscholar.org/paper/888aa6a0efa38f1aab7196a1719a3ce9b8642bac",
+  "title": "Neighborhood microclimates and vulnerability to heat stress.",
+  "venue": "Social Science & Medicine (1967)",
+  "year": 2006,
+  "openAccessPdf": {
+   "url": "https://keep.lib.asu.edu/system/files/2022-05/microclimates_0_0.pdf",
+   "status": "GREEN",
+   "license": "other-oa",
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1016/J.SOCSCIMED.2006.07.030?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/J.SOCSCIMED.2006.07.030, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "50458933",
+    "name": "S. Harlan"
+   },
+   {
+    "authorId": "5250337",
+    "name": "A. Brazel"
+   },
+   {
+    "authorId": "2937957",
+    "name": "L. Prashad"
+   },
+   {
+    "authorId": "2166085",
+    "name": "W. Stefanov"
+   },
+   {
+    "authorId": "144512881",
+    "name": "Larissa Larsen"
+   }
+  ],
+  "abstract": null
+ },
+ "DOI:10.1016/j.rse.2020.111791": {
+  "paperId": "3abfeaf56e1b6e82f403349ba90be26891836a91",
+  "externalIds": {
+   "MAG": "3014089499",
+   "DOI": "10.1016/j.rse.2020.111791",
+   "CorpusId": 216355541
+  },
+  "url": "https://www.semanticscholar.org/paper/3abfeaf56e1b6e82f403349ba90be26891836a91",
+  "title": "Hyperlocal mapping of urban air temperature using remote sensing and crowdsourced weather data",
+  "venue": "",
+  "year": 2020,
+  "openAccessPdf": {
+   "url": "https://ars.els-cdn.com/content/image/1-s2.0-S0034425720301619-ga1_lrg.jpg",
+   "status": "HYBRID",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/j.rse.2020.111791?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/j.rse.2020.111791, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "46201225",
+    "name": "Z. Venter"
+   },
+   {
+    "authorId": "90511140",
+    "name": "O. Brousse"
+   },
+   {
+    "authorId": "49485246",
+    "name": "I. Esau"
+   },
+   {
+    "authorId": "29224353",
+    "name": "F. Meier"
+   }
+  ],
+  "abstract": "Abstract The impacts of climate change such as extreme heat waves are exacerbated in cities where most of the world's population live. Quantifying urbanization impacts on ambient air temperatures (Tair) has relevance for human health risk, building energy use efficiency, vector-borne disease control and urban biodiversity. Remote sensing of urban climate has been focused on land surface temperature (LST) due to a scarcity of data on Tair which is usually interpolated at 1\u00a0km resolution. We assessed the efficacy of mapping hyperlocal Tair (spatial resolutions of 10\u201330\u00a0m) over Oslo, Norway, by integrating Sentinel, Landsat and LiDAR data with crowd-sourced Tair measurements from 1310 private weather stations during 2018. Using Random Forest regression modelling, we found that annual mean, daily maximum and minimum Tair can be mapped with an average RMSE of 0.52\u00a0\u00b0C (R2\u00a0=\u00a00.5), 1.85\u00a0\u00b0C (R2\u00a0=\u00a00.05) and 1.46\u00a0\u00b0C (R2\u00a0=\u00a00.33), respectively. Mapping accuracy decreased sharply with"
+ },
+ "DOI:10.1016/j.ufug.2014.12.006": {
+  "paperId": "83fc20199b90f07bfe0aff84fd38b94210d36858",
+  "externalIds": {
+   "MAG": "2081790387",
+   "DOI": "10.1016/J.UFUG.2014.12.006",
+   "CorpusId": 85004012
+  },
+  "url": "https://www.semanticscholar.org/paper/83fc20199b90f07bfe0aff84fd38b94210d36858",
+  "title": "Health condition of Tilia cordata Mill. trees growing in the urban environment",
+  "venue": "",
+  "year": 2015,
+  "openAccessPdf": {
+   "url": "",
+   "status": "CLOSED",
+   "license": null,
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1016/J.UFUG.2014.12.006?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/J.UFUG.2014.12.006, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "4462160",
+    "name": "V. Stravinskien\u0117"
+   },
+   {
+    "authorId": "14093812",
+    "name": "V. Snie\u0161kien\u0117"
+   },
+   {
+    "authorId": "11496608",
+    "name": "A. Stankevi\u010dien\u0117"
+   }
+  ],
+  "abstract": null
+ },
+ "DOI:10.1016/S0140-6736(22)02585-5": {
+  "paperId": "b4cc180eaf0a0afb1fe332577657ca1bb784aedd",
+  "externalIds": {
+   "DOI": "10.1016/s0140-6736(22)02585-5",
+   "CorpusId": 256418195,
+   "PubMed": "36736334"
+  },
+  "url": "https://www.semanticscholar.org/paper/b4cc180eaf0a0afb1fe332577657ca1bb784aedd",
+  "title": "Cooling cities through urban green infrastructure: a health impact assessment of European cities.",
+  "venue": "The Lancet",
+  "year": 2023,
+  "openAccessPdf": {
+   "url": "https://researchonline.lshtm.ac.uk/id/eprint/4668939/1/Iungman_etal_2023_Cooling-cities-through-urban-green.pdf",
+   "status": "GREEN",
+   "license": null,
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/s0140-6736(22)02585-5?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/s0140-6736(22)02585-5, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "2052602001",
+    "name": "Tamara Iungman"
+   },
+   {
+    "authorId": "6496481",
+    "name": "M. Cirach"
+   },
+   {
+    "authorId": "6005139",
+    "name": "Federica Marando"
+   },
+   {
+    "authorId": "2150715385",
+    "name": "Evelise Pereira Barboza"
+   },
+   {
+    "authorId": "2075696950",
+    "name": "S. Khomenko"
+   },
+   {
+    "authorId": "46796432",
+    "name": "P. Masselot"
+   },
+   {
+    "authorId": "1818224553",
+    "name": "M. Quijal-Zamorano"
+   },
+   {
+    "authorId": "2095937",
+    "name": "N. Mueller"
+   },
+   {
+    "authorId": "5855486",
+    "name": "A. Gasparrini"
+   },
+   {
+    "authorId": "82140817",
+    "name": "Jos\u00e9 Urquiza"
+   },
+   {
+    "authorId": "3439075",
+    "name": "M. Heris"
+   },
+   {
+    "authorId": "8675358",
+    "name": "M. Thondoo"
+   },
+   {
+    "authorId": "152824522",
+    "name": "M. Nieuwenhuijsen"
+   }
+  ],
+  "abstract": "BACKGROUND\nHigh ambient temperatures are associated with many health effects, including premature mortality. The combination of global warming due to climate change and the expansion of the global built environment mean that the intensification of urban heat islands (UHIs) is expected, accompanied by adverse effects on population health. Urban green infrastructure can reduce local temperatures. We aimed to estimate the mortality burden that could be attributed to UHIs and the mortality burden that would be prevented by increasing urban tree coverage in 93 European cities.\n\n\nMETHODS\nWe did a quantitative health impact assessment for summer (June 1-Aug 31), 2015, of the effect of UHIs on all-cause mortality for adults aged 20 years or older in 93 European cities. We also estimated the temperature reductions that would result from increasing tree coverage to 30% for each city and estimated the number of deaths that could be potentially prevented as a result. We did all analyses at a high-resolution grid-cell level (250\u2009\u00d7\u2009250 m). We propagated uncertainties in input analyses by using Monte Carlo simulations to obtain point estimates and 95% CIs. We also did sensitivity analyses to test the robustness of our estimates.\n\n\nFINDINGS\nThe population-weighted mean city temperature increase due to UHI effects was 1\u00b75\u00b0C (SD 0\u00b75; range 0\u00b75-3\u00b70). Overall, 6700 (95% CI 5254-8162) premature deaths could be attributable to the effects of UHIs (corresponding to around 4\u00b733% [95% CI 3\u00b737-5\u00b728] of all summer deaths). We estimated that increasing tree coverage to 30% would cool cities by a mean of 0\u00b74\u00b0C (SD 0\u00b72; range 0\u00b70-1\u00b73). We also estimated that 2644 (95% CI 2444-2824) premature deaths could be prevented by increasing city tree coverage to 30%, corresponding to 1\u00b784% (1\u00b769-1\u00b797) of all summer deaths.\n\n\nINTERPRETATION\nOur results showed the deleterious effects of UHIs on mortality and highlighted the health benefits of increasing tree coverage to cool urban environments, which would also result in more sustainable and climate-resilient cities.\n\n\nFUNDING\nGoGreenRoutes, Spanish Ministry of Science and Innovation, Institute for Global Health, UK Medical Research Council, European Union's Horizon 2020 Project Exhaustion."
+ },
+ "DOI:10.1007/s11676-022-01523-z": {
+  "paperId": "6332ce563eef1d03bd5fdd8766b1fe2354fbb131",
+  "externalIds": {
+   "PubMedCentral": "9415244",
+   "DOI": "10.1007/s11676-022-01523-z",
+   "CorpusId": 251864209,
+   "PubMed": "36042873"
+  },
+  "url": "https://www.semanticscholar.org/paper/6332ce563eef1d03bd5fdd8766b1fe2354fbb131",
+  "title": "Evidence-based guidelines for greener, healthier, more resilient neighbourhoods: Introducing the 3\u201330\u2013300 rule",
+  "venue": "Journal of Forest Research",
+  "year": 2022,
+  "openAccessPdf": {
+   "url": "https://link.springer.com/content/pdf/10.1007/s11676-022-01523-z.pdf",
+   "status": "HYBRID",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC9415244, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "21513399",
+    "name": "C. Konijnendijk"
+   }
+  ],
+  "abstract": "The important contributions of urban trees and green spaces to for example, climate moderation and public health have been recognized. This paper discusses guidelines and norms that promote the benefits of viewing green, living amongst green, and having easy access to green spaces for recreational use. Having trees and other vegetation in sight from one\u2019s home, place of work, or school has important mental health and performance benefits. Local tree canopy cover is positively associated with cooling and other aspects of climate moderation. With public green spaces in proximity to one\u2019s home stimulates regular use of these areas and results in positive impacts on mental, physical, and social health. After analyzing existing guidelines and rules for urban green space planning and provision, a new, comprehensive guideline is presented, known as the \u20183\u201330\u2013300 rule\u2019 for urban forestry. This guideline aims to provide equitable access to trees and green spaces and their benefits by setting the thresholds of having at least 3 well-established trees in view from every home, school, and place of work, no less than a 30% tree canopy in every neighbourhood; and no more than 300\u00a0m to the nearest public green space from every residence. Current implementation of this new guideline is discussed, as well as the advantages and disadvantages of using this evidence-based but also clear and simple rules."
+ },
+ "DOI:10.1073/pnas.1817561116": {
+  "paperId": "033471885547b324c0d360ea16e840a195dec942",
+  "externalIds": {
+   "MAG": "2923210967",
+   "DOI": "10.1073/pnas.1817561116",
+   "CorpusId": 85515603,
+   "PubMed": "30910972"
+  },
+  "url": "https://www.semanticscholar.org/paper/033471885547b324c0d360ea16e840a195dec942",
+  "title": "Scale-dependent interactions between tree canopy cover and impervious surfaces reduce daytime urban heat during summer",
+  "venue": "Proceedings of the National Academy of Sciences of the United States of America",
+  "year": 2019,
+  "openAccessPdf": {
+   "url": "https://www.pnas.org/content/pnas/116/15/7575.full.pdf",
+   "status": "BRONZE",
+   "license": null,
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1073/pnas.1817561116?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1073/pnas.1817561116, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "47368733",
+    "name": "C. Ziter"
+   },
+   {
+    "authorId": "39639863",
+    "name": "Eric J. Pedersen"
+   },
+   {
+    "authorId": "3491178",
+    "name": "C. Kucharik"
+   },
+   {
+    "authorId": "40144448",
+    "name": "M. Turner"
+   }
+  ],
+  "abstract": "Significance Cities worldwide are experiencing record-breaking summer air temperatures, with serious consequences for people. Increased tree cover is suggested as a climate adaptation strategy, but the amount of tree canopy cover needed to counteract higher temperatures associated with impervious surface cover is not known. We used a bicycle-mounted measurement system to quantify the interaction of canopy cover and impervious surface cover on urban air temperature. Daytime air temperature was substantially reduced with greater canopy cover (\u226540%) at the scale of a typical city block (60\u201390 m), especially on the hottest days. However, reducing impervious surfaces remained important for lowering nighttime temperatures. Results can guide strategies for increasing tree cover to mitigate daytime urban heat and improve residents\u2019 well-being. As cities warm and the need for climate adaptation strategies increases, a more detailed understanding of the cooling effects of land cover across a continuum of spatial scales will be necessary to guide management decisions. We asked how tree canopy cover and impervious surface cover interact to influence daytime and nighttime summer air temperature, and how effects vary with the spatial scale at which land-cover data are analyzed (10-, 30-, 60-, and 90-m radii). A bicycle-mounted measurement system was used to sample air temperature every 5 m along 10 transects (\u223c7 km length, sampled 3\u201312 times each) spanning a range of impervious and tree canopy cover (0\u2013100%, each) in a midsized city in the Upper Midwest United States. Variability in daytime air temperature within the urban landscape averaged 3.5 \u00b0C (range, 1.1\u20135.7 \u00b0C). Temperature decreased nonlinearly with increasing canopy cover, with the greatest cooling when canopy cover exceeded 40%. The magnitude of daytime cooling also increased with spatial scale and was greatest at the size of a typical city block (60\u201390 m). Daytime air temperature increased linearly with increasing impervious cover, but the magnitude of warming was less than the cooling associated with increased canopy cover. Variation in nighttime air temperature averaged 2.1 \u00b0C (range, 1.2\u20133.0 \u00b0C), and temperature increased with impervious surface. Effects of canopy were limited at night; thus, reduction of impervious surfaces remains critical for reducing nighttime urban heat. Results suggest strategies for managing urban land-cover patterns to enhance resilience of cities to climate warming."
+ },
+ "DOI:10.1016/S0038-092X(00)00089-X": {
+  "paperId": "b508688828a4498a9a32b56d023f6e26f375d341",
+  "externalIds": {
+   "MAG": "2108554848",
+   "DOI": "10.1016/S0038-092X(00)00089-X",
+   "CorpusId": 1517380
+  },
+  "url": "https://www.semanticscholar.org/paper/b508688828a4498a9a32b56d023f6e26f375d341",
+  "title": "Cool surfaces and shade trees to reduce energy use and improve air quality in urban areas",
+  "venue": "",
+  "year": 2001,
+  "openAccessPdf": {
+   "url": "",
+   "status": "CLOSED",
+   "license": null,
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1016/S0038-092X(00)00089-X?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/S0038-092X(00)00089-X, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "38732357",
+    "name": "H. Akbari"
+   },
+   {
+    "authorId": "36313748",
+    "name": "M. Pomerantz"
+   },
+   {
+    "authorId": "3296568",
+    "name": "H. Taha"
+   }
+  ],
+  "abstract": null
+ },
+ "SEARCH:cooling efficiency of variable greenery coverage ratios in different urban densities": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:Temperature and human thermal comfort effects of street trees three contrasting street canyon": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:comparing the transpirational and shading effects of two contrasting urban tree species": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:street greenery and its physical and psychological impact on thermal comfort": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:tree canopy coverage threshold typical residential quarters human thermal comfort": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:Increasing tree canopy lowers urban air temperature": {
+  "error": "HTTP Error 429: "
+ },
+ "SEARCH:Urban forestry and cool roofs assessment of heat mitigation strategies Phoenix residential": {
+  "total": 2,
+  "offset": 0,
+  "data": [
+   {
+    "paperId": "da191a241f59c4ba63e1e48959c161338a802202",
+    "externalIds": {
+     "MAG": "2020054819",
+     "DOI": "10.1016/J.UFUG.2014.09.010",
+     "CorpusId": 55119247
+    },
+    "url": "https://www.semanticscholar.org/paper/da191a241f59c4ba63e1e48959c161338a802202",
+    "title": "Urban forestry and cool roofs: Assessment of heat mitigation strategies in Phoenix residential neighborhoods",
+    "venue": "",
+    "year": 2015,
+    "openAccessPdf": {
+     "url": "https://www.sciencedirect.com/science/article/pii/S161886671400106X/pdf",
+     "status": "HYBRID",
+     "license": "CCBYNCND",
+     "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/J.UFUG.2014.09.010?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/J.UFUG.2014.09.010, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "3179620",
+      "name": "Ariane Middel"
+     },
+     {
+      "authorId": "8024949",
+      "name": "N. Chhetri"
+     },
+     {
+      "authorId": "3208589",
+      "name": "R. Quay"
+     }
+    ],
+    "abstract": "Abstract The City of Phoenix (Arizona, USA) developed a Tree and Shade Master Plan and a Cool Roofs initiative to ameliorate extreme heat during the summer months in their arid city. This study investigates the impact of the City's heat mitigation strategies on daytime microclimate for a pre-monsoon summer day under current climate conditions and two climate change scenarios. We assessed the cooling effect of trees and cool roofs in a Phoenix residential neighborhood using the microclimate model ENVI-met. First, using xeric landscaping as a base, we created eight tree planting scenarios (from 0% canopy cover to 30% canopy cover) for the neighborhood to characterize the relationship between canopy cover and daytime cooling benefit of trees. In a second set of simulations, we ran ENVI-met for nine combined tree planting and landscaping scenarios (mesic, oasis, and xeric) with regular roofs and cool roofs under current climate conditions and two climate change projections. For each of the 54 scenarios, we compared average neighborhood mid-afternoon air temperatures and assessed the benefits of each heat mitigation measure under current and projected climate conditions. Findings suggest that the relationship between percent canopy cover and air temperature reduction is linear, with 0.14\u00a0\u00b0C cooling per percent increase in tree cover for the neighborhood under investigation. An increase in tree canopy cover from the current 10% to a targeted 25% resulted in an average daytime cooling benefit of up to 2.0\u00a0\u00b0C in residential neighborhoods at the local scale. Cool roofs reduced neighborhood air temperatures by 0.3\u00a0\u00b0C when implemented on residential homes. The results from this city-specific mitigation project will inform messaging campaigns aimed at engaging the city decision makers, industry, and the public in the green building and urban forestry initiatives."
+   },
+   {
+    "paperId": "e1486e7a994587e60ce69429d4a216ffa317d39f",
+    "externalIds": {
+     "MAG": "1045279581",
+     "CorpusId": 127648911
+    },
+    "url": "https://www.semanticscholar.org/paper/e1486e7a994587e60ce69429d4a216ffa317d39f",
+    "title": "City of Phoenix Cool Urban Spaces Project on Urban Forestry and Cool Roofs: Assessment of Heat Mitigation Strategies in Phoenix",
+    "venue": "",
+    "year": 2014,
+    "openAccessPdf": {
+     "url": "",
+     "status": null,
+     "license": null,
+     "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://www.phoenix.gov/oepsite/Documents/PHX%20Cool%20Urban%20Spaces%20Report%20July%202014.pdf, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "2413150343",
+      "name": "Ariane Middel"
+     },
+     {
+      "authorId": "8024949",
+      "name": "N. Chhetri"
+     }
+    ],
+    "abstract": null
+   }
+  ]
+ },
+ "SEARCH:Linking green infrastructure to urban heat and human health risk mitigation Oslo": {
+  "total": 5,
+  "offset": 0,
+  "next": 3,
+  "data": [
+   {
+    "paperId": "747168ca933bb120727fbe5d2cac920e80233b7c",
+    "externalIds": {
+     "MAG": "2995968881",
+     "DOI": "10.1016/j.scitotenv.2019.136193",
+     "CorpusId": 209519539,
+     "PubMed": "31887497"
+    },
+    "url": "https://www.semanticscholar.org/paper/747168ca933bb120727fbe5d2cac920e80233b7c",
+    "title": "Linking green infrastructure to urban heat and human health risk mitigation in Oslo, Norway.",
+    "venue": "Science of the Total Environment",
+    "year": 2019,
+    "openAccessPdf": {
+     "url": "https://www.sciencedirect.com/science/article/pii/S0048969719361893/pdf",
+     "status": "HYBRID",
+     "license": "CCBY",
+     "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/j.scitotenv.2019.136193?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/j.scitotenv.2019.136193, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "46201225",
+      "name": "Z. Venter"
+     },
+     {
+      "authorId": "4670864",
+      "name": "N. Krog"
+     },
+     {
+      "authorId": "3503067",
+      "name": "D. Barton"
+     }
+    ],
+    "abstract": "The predicted extreme temperatures of global warming are magnified in cities due to the urban heat island effect. Even if the target for average temperature increase in the Paris Climate Agreement is met, temperatures during the hottest month in a northern city like Oslo are predicted to rise by over 5\u00a0\u00b0C by 2050. We hypothesised that heat-related diagnoses for heat-sensitive citizens (75+) in Oslo are correlated to monthly air temperatures, and that green infrastructure such as tree canopy cover reduces extreme land surface temperatures and thus reduces health risk from heat exposure. Monthly air temperatures were significantly correlated to the number of skin-related diagnoses at the city level, but were unrelated to diagnoses under circulatory, nervous system, or general categories. Satellite-derived spatially-explicit measures revealed that on one of the hottest days during the summer of 2018, landscape units composed of paved, midrise or lowrise buildings gave off the most heat (39\u00a0\u00b0C), whereas units composed of complete tree canopy cover, or mixed (i.e. tree and grass) vegetation maintained temperatures of between 29 and 32\u00a0\u00b0C. Land surface temperatures were negatively correlated to tree canopy cover (R2\u00a0=\u00a00.45) and vegetation greenness (R2\u00a0=\u00a00.41). In a scenario in which each city tree was replaced by the most common non-tree cover in its neighbourhood, the area of Oslo exceeding a 30\u00a0\u00b0C health risk threshold during the summer would increase from 23 to 29%. Combining modelling results with population at risk at census tract level, we estimated that each tree in the city currently mitigates additional heat exposure of one heat-sensitive person by one day. Our results indicate that maintaining and restoring tree cover provides an ecosystem service of urban heat reduction. Our findings have particular relevance for health benefit estimation in urban ecosystem accounting and municipal policy decisions regarding ecosystem-based climate adaptation."
+   },
+   {
+    "paperId": "25d9a265762d03f140e5355603a39dd1f7d7eb95",
+    "externalIds": {
+     "DOI": "10.1007/s44327-025-00179-8",
+     "CorpusId": 284522874
+    },
+    "url": "https://www.semanticscholar.org/paper/25d9a265762d03f140e5355603a39dd1f7d7eb95",
+    "title": "Linking digital twin paradigm for urban heat monitoring and policy integration to building smart city climate resilience",
+    "venue": "Discover Cities",
+    "year": 2026,
+    "openAccessPdf": {
+     "url": "https://link.springer.com/content/pdf/10.1007/s44327-025-00179-8.pdf",
+     "status": "GOLD",
+     "license": "CCBYNCND",
+     "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1007/s44327-025-00179-8?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/s44327-025-00179-8, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "2388228403",
+      "name": "Mohammad Ismail Hossain"
+     },
+     {
+      "authorId": "2399348752",
+      "name": "Md Refath Hossan"
+     },
+     {
+      "authorId": "2402981136",
+      "name": "Zahid Hassan Shaon"
+     },
+     {
+      "authorId": "2143389408",
+      "name": "M. Ferdous"
+     }
+    ],
+    "abstract": "The escalating frequency and intensity of urban heat events, exacerbated by climate change and the urban heat island effect, pose severe threats to human health, infrastructure, and socio-economic stability, necessitating innovative solutions for smart city disaster risk reduction (DRR) and resilience. This study introduces the Digital Twin paradigm as a transformative approach to comprehensively monitor urban heat and facilitate effective policy interventions. By constructing a dynamic, high-fidelity virtual replica of the urban environment, a Digital Twin integrates real-time sensor data, detailed geospatial information, meteorological forecasts, and socio-economic data. Crucially, this Digital Twin goes beyond mere monitoring by serving as a powerful decision-support tool for policymakers and urban planners. It enables the evaluation of diverse heat mitigation strategies such as the efficacy of cool pavements, green roofs, increased urban forestry, or optimized water features before their physical implementation, thereby optimizing resource allocation and minimizing unintended consequences. Furthermore, Digital Twin facilitates the design and testing of targeted policy interventions, including the strategic placement of cooling centers, the development of early warning systems tailored to localized heat risks, or the formulation of building codes that promote heat-resilient construction. By visualizing the predicted impacts of policy changes, stakeholders can engage in more informed, evidence-based discussions, fostering collaborative governance and ensuring that policies are both effective and equitable. This paradigm shifts urban heat management from a reactive response to a proactive, preventative framework, ultimately enhancing urban resilience and contributing to more sustainable and livable smart cities in the face of a warming climate."
+   },
+   {
+    "paperId": "d7de194d32191c589ce29d5b6a170074cfb0064e",
+    "externalIds": {
+     "DOI": "10.3390/architecture6010032",
+     "CorpusId": 286115191
+    },
+    "url": "https://www.semanticscholar.org/paper/d7de194d32191c589ce29d5b6a170074cfb0064e",
+    "title": "From Urban Heat Islands to Resilient Cities: A Conceptual Framework for Resilient and Sustainable Urban Environments",
+    "venue": "Architecture",
+    "year": 2026,
+    "openAccessPdf": {
+     "url": "https://www.mdpi.com/2673-8945/6/1/32/pdf?version=1772006003",
+     "status": "GOLD",
+     "license": "CCBY",
+     "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3390/architecture6010032?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3390/architecture6010032, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "1517646906",
+      "name": "A. Mendis"
+     },
+     {
+      "authorId": "2225315075",
+      "name": "Chamindi Malalgoda"
+     }
+    ],
+    "abstract": "Urbanisation and climate change are intensifying heat risks in cities worldwide through the combined effects of global warming and the urban heat island (UHI) phenomenon. Elevated urban temperatures threaten human health, strain infrastructure, increase energy demand and exacerbate socio-spatial inequalities. While architectural and urban design decisions are central to the formation and mitigation of UHI, moving from UHI mitigation to heat-resilient cities requires linking physical interventions with governance capacity, equity, and adaptive learning over time. This paper, therefore, develops a conceptual framework for resilient and sustainable urban environments that embeds built-environment strategies within a broader resilience-oriented governance context. The study combines a narrative review of UHI mechanisms, impacts and mitigation approaches with a systematic review of local-government strategies implemented between 2015 and 2025. Following preferred reporting items for systematic reviews and meta-analyses (PRISMA) guidelines and a population, intervention, comparison, and outcome (PICO)-based search strategy, 100 studies were selected from Scopus and Web of Science and analysed thematically. The review identifies four main domains of local action: green infrastructure; cool and permeable materials; water-based and blue\u2013green infrastructure; and policy, governance and technology. Within these domains, the paper highlights architectural and design-relevant interventions, including shade-oriented streetscapes, climate-responsive building envelopes, ventilation-sensitive urban form, and blue\u2013green corridors, while also examining institutional, financial and social factors that shape implementation and effectiveness. The findings show that combinations of green infrastructure, cool materials and blue\u2013green systems can reduce surface and near-surface air temperatures and improve thermal comfort, with co-benefits for public health, energy efficiency, biodiversity and liveability. However, implementation is frequently constrained by limited financial and technical capacity, fragmented institutions, context-specific trade-offs, and insufficient attention to equity. Building on these insights, the paper proposes a conceptual framework comprising ten components that connect context and drivers; assessment and diagnosis; intervention strategies; implementation mechanisms; enablers; barriers; equity operationalisation; outcomes and effectiveness; monitoring and evaluation; and feedback and iteration. The paper concludes that advancing from urban heat islands to resilient cities requires design innovation supported by enabling governance, equity-centred prioritisation, and iterative monitoring and learning."
+   }
+  ]
+ },
+ "SEARCH:impact of urban form and design on mid-afternoon microclimate in Phoenix Local Climate Zones": {
+  "total": 1,
+  "offset": 0,
+  "data": [
+   {
+    "paperId": "0abe27e776640226da7be22c2ad93f70d0f1b234",
+    "externalIds": {
+     "MAG": "2055459538",
+     "DOI": "10.1016/J.LANDURBPLAN.2013.11.004",
+     "CorpusId": 85097201
+    },
+    "url": "https://www.semanticscholar.org/paper/0abe27e776640226da7be22c2ad93f70d0f1b234",
+    "title": "Impact of urban form and design on mid-afternoon microclimate in Phoenix Local Climate Zones",
+    "venue": "",
+    "year": 2014,
+    "openAccessPdf": {
+     "url": "https://www.sciencedirect.com/science/article/pii/S0169204613002120/pdf",
+     "status": "HYBRID",
+     "license": "CCBYNCSA",
+     "disclaimer": "Notice: Paper or abstract available at https://core.ac.uk/download/pdf/82016638.pdf, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "authors": [
+     {
+      "authorId": "3179620",
+      "name": "Ariane Middel"
+     },
+     {
+      "authorId": "51188436",
+      "name": "Kathrin H\u00e4b"
+     },
+     {
+      "authorId": "5250337",
+      "name": "A. Brazel"
+     },
+     {
+      "authorId": "9898394",
+      "name": "C. Martin"
+     },
+     {
+      "authorId": "39568110",
+      "name": "S. Guhathakurta"
+     }
+    ],
+    "abstract": "This study investigates the impact of urban form and landscaping type on the mid-afternoon microclimate in semi-arid Phoenix, Arizona. The goal is to find effective urban form and design strategies to ameliorate temperatures during the summer months. We simulated near-ground air temperatures for typical residential neighborhoods in Phoenix using the three-dimensional microclimate model ENVI-met. The model was validated using weather observations from the North Desert Village (NDV) landscape experiment, located on the Arizona State University's Polytechnic campus. The NDV is an ideal site to determine the model's input parameters, since it is a controlled environment recreating three prevailing residential landscape types in the Phoenix metropolitan area (mesic, oasis, and xeric). After validation, we designed five neighborhoods with different urban forms that represent a realistic cross-section of typical residential neighborhoods in Phoenix. The scenarios follow the Local Climate Zone (LCZ) classification scheme after Stewart and Oke. We then combined the neighborhoods with three landscape designs and, using ENVI-met, simulated microclimate conditions for these neighborhoods for a typical summer day. Results were analyzed in terms of mid-afternoon air temperature distribution and variation, ventilation, surface temperatures, and shading. Findings show that advection is important for the distribution of within-design temperatures and that spatial differences in cooling are strongly related to solar radiation and local shading patterns. In mid-afternoon, dense urban forms can create local cool islands. Our approach suggests that the LCZ concept is useful for planning and design purposes."
+   }
+  ]
+ }
+}

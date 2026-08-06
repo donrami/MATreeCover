@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-06T08:00:44+00:00",
+  "generated_at": "2026-08-06T18:31:33+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -162,8 +162,8 @@
     {
       "path": "buildings.geojson",
       "kind": "values",
-      "size_bytes": 56288523,
-      "sha256": "02ca31ac97dc4eb9365aed2460b7fd77c7397d745c223fa19afe3156ca8f8a1c",
+      "size_bytes": 56288470,
+      "sha256": "964dd8cac348ffebce1a7aadf6ac2c1c5cd0af21f234b722fcf4bc3c0f3dd988",
       "source": "derived: values.py (60 m fftconvolve)",
       "license": "MIT",
       "extent": [
@@ -223,8 +223,8 @@
     {
       "path": "buildings.pmtiles",
       "kind": "buildings-pmtiles",
-      "size_bytes": 34023835,
-      "sha256": "b7fdfadc5a9fd92caeec4afef0c61454042f55f31f8a6b247ae60a011ebb2cdf",
+      "size_bytes": 34022229,
+      "sha256": "0f3fdc08760e13a70f77fc0c53100c48210836eccc1f588ba7f5d81f57d4ed80",
       "source": "derived: buildings.geojson + tippecanoe",
       "license": "MIT",
       "extent": [
@@ -9719,6 +9719,109 @@
       "source": "derived: trees.py polygonize of accepted canopy mask",
       "license": "MIT",
       "acceptance": "pass"
+    },
+    {
+      "path": "stadtteile.geojson",
+      "kind": "stadtteile",
+      "source": "Stadt Mannheim, GDI-MA",
+      "license": "dl-de/by-2-0",
+      "extent": [
+        457637.61,
+        5473179.45,
+        470284.95,
+        5493245.34
+      ],
+      "resolution": "n/a",
+      "completeness": 1.0,
+      "lineage": {
+        "inputs": [
+          "verification/stadtteile.geojson",
+          "buildings.geojson"
+        ]
+      },
+      "acceptance": "pass",
+      "checks": {
+        "source": "ok",
+        "extent": "ok",
+        "resolution": "ok",
+        "completeness": "ok",
+        "lineage": "ok"
+      },
+      "invalidates": [],
+      "sha256": "4830756ae3b54098aa982267bcb1c30796aa35ef23d4ded2e2665a95d0c2c02c",
+      "size_bytes": 467049
+    },
+    {
+      "path": "buildings_candidate_canopy_prediction_mask_t060.geojson",
+      "kind": "large-file",
+      "size_bytes": 56281874,
+      "sha256": "4fe736f0df4059fa4c5bdb19fb0a930b504e92b27f9f64bd4a98bd454371cced",
+      "source": "workspace inventory (OR-005)",
+      "license": "n/a",
+      "extent": null,
+      "resolution": "n/a",
+      "completeness": null,
+      "lineage": {
+        "inputs": []
+      },
+      "acceptance": "pending",
+      "checks": {
+        "source": "pending",
+        "extent": "pending",
+        "resolution": "pending",
+        "completeness": "pending",
+        "lineage": "pending"
+      },
+      "invalidates": [],
+      "note": ">50 MiB, recorded per OR-005"
+    },
+    {
+      "path": "buildings_candidate_canopy_prediction_mask_t065.geojson",
+      "kind": "large-file",
+      "size_bytes": 56275953,
+      "sha256": "767e82b217c77c8ed36e6f0eb22d04205da4e78892a75b00f2c4563f6d936c5f",
+      "source": "workspace inventory (OR-005)",
+      "license": "n/a",
+      "extent": null,
+      "resolution": "n/a",
+      "completeness": null,
+      "lineage": {
+        "inputs": []
+      },
+      "acceptance": "pending",
+      "checks": {
+        "source": "pending",
+        "extent": "pending",
+        "resolution": "pending",
+        "completeness": "pending",
+        "lineage": "pending"
+      },
+      "invalidates": [],
+      "note": ">50 MiB, recorded per OR-005"
+    },
+    {
+      "path": "probe_full_t060.geojson",
+      "kind": "large-file",
+      "size_bytes": 56282024,
+      "sha256": "6f894eb7587d1de291e226eaa2cd9e6b467d81461f86d77e439079991c810860",
+      "source": "workspace inventory (OR-005)",
+      "license": "n/a",
+      "extent": null,
+      "resolution": "n/a",
+      "completeness": null,
+      "lineage": {
+        "inputs": []
+      },
+      "acceptance": "pending",
+      "checks": {
+        "source": "pending",
+        "extent": "pending",
+        "resolution": "pending",
+        "completeness": "pending",
+        "lineage": "pending"
+      },
+      "invalidates": [],
+      "note": ">50 MiB, recorded per OR-005"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-06T08:00:44+00:00",
+  "generated_at": "2026-08-06T18:14:01+00:00",
   "index_html": "index.html",
   "style": "style.json",
   "buildings": "buildings.geojson",
@@ -12,6 +12,7 @@
     8.58995592642506,
     49.59047006993572
   ],
+  "stadtteile": "stadtteile.geojson",
   "legend": {
     "labels": [
       "0",
@@ -30,6 +31,7 @@
   "attribution": [
     "Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0",
     "basemap.de",
-    "CityTreeCover (MIT)"
+    "CityTreeCover (MIT)",
+    "Stadt Mannheim, GDI-MA, dl-de/by-2-0 (Daten verändert)"
   ]
 }

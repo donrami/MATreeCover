@@ -13,6 +13,9 @@ let map = null;
 // closeOnClick: false removes MapLibre's default map-wide close listener
 // so a building click never closes the popup (research R-001/R-002).
 let buildingPopup = null;
+// Feature 011: second persistent popup for the district stats (US2);
+// district clicks close the building popup and vice versa.
+let districtPopup = null;
 
 function escapeHtml(value) {
   return String(value)
@@ -20,6 +23,51 @@ function escapeHtml(value) {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
+}
+
+/* Feature 011 formatting (city-overview.md): percentages with one dot
+ * decimal, integers with a thin space thousands separator. */
+function formatPercent(value) {
+  return `${Number(value).toFixed(1)} %`;
+}
+
+function formatInteger(value) {
+  return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '\u2009');
+}
+
+/* Feature 011 (FR-009, R-6): district at a click coordinate via the
+ * already-loaded stadtteile source (no fetch). querySourceFeatures
+ * returns the viewport features; the containing district always
+ * intersects the viewport because the point is inside it. */
+function pointInPolygon(x, y, geometry) {
+  function ringContains(ring) {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const xi = ring[i][0];
+      const yi = ring[i][1];
+      const xj = ring[j][0];
+      const yj = ring[j][1];
+      const intersects = (yi > y) !== (yj > y) &&
+        x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      if (intersects) inside = !inside;
+    }
+    return inside;
+  }
+  if (geometry.type === 'Polygon') return ringContains(geometry.coordinates[0]);
+  if (geometry.type === 'MultiPolygon') {
+    return geometry.coordinates.some((polygon) => ringContains(polygon[0]));
+  }
+  return false;
+}
+
+function districtAt(lngLat) {
+  const features = map.querySourceFeatures('stadtteile');
+  for (const feature of features) {
+    if (pointInPolygon(lngLat.lng, lngLat.lat, feature.geometry)) {
+      return feature.properties || {};
+    }
+  }
+  return null;
 }
 
 function boundaryBboxFromStyle() {
@@ -40,6 +88,53 @@ async function boundaryBboxFromFile() {
     console.warn('boundary.geojson unavailable:', err);
   }
   return null;
+}
+
+/* Feature 011 (FR-009): building popup content — the existing value
+ * line plus the district context lines (R-6). */
+function buildingPopupHtml(props) {
+  const hasValue = props.has_value === true;
+  const valueDisplay = hasValue ? `${escapeHtml(props.value_str)}%` : UNAVAILABLE;
+  return `<div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value">${valueDisplay}</div>`;
+}
+
+function buildingDistrictHtml(lngLat) {
+  const district = districtAt(lngLat);
+  if (!district) return '';
+  const mean = district.mean_value == null
+    ? 'keine Daten'
+    : formatPercent(district.mean_value);
+  return `<div class="popup-label">Stadtteil</div><div class="popup-value">${escapeHtml(district.name)}</div>` +
+    `<div class="popup-label">Durchschnitt im Stadtteil</div><div class="popup-value">${mean}</div>`;
+}
+
+function districtPopupHtml(props) {
+  const mean = props.mean_value == null
+    ? 'keine Daten'
+    : formatPercent(props.mean_value);
+  return `<div class="popup-label">Stadtteil</div><div class="popup-value">${escapeHtml(props.name)}</div>` +
+    `<div class="popup-label">Gebäude</div><div class="popup-value">${formatInteger(props.n_buildings)}</div>` +
+    `<div class="popup-label">Baumanteil im Durchschnitt</div><div class="popup-value">${mean}</div>` +
+    `<div class="popup-label">Anteil unter 30 %</div><div class="popup-value">${formatPercent(props.share_lt30)}</div>`;
+}
+
+function openDistrictPopup(event, feature) {
+  if (buildingPopup) buildingPopup.remove();
+  if (!districtPopup) {
+    // feature 011: own className, closable, offset 8 (district-stats.md)
+    districtPopup = new maplibregl.Popup({
+      closeButton: true,
+      offset: 8,
+      className: 'district-popup',
+      closeOnClick: false,
+    });
+  }
+  districtPopup
+    .setLngLat(event.lngLat)
+    .setHTML(districtPopupHtml(feature.properties || {}));
+  if (!districtPopup.isOpen()) {
+    districtPopup.addTo(map);
+  }
 }
 
 function wireBuildingsInteractions() {
@@ -66,31 +161,41 @@ function wireBuildingsInteractions() {
   // FR-002/FR-003: building click updates the single popup at the
   // click point. addTo(map) re-attaches after a previous close (FR-011).
   // FR-007: has_value === false shows the en dash, never 0.00%.
+  // Feature 011: the district context lines (FR-009) are appended
+  // here; a district popup is closed by any building click (click
+  // arbitration, district-stats.md).
   map.on('click', 'buildings-fill', (event) => {
     const feature = event.features && event.features[0];
     if (!feature) return;
-    const props = feature.properties || {};
-    const hasValue = props.has_value === true;
-    const valueDisplay = hasValue ? `${escapeHtml(props.value_str)}%` : UNAVAILABLE;
+    if (districtPopup) districtPopup.remove();
     buildingPopup
       .setLngLat(event.lngLat)
-      .setHTML(`<div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value">${valueDisplay}</div>`);
+      .setHTML(buildingPopupHtml(feature.properties || {}) + buildingDistrictHtml(event.lngLat));
     if (!buildingPopup.isOpen()) {
       buildingPopup.addTo(map);
     }
   });
 
-  // FR-003: map-level close — empty space (no building at point)
-  // closes the popup. Layer-filtered click above fires first for
-  // building clicks; this handler then sees the building feature and
-  // does nothing (research R-003). Boundary mask and outside-Mannheim
-  // clicks have no buildings-fill feature, so they close the popup.
+  // FR-003 / feature 011 click arbitration (district-stats.md):
+  // 1. building hit -> the layer-filtered handler above owns it;
+  // 2. no building, district hit -> district popup opens, building
+  //    popup closes;
+  // 3. neither hit -> both popups close.
+  // The layer-filtered click fires first for building clicks (research
+  // R-003); boundary mask and outside-Mannheim clicks hit neither.
   map.on('click', (event) => {
-    const features = map.queryRenderedFeatures(event.point, {
+    const buildingHits = map.queryRenderedFeatures(event.point, {
       layers: ['buildings-fill'],
     });
-    if (features.length === 0) {
+    if (buildingHits.length > 0) return;
+    const districtHits = map.queryRenderedFeatures(event.point, {
+      layers: ['stadtteile-fill'],
+    });
+    if (districtHits.length > 0) {
+      openDistrictPopup(event, districtHits[0]);
+    } else {
       buildingPopup.remove();
+      if (districtPopup) districtPopup.remove();
     }
   });
 }
@@ -108,6 +213,26 @@ function wireTreesToggle() {
     button.classList.toggle('active', visible);
     button.setAttribute('aria-pressed', String(visible));
   });
+}
+
+/* Feature 011 (contracts/city-overview.md): the city overview card is
+ * a view over publish-time metadata; it hides itself when the metadata
+ * is missing (stale bundle). */
+function renderCityPanel() {
+  const panel = document.getElementById('city-panel');
+  if (!panel) return;
+  const style = map.getStyle();
+  const stats = style && style.metadata && style.metadata.city_stats;
+  if (!stats || typeof stats.mean_value_pct !== 'number') {
+    panel.hidden = true;
+    return;
+  }
+  panel.innerHTML =
+    '<h2 class="panel-title">Mannheim im Überblick</h2>' +
+    `<p>Durchschnittlicher Baumanteil im 60-m-Umkreis: ${formatPercent(stats.mean_value_pct)}</p>` +
+    `<p>Gebäude mit ausreichender Beschattung (30 %): ${formatPercent(stats.share_gte30_pct)}</p>` +
+    `<p>Anzahl der erkannten Baumflächen: ${formatInteger(stats.tree_count)}</p>`;
+  panel.hidden = false;
 }
 
 function wireBrightnessSlider() {
@@ -280,6 +405,7 @@ async function onMapLoad() {
   wireTreesToggle();
   wireBrightnessSlider();
   wireErrorHandling();
+  renderCityPanel();
 }
 
 function init() {
@@ -293,6 +419,7 @@ function init() {
     attributionControl: false,
   });
   window.__map = map; // debug handle (smoke checks)
+  window.__renderCityPanel = renderCityPanel; // debug handle (perf re-measurement)
   wireStoryModal();
   map.on('load', onMapLoad);
 }

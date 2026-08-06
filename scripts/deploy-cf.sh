@@ -136,7 +136,7 @@ cmd_verify() {
   [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "www /map/ -> canonical" || fail "www /map/ location: $out"
 
   out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles")
-  echo "$out" | grep -q '206' && echo "$out" | grep -qi 'content-range: bytes 0-1023/34023835' \
+  echo "$out" | grep -q '206' && echo "$out" | grep -qi 'content-range: bytes 0-1023/34022229' \
     && pass "Range 206 with correct Content-Range" || fail "Range: $(echo "$out" | grep -iE '^(HTTP|content-range)' | tr -d '\r')"
   out=$(curl -s $edge -D - -o /dev/null "$base/map/" | grep -i 'cache-control' | tr -d '\r')
   [ -n "$out" ] && pass "cache-control present ($out)" || fail "no cache-control on /map/"

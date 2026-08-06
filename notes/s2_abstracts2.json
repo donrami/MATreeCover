@@ -1,0 +1,427 @@
+{
+ "10.1016/j.buildenv.2020.106772": {
+  "paperId": "e28f4888f694d453f67eb262f5d1e4d24d47723c",
+  "externalIds": {
+   "MAG": "3008429673",
+   "DOI": "10.1016/j.buildenv.2020.106772",
+   "CorpusId": 214100544
+  },
+  "url": "https://www.semanticscholar.org/paper/e28f4888f694d453f67eb262f5d1e4d24d47723c",
+  "title": "The cooling efficiency of variable greenery coverage ratios in different urban densities: A study in a subtropical climate",
+  "venue": "",
+  "year": 2020,
+  "openAccessPdf": {
+   "url": "",
+   "status": null,
+   "license": null,
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/j.buildenv.2020.106772?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/j.buildenv.2020.106772, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "12394638",
+    "name": "Wanlu Ouyang"
+   },
+   {
+    "authorId": "12200975",
+    "name": "T. Morakinyo"
+   },
+   {
+    "authorId": "144533003",
+    "name": "C. Ren"
+   },
+   {
+    "authorId": "143755706",
+    "name": "E. Ng"
+   }
+  ],
+  "abstract": "Abstract Urban greenery, especially trees, has been proven to be one of the effective measures for urban heat island mitigation. However, no consistent findings have been found for the relationship between greenery abundance and cooling magnitude; while some previous studies discovered a linear relationship, others opined it could a non-linear one. In addition, there are rare studies exploring whether or not the strength of the relationship is dependent on urban density. Therefore, in this study, we aim to discuss cooling efficiency by measuring the relationship between greenery coverage ratio and the cooling effects of greenery. Parametric studies were conducted in a validated ENVI-met model, with different combinations of urban densities (Low, Mid, and High) and tree coverage ratios (2\u201330% at 2% interval, and 56% for full area coverage other than building). Then the pattern of the cooling efficiency was explored under three urban densities scenarios and two selected temporal periods on a typical summer daytime. For a subtropical climate background, results showed a non-linear (logarithmic) pattern for tree coverage ratio (TCR) and cooling effects, irrespective of the urban density, temporal periods, and heat indicators. When TCR reached 20\u201330%, the optimal cooling efficiency of trees were achieved, irrespective of building densities and temporal periods. The optimal threshold for greenery coverage in this study can provide science-based suggestions to urban planners and designers for better microclimate and thermal comfort environments at the neighborhood scale."
+ },
+ "10.1016/j.buildenv.2023.110100": {
+  "error": "HTTP Error 404: Not Found"
+ },
+ "10.1038/s41598-024-51921-y": {
+  "paperId": "d846f685cfafb007c6e67b09e95d8071d9e8396e",
+  "externalIds": {
+   "PubMedCentral": "10864265",
+   "DOI": "10.1038/s41598-024-51921-y",
+   "CorpusId": 267655931,
+   "PubMed": "38351140"
+  },
+  "url": "https://www.semanticscholar.org/paper/d846f685cfafb007c6e67b09e95d8071d9e8396e",
+  "title": "Street trees provide an opportunity to mitigate urban heat and reduce risk of high heat exposure",
+  "venue": "Scientific Reports",
+  "year": 2024,
+  "openAccessPdf": {
+   "url": "https://www.nature.com/articles/s41598-024-51921-y.pdf",
+   "status": "GOLD",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC10864265, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "145068262",
+    "name": "A. Ettinger"
+   },
+   {
+    "authorId": "5885689",
+    "name": "G. Bratman"
+   },
+   {
+    "authorId": "2322929642",
+    "name": "M. Carey"
+   },
+   {
+    "authorId": "2293807119",
+    "name": "R. Hebert"
+   },
+   {
+    "authorId": "2074145121",
+    "name": "O. Hill"
+   },
+   {
+    "authorId": "2284049141",
+    "name": "Hannah Kett"
+   },
+   {
+    "authorId": "2262878045",
+    "name": "Phillip S. Levin"
+   },
+   {
+    "authorId": "1479580555",
+    "name": "Maia Murphy-Williams"
+   },
+   {
+    "authorId": "100632496",
+    "name": "Lowell Wyse"
+   }
+  ],
+  "abstract": "Climate change is exacerbating the need for urban greening and the associated environmental and human well-being benefits. Trees can help mitigate urban heat, but more detailed understanding of cooling effects of green infrastructure are needed to guide management decisions and deploy trees as effective and equitable climate adaptation infrastructure. We investigated how urban trees affect summer air temperature along sidewalks within a neighborhood of Tacoma, Washington, USA, and to what extent urban trees reduce risks of high summer temperatures (i.e., the levels regulated by state outdoor heat exposure rules intended to reduce heat-related illnesses). Air temperature varied by 2.57 \u00b0C, on average, across our study area, and the probability of daytime temperatures exceeding regulated high temperature thresholds was up to five times greater in locations with no canopy cover within 10 m compared to those with 100% cover. Air temperatures decreased linearly with increasing cover within 10 m, suggesting that every unit of added tree cover can help cool the air. Our findings highlight the value of trees in mitigating urban heat, especially given expected warming with climate change. Protecting existing urban trees and increasing tree cover (e.g., by planting street trees), are important actions to enhance climate change resilience of urban areas."
+ },
+ "10.1016/j.landurbplan.2015.02.009": {
+  "paperId": "a87d3af77d6f59f9bbe9b6d629f8ab2cb8f2d317",
+  "externalIds": {
+   "MAG": "2084620401",
+   "DOI": "10.1016/J.LANDURBPLAN.2015.02.009",
+   "CorpusId": 85209725
+  },
+  "url": "https://www.semanticscholar.org/paper/a87d3af77d6f59f9bbe9b6d629f8ab2cb8f2d317",
+  "title": "Street greenery and its physical and psychological impact on outdoor thermal comfort",
+  "venue": "",
+  "year": 2015,
+  "openAccessPdf": {
+   "url": "https://research.wur.nl/en/publications/street-greenery-and-its-physical-and-psychological-impact-on-outd",
+   "status": "GREEN",
+   "license": null,
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1016/J.LANDURBPLAN.2015.02.009?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/J.LANDURBPLAN.2015.02.009, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "2270300457",
+    "name": "Wiebke Klemm"
+   },
+   {
+    "authorId": "2251016952",
+    "name": "Bert Heusinkveld"
+   },
+   {
+    "authorId": "2203649",
+    "name": "S. Lenzholzer"
+   },
+   {
+    "authorId": "2251000832",
+    "name": "Bert van Hove"
+   }
+  ],
+  "abstract": null
+ },
+ "10.1016/j.jenvman.2021.113751": {
+  "paperId": "cc4c563d4ab86fe05c9c9c09b3e2789fc985fab7",
+  "externalIds": {
+   "DOI": "10.1016/j.jenvman.2021.113751",
+   "CorpusId": 238580869,
+   "PubMed": "34628283"
+  },
+  "url": "https://www.semanticscholar.org/paper/cc4c563d4ab86fe05c9c9c09b3e2789fc985fab7",
+  "title": "Variation in estimates of heat-related mortality reduction due to tree cover in U.S. cities.",
+  "venue": "Journal of Environmental Management",
+  "year": 2021,
+  "openAccessPdf": {
+   "url": "https://www.sciencedirect.com/science/article/am/pii/S0301479721018132",
+   "status": "BRONZE",
+   "license": "publisher-specific-oa",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/j.jenvman.2021.113751?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/j.jenvman.2021.113751, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "49618758",
+    "name": "P. Sinha"
+   },
+   {
+    "authorId": "108620093",
+    "name": "Robert C. Coville"
+   },
+   {
+    "authorId": "2880124",
+    "name": "S. Hirabayashi"
+   },
+   {
+    "authorId": "144933994",
+    "name": "B. Lim"
+   },
+   {
+    "authorId": "3254652",
+    "name": "T. Endreny"
+   },
+   {
+    "authorId": "143984489",
+    "name": "D. Nowak"
+   }
+  ],
+  "abstract": "Heat-related mortality is one of the leading causes of weather-related deaths in the United States. With changing climates and an aging population, effective adaptive strategies to address public health and environmental justice issues associated with extreme heat will be increasingly important. One effective adaptive strategy for reducing heat-related mortality is increasing tree cover. Designing such a strategy requires decision-support tools that provide spatial and temporal information about impacts. We apply such a tool to estimate spatially and temporally explicit reductions in temperature and mortality associated with a 10% increase in tree cover in 10 U.S. cities with varying climatic, demographic, and land cover conditions. Two heat metrics were applied to represent tree impacts on moderately and extremely hot days (relative to historical conditions). Increasing tree cover by 10% reduced estimated heat-related mortality in cities significantly, with total impacts generally greatest in the most populated cities. Mortality reductions vary widely across cities, ranging from approximately 50 fewer deaths in Salt Lake City to about 3800 fewer deaths in New York City. This variation is due to differences in demographics, land cover, and local climatic conditions. In terms of per capita estimated impacts, hotter and drier cities experience higher percentage reductions in mortality due to increased tree cover across the season. Phoenix potentially benefits the most from increased tree cover, with an estimated 22% reduction in mortality from baseline levels. In cooler cities such as Minneapolis, trees can reduce mortality significantly on days that are extremely hot relative to historical conditions and therefore help mitigate impacts during heat wave conditions. Recent studies project highest increases in heat-related mortality in the cooler cities, so our findings have important implications for adaptation planning. Our estimated spatial and temporal distributions of mortality reductions for each city provide crucial information needed for promoting environmental justice and equity. More broadly, the methods and model can be applied by both urban planners and the public health community for designing targeted, effective policies to reduce heat-related mortality. Additionally, land use managers can use this information to optimize tree plantings. Public stakeholders can also use these impact estimates for advocacy."
+ },
+ "10.1007/s00704-015-1409-y": {
+  "paperId": "dee67fb513bfe1f0bb79de6377153584bcdcc398",
+  "externalIds": {
+   "MAG": "2088871259",
+   "DOI": "10.1007/s00704-015-1409-y",
+   "CorpusId": 122440944
+  },
+  "url": "https://www.semanticscholar.org/paper/dee67fb513bfe1f0bb79de6377153584bcdcc398",
+  "title": "Temperature and human thermal comfort effects of street trees across three contrasting street canyon environments",
+  "venue": "Theoretical and Applied Climatology",
+  "year": 2016,
+  "openAccessPdf": {
+   "url": "",
+   "status": "CLOSED",
+   "license": null,
+   "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1007/s00704-015-1409-y?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/s00704-015-1409-y, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "46993236",
+    "name": "A. Coutts"
+   },
+   {
+    "authorId": "2053441705",
+    "name": "Emma C. White"
+   },
+   {
+    "authorId": "4857336",
+    "name": "N. Tapper"
+   },
+   {
+    "authorId": "46944120",
+    "name": "J. Beringer"
+   },
+   {
+    "authorId": "47529342",
+    "name": "S. Livesley"
+   }
+  ],
+  "abstract": null
+ },
+ "10.1088/1748-9326/ac4c1c": {
+  "paperId": "eeb7b48e3c24225a5291cc3a2da2eec596115adb",
+  "externalIds": {
+   "DOI": "10.1088/1748-9326/ac4c1c",
+   "CorpusId": 246022844
+  },
+  "url": "https://www.semanticscholar.org/paper/eeb7b48e3c24225a5291cc3a2da2eec596115adb",
+  "title": "Global assessment of urban trees\u2019 cooling efficiency based on satellite observations",
+  "venue": "Environmental Research Letters",
+  "year": 2022,
+  "openAccessPdf": {
+   "url": "https://doi.org/10.1088/1748-9326/ac4c1c",
+   "status": "GOLD",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1088/1748-9326/ac4c1c?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1088/1748-9326/ac4c1c, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "23630144",
+    "name": "Qiquan Yang"
+   },
+   {
+    "authorId": "2152662428",
+    "name": "Xin Huang"
+   },
+   {
+    "authorId": "1681978",
+    "name": "X. Tong"
+   },
+   {
+    "authorId": "2043045888",
+    "name": "C. Xiao"
+   },
+   {
+    "authorId": "2146106078",
+    "name": "Jie Yang"
+   },
+   {
+    "authorId": "2119033927",
+    "name": "Yue Liu"
+   },
+   {
+    "authorId": "1397716631",
+    "name": "Yinxia Cao"
+   }
+  ],
+  "abstract": "Trees are among the most important urban land covers, and their effects on local thermal environments have been extensively evaluated by using the concept of urban trees\u2019 cooling efficiency (CE), defined as the magnitude of land surface temperature (LST) reduction by per 1% increase in fractional tree cover (FTC). Existing studies provide quantitative knowledge of the CE at local and regional scales, but global-scale analyses are still lacking. Therefore, this study fills this research gap through investigating the spatiotemporal pattern of CE in 510 global cities. CE is quantified by the opposite value of the regression coefficient of FTC (i.e. CE =\u2212\u2202LST/\u2202FTC) in a multiple linear regression model, where LST is the dependent variable and FTC, surface elevation, and nighttime light intensity are the independent variables. Results show that daytime LST decreases greatly with increasing FTC in most cities, and the globally averaged annual daytime CE reaches 0.063 \u00b0C %\u22121, while at night, the effect of urban trees on LST weakens a lot, with an annual average CE of only 0.007 \u00b0C %\u22121 across global cities. CE varies markedly among cities and tends to be higher in hot and dry cities, which can be attributed to the significant nonlinear relation between CE and climatic conditions, in that the increase in temperature and the decrease in humidity can enhance vapor pressure deficit and further promote the heat dissipation by plant transpiration. As expected, CE shows a distinct seasonal variation, generally characterized as being higher in summer and lower in winter. In addition, our results suggest that previous studies based on a bivariate linear regression model have overestimated CE, especially at night when trees\u2019 activities are weak. This global-scale study provides new insights into the mitigation of urban thermal stress from the perspective of increasing urban greenery."
+ },
+ "10.1007/s00484-022-02248-8": {
+  "paperId": "040e6bf385fd10e3ee42e002e10aedc13a325a3b",
+  "externalIds": {
+   "PubMedCentral": "9042982",
+   "DOI": "10.1007/s00484-022-02248-8",
+   "CorpusId": 247623438,
+   "PubMed": "35325269"
+  },
+  "url": "https://www.semanticscholar.org/paper/040e6bf385fd10e3ee42e002e10aedc13a325a3b",
+  "title": "Increasing trees and high-albedo surfaces decreases heat impacts and mortality in Los Angeles, CA",
+  "venue": "International journal of biometeorology",
+  "year": 2022,
+  "openAccessPdf": {
+   "url": "https://link.springer.com/content/pdf/10.1007/s00484-022-02248-8.pdf",
+   "status": "HYBRID",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC9042982, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "3499269",
+    "name": "L. Kalkstein"
+   },
+   {
+    "authorId": "2091144546",
+    "name": "D. Eisenman"
+   },
+   {
+    "authorId": "2135420977",
+    "name": "Edith B. de Guzman"
+   },
+   {
+    "authorId": "3243784",
+    "name": "D. Sailor"
+   }
+  ],
+  "abstract": "There is a pressing need for strategies to prevent the heat-health impacts of climate change. Cooling urban areas through adding trees and vegetation and increasing solar reflectance of roofs and pavements with higher albedo surface materials are recommended strategies for mitigating the urban heat island. We quantified how various tree cover and albedo scenarios would impact heat-related mortality, temperature, humidity, and oppressive air masses in Los Angeles, California, and quantified the number of years that climate change\u2013induced warming could be delayed in Los Angeles if interventions were implemented. Using synoptic climatology, we used meteorological data for historical summer heat waves, classifying days into discrete air mass types. We analyzed those data against historical mortality data to determine excess heat-related mortality. We then used the Weather Research and Forecasting model to explore the effects that tree cover and albedo scenarios would have, correlating the resultant meteorological data with standardized mortality data algorithms to quantify potential reductions in mortality. We found that roughly one in four lives currently lost during heat waves could be saved. We also found that climate change\u2013induced warming could be delayed approximately 40\u201370 years under business-as-usual and moderate mitigation scenarios, respectively."
+ },
+ "10.1016/S2542-5196(25)00022-1": {
+  "paperId": "e5f28691f03c005d64e7966212231e01189dd727",
+  "externalIds": {
+   "DOI": "10.1016/s2542-5196(25)00022-1",
+   "CorpusId": 277206610,
+   "PubMed": "40120625"
+  },
+  "url": "https://www.semanticscholar.org/paper/e5f28691f03c005d64e7966212231e01189dd727",
+  "title": "Residential tree canopy configuration and mortality in 6 million Swiss adults: a longitudinal study.",
+  "venue": "Lancet Planetary Health",
+  "year": 2025,
+  "openAccessPdf": {
+   "url": "https://doi.org/10.1016/s2542-5196(25)00022-1",
+   "status": "GOLD",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1016/s2542-5196(25)00022-1?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1016/s2542-5196(25)00022-1, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "2314265186",
+    "name": "Dengkai Chi"
+   },
+   {
+    "authorId": "49013291",
+    "name": "G. Manoli"
+   },
+   {
+    "authorId": "2315809811",
+    "name": "Brenda Lin"
+   },
+   {
+    "authorId": "2260360104",
+    "name": "Raf Aerts"
+   },
+   {
+    "authorId": "2256235843",
+    "name": "Jun Yang"
+   },
+   {
+    "authorId": "2351360403",
+    "name": "Amy Hahs"
+   },
+   {
+    "authorId": "2240824235",
+    "name": "Daniel R. Richards"
+   },
+   {
+    "authorId": "115672718",
+    "name": "N. Meili"
+   },
+   {
+    "authorId": "2314147745",
+    "name": "Yue Zhu"
+   },
+   {
+    "authorId": "2314692352",
+    "name": "Yeshan Qiu"
+   },
+   {
+    "authorId": "2314333233",
+    "name": "Jing Wang"
+   },
+   {
+    "authorId": "145186784",
+    "name": "P. Burlando"
+   },
+   {
+    "authorId": "4955084",
+    "name": "S. Fatichi"
+   },
+   {
+    "authorId": "2314144578",
+    "name": "Puay Yok Tan"
+   }
+  ],
+  "abstract": "BACKGROUND\nResidential exposure to trees has been associated with reduced mortality risks. We hypothesise that in addition to tree canopy cover, tree canopy configuration also plays a role in exposure-mortality relationships. As there is limited evidence on this hypothesis, especially longitudinal evidence, we performed a nationwide study to investigate the residential tree canopy configuration-mortality associations in the Swiss population.\n\n\nMETHODS\nIn this longitudinal study, the tree canopy cover and configuration metrics within 500 m of individuals' residences were quantified using high-resolution tree canopy data (1\u2008\u00d7\u20081 m) from 2010 to 2019. We developed single-exposure and multi-exposure time-varying Cox regression models to estimate the associations between the different exposure metrics and natural-cause and cause-specific mortality in Swiss adults (aged from 20 years to 90 years). Mortality and census data were taken from the Swiss National Cohort (SNC). We estimated the hazard ratios (HRs) and corresponding 95% CIs per IQR increase in the metrics adjusting for personal sociodemographic and contextual covariates. We also explored the effect modification by tree canopy cover, PM10, air temperature, urbanisation level, age, sex, and area-based local socioeconomic position.\n\n\nFINDINGS\nOur analyses included 6\u2008215\u2008073 individuals from the SNC between 2010 and 2019. In the fully adjusted single-exposure models, we observed protective associations between natural-cause mortality risk and tree canopy cover (IQR 12\u00b74%, HR 0\u00b7979 [95% CI 0\u00b7975-0\u00b7983]) and configuration metrics describing the aggregation (6\u00b73%, 0\u00b7831 [0\u00b7823-0\u00b7840]), and connectedness (2\u00b79%, 0\u00b7946 [0\u00b7938-0\u00b7953]); and detrimental associations with two metrics describing the fragmentation (211 patches per 100 ha, 1\u00b7073 [1\u00b7066-1\u00b7080]) and shape complexity (1\u00b79, 1\u00b7094 [1\u00b7089-1\u00b7100]) of patches. The associations were generally preserved with other common causes of death. According to the multi-exposure models, the HR (95% CI) for the combination of one IQR decrease in aggregation and one IQR increase in fragmentation and shape complexity was 1\u00b7366 (1\u00b7343-1\u00b7390). Analyses on modification effects suggested a stronger association in people living in areas with a higher level of tree canopy cover, PM10 concentration, air temperature, and urbanisation level.\n\n\nINTERPRETATION\nAggregated, connected, and less fragmented forested greenspaces might offer stronger health benefits than isolated, fragmented ones, but are difficult to implement in cities. Our study provided valuable insights into optimising forested greenspaces and highlighted future directions for the planning and management of urban forests towards healthy and green cities.\n\n\nFUNDING\nNational Research Foundation, Prime Minister's Office, Singapore under its Campus for Research Excellence and Technological Enterprise programme and ETH Zurich."
+ },
+ "10.1007/s11676-021-01361-5": {
+  "paperId": "f9a02926bcee8220cb165d8377ebac2fad7dbc44",
+  "externalIds": {
+   "MAG": "3167078479",
+   "DOI": "10.1007/s11676-021-01361-5",
+   "CorpusId": 236298003
+  },
+  "url": "https://www.semanticscholar.org/paper/f9a02926bcee8220cb165d8377ebac2fad7dbc44",
+  "title": "Effects of urban street trees on human thermal comfort and physiological indices: a case study in Changchun city, China",
+  "venue": "Journal of Forest Research",
+  "year": 2021,
+  "openAccessPdf": {
+   "url": "https://link.springer.com/content/pdf/10.1007/s11676-021-01361-5.pdf",
+   "status": "HYBRID",
+   "license": "CCBY",
+   "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1007/s11676-021-01361-5?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/s11676-021-01361-5, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+  },
+  "authors": [
+   {
+    "authorId": "50712910",
+    "name": "Z. Ren"
+   },
+   {
+    "authorId": "1409913283",
+    "name": "Hongbo Zhao"
+   },
+   {
+    "authorId": "2118504948",
+    "name": "Yao Fu"
+   },
+   {
+    "authorId": "144071490",
+    "name": "Lu Xiao"
+   },
+   {
+    "authorId": "1664655532",
+    "name": "Yulin Dong"
+   }
+  ],
+  "abstract": "Planting trees along urban streets is one of the most important strategies to improve the urban thermal environment. However, the net impacts of urban street trees on human thermal comfort and physiological parameters are still less clear. On three similar east\u2013west orientated streets with different degrees of tree cover\u2014low (13%), medium (35%), and high (75%), urban microclimatic parameters and human physiological indices for six male students were simultaneously measured on three cloudless days in summer 2018. The results show that the differences in tree cover were predominant in influencing urban thermal environment and comfort. The street with the highest tree cover had significantly lower physiological equivalent temperature (PET) and more comfortable than the other two streets. The frequency of strong heat stress (PET\u2009>\u200935 \u00b0C) was 64%, 11%, and 0%, respectively, for streets with low, medium, and high tree cover. For the six male university students, human physiological indices varied greatly across the three streets with different tree cover. Systolic blood pressure, diastolic blood pressure, and pulse rate increased with decreasing tree cover. The results also suggest that urban thermal environment and comfort had considerable impact on human physiological parameters. Our study provides reasons for urban planners to plant trees along streets to improve the thermal environment and promote urban sustainability."
+ }
+}
