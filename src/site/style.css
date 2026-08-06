@@ -157,6 +157,27 @@ html, body {
 
 #attribution a { color: var(--subtle); }
 
+/* Impressum link — always visible bottom-left (DDG § 5), styled like
+ * the attribution chip so it reads as part of the map chrome. */
+.legal-link {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  z-index: 10;
+  font-size: 0.72rem;
+  color: var(--subtle);
+  background: rgba(14, 14, 14, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.legal-link:hover,
+.legal-link:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+}
+
 /* Popup */
 .building-popup .maplibregl-popup-content {
   background: var(--panel-bg);
@@ -186,11 +207,12 @@ html, body {
 
 /* Narrow screens: stack collapses to a bottom strip (legend at the
  * bottom, tools card above it) — still no overlap with the zoom
- * control or attribution (FR-008). */
+ * control or attribution (FR-008), and raised to clear the
+ * bottom-left Impressum link (chip height ≈ 20 px at bottom: 4 px). */
 @media (max-width: 480px) {
   #left-stack {
     top: auto;
-    bottom: 12px;
+    bottom: 34px;
     left: 12px;
     right: 12px;
     flex-direction: column-reverse;

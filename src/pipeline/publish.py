@@ -30,7 +30,7 @@ REQUIRED_INPUTS = [
 ]
 DERIVED_BUILDINGS = "buildings.geojson"  # workspace-relative, values-joined
 DERIVED_TREES = "trees.pmtiles"
-STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "attribution.html")
+STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "attribution.html", "impressum.html")
 
 
 class PublishError(RuntimeError):
