@@ -96,6 +96,8 @@ html, body {
 }
 
 .legend-units { margin-top: 6px; font-size: 0.7rem; color: var(--subtle); }
+.legend-note { margin-top: 10px; font-size: 0.7rem; line-height: 1.4; color: var(--subtle); }
+.legend-note a { color: var(--text); text-decoration: underline; }
 
 /* Controls — tools card (Bäume + Helligkeit) in the left column below
  * the legend; never shares the top-right corner with the navigation

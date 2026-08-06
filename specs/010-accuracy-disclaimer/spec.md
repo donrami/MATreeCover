@@ -14,8 +14,9 @@ A short, honest, German disclaimer on the site's attribution page explaining tha
 ### In Scope
 
 - One new section on the attribution page (`src/site/attribution.html`): the general accuracy picture of the tree detection.
+- One short note in the map's legend card (`src/site/index.html` + `style.css`): values are automatic estimates, details linked to the attribution page (owner decision, 2026-08-05 — visibility option B).
 - German copy, consistent with the site's existing style (no em-dash/en-dash, hyphens only inside compounds, no AI-typical phrasing).
-- The deployed copy of the attribution page in `dist-assets/` stays in sync with the source.
+- The deployed copy of the site in `dist-assets/` stays in sync with the source.
 
 ### Out of Scope
 
@@ -57,10 +58,12 @@ A visitor opens the attribution page (linked from the map) and reads a short not
 - **FR-002**: The section MUST state that tree detection is imperfect — non-tree surfaces can be counted as tree cover and some trees can be missed.
 - **FR-003**: The section MUST state that the values are indicative, not exact measurements.
 - **FR-004**: The section MUST NOT name any individual Mannheim district and MUST NOT cite district-level numbers.
-- **FR-005**: The feature MUST NOT change the map page, style, legend, building values, tree layer, or any map behavior.
+- **FR-005**: The feature MUST NOT change the building values, tree layer, legend semantics, or any map behavior. The only map-page change is the legend note (FR-010).
 - **FR-006**: The feature MUST NOT add any network request, script, or tracking.
 - **FR-007**: The section MUST follow the site's German copy convention: no em-dash or en-dash, hyphens only inside compounds, no AI-typical phrasing.
 - **FR-008**: The deployed copy of the attribution page (`dist-assets/attribution.html`) MUST match the source change.
+- **FR-010**: The map's legend card MUST show a short German note that the values are automatic estimates from aerial imagery, with a link to the attribution page ("Details unter Datenquellen").
+- **FR-011**: The legend note MUST NOT change legend semantics (0–100 % scale, tick labels, colors) and MUST NOT add any network request or script.
 
 ### Key Entities *(include if feature involves data)*
 
