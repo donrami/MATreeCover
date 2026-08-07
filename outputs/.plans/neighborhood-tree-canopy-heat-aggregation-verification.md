@@ -145,5 +145,5 @@ Method: every URL in the draft's Sources section (plus inline DOIs) was loaded w
 
 ## 5. Artifacts
 
-- Song et al. 2024 full text downloaded and verified; local copy saved at `/home/mainuser/Downloads/do-greenspaces-really-reduce-heat-health-impacts-evidence-for-different-vegetation-types-and-distanc.md`.
-- No local copy of Song et al. 2024 was found at the path hinted in the draft (`/home/mainuser/Downloads/…`); the draft's "(local copy…)" note was resolved via the LSHTM repository PDF.
+- Song et al. 2024 full text downloaded and verified; local copy saved outside the repository.
+- No local copy of Song et al. 2024 was found at the path hinted in the draft; the draft's "(local copy…)" note was resolved via the LSHTM repository PDF.

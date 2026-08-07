@@ -59,5 +59,4 @@ Pass on first validation pass after two coverage fixes:
   on the spec. These are inherent to the mandated spec template format
   (Given/When/Then acceptance scenarios, colon lists) and match the
   existing specs 001-010, which use the same structure. No action taken.
-- Items marked incomplete require spec updates before `/speckit.clarify`
-  or `/speckit.plan`
+- Items marked incomplete require spec updates before the clarify or plan step.

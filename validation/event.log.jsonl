@@ -355,3 +355,8 @@
 {"ts": "2026-08-07T19:40:17+00:00", "subcommand": "values", "rss_peak_bytes": 180314112, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-07T19:40:17+00:00", "subcommand": "accept", "rss_peak_bytes": 49127424, "gpu_used": false, "exit_code": 0, "inputs": []}
 {"ts": "2026-08-07T19:43:01+00:00", "subcommand": "publish", "rss_peak_bytes": 561786880, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-07T22:20:51+00:00", "subcommand": "accept", "rss_peak_bytes": 49885184, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-07T22:20:52+00:00", "subcommand": "accept", "rss_peak_bytes": 49745920, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-07T22:20:53+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44900352, "gpu_used": false, "exit_code": 2, "inputs": []}
+{"ts": "2026-08-07T22:20:54+00:00", "subcommand": "values", "rss_peak_bytes": 181747712, "gpu_used": false, "exit_code": 1, "inputs": []}
+{"ts": "2026-08-07T22:20:54+00:00", "subcommand": "accept", "rss_peak_bytes": 50200576, "gpu_used": false, "exit_code": 0, "inputs": []}

@@ -225,8 +225,17 @@ Task: "Add district popup CSS in src/site/style.css"
 
 ## Phase 7: Convergence
 
-**Purpose**: Close gaps surfaced by `/speckit.converge` (post-implementation review).
-Append-only; completing these is the job of `/speckit.implement`.
+**Purpose**: Close gaps surfaced by the post-implementation review (converge).
+Append-only; completing these is the job of the implement step.
 
 - [X] T027 [P] Add a node-VM popup-renderer regression test in `tests/acceptance/test_popup_render.py` (load `dist/main.js` with the browser stubs from `test_rank.py`, call the shipped `buildingPopupHtml`/`districtPopupHtml` via the shared module scope) asserting the `contracts/popup-content.md` HTML contract: valid building (headline value, badge erreicht/verfehlt, district + city lines with signed pp delta + assessment word, footnote), neutral delta (`±0.0 pp` + `auf …-Niveau`, no color), exactly 30.0 counts erreicht, no-value building (en-dash marker, no badge/deltas/city line, plain district line kept — FR-006), null-mean district (`keine Daten`, name + building count only, rank/quartile/city hidden — FR-011), city-stats-missing (city lines hidden, rank/quartile still render — FR-014); also assert `classifyDelta`/`formatDelta`/`deltaClass`/`assessmentWord` edge cases (0.1 pp band inclusive, U+2212 minus, half-up magnitude) per FR-001..FR-012, FR-014 (missing)
 - [X] T028 Re-run the headless interaction-latency measurement on the published bundle per `quickstart.md` S5 and record the results in `validation/perf-budget.json` (update `interaction_latency_ms`/`first_usable_ms`, keep `verified_at` as the run date, retain the `feature013_note`), confirming the 2 s interaction budget holds with no first-usable-map regression per plan: perf gate (partial)
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: Close the two remaining gaps from the post-implementation review: the public-hygiene gate is red (feature 013's own tracked artifacts contribute findings), and the changelog entry for this feature is missing. Append-only; completing these is the job of the implement step.
+
+- [X] T029 Make `make check-public` exit 0: remove the harness-internal workflow command strings from the tracked spec artifacts of this feature (`specs/013-popup-comparative-context/plan.md` lines 82, 113-122; `tasks.md` Phase 7 header; `checklists/requirements.md` lines 34-36) and the pre-existing identical strings in `specs/011-heatwave-map-insights/` and `specs/012-mobile-native-ux/` per pattern P10 of `specs/006-public-release-prep/contracts/public-hygiene.md`, and scrub the personal `/home/...` paths from the `outputs/` files (pattern P1); if an exemption is chosen instead, update `EXEMPT_FILES` in `scripts/check-public.sh` together with the contract document per its stated rule; verify the gate prints "clean" per plan: check-public gate (contradicts)
+- [X] T030 Add the feature 013 changelog entry to `CHANGELOG.md` (popup comparative context: building/district popups with district+city comparisons, rank/quartile, threshold badge, footnotes, mobile fit) per T026 (missing)

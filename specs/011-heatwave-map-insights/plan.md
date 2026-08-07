@@ -5,7 +5,7 @@
 [spec.md](spec.md)
 
 **Input**: Feature specification `specs/011-heatwave-map-insights/spec.md`
-(updated 2026-08-06 by `/speckit.clarify`, Option B)
+(updated 2026-08-06 by the clarify step, Option B)
 
 ## Summary
 

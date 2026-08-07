@@ -79,7 +79,7 @@ change confined to two popup renderers and one load-time computation.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No `.specify/memory/constitution.md` file exists in the repository, so no constitution gates
+No constitution file exists in the repository, so no constitution gates
 are defined. The project's standing governance gates (documented in README/DEVELOPMENT.md and
 enforced by the Makefile) are adopted as the applicable constitution, as in plans 011/012:
 
@@ -110,8 +110,8 @@ No new files > 50 MiB, no personal paths, no perf-sensitive new interaction.
 
 ```text
 specs/013-popup-comparative-context/
-├── spec.md              # feature specification (/speckit.clarify command output)
-├── plan.md              # This file (/speckit.plan command output)
+├── spec.md              # feature specification (clarify command output)
+├── plan.md              # This file (plan command output)
 ├── research.md          # Phase 0 output: R-1..R-12 decisions
 ├── data-model.md        # Phase 1 output: Building Footprint, District, City Statistics, popup state
 ├── quickstart.md        # Phase 1 output: S1..S5 runnable validation
@@ -119,7 +119,7 @@ specs/013-popup-comparative-context/
 │   ├── README.md
 │   ├── popup-content.md # popup hierarchy, exact German copy, delta rules, degradation
 │   └── rank-quartile.md # rank/quartile algorithm, band formula, reference table, SC-003 harness
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created here)
+└── tasks.md             # Phase 2 output (tasks command - NOT created here)
 ```
 
 ### Source Code (repository root)

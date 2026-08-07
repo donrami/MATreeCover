@@ -215,7 +215,7 @@ Task: "Add the mobile bottom-sheet geometry in src/site/style.css"
 ## Phase 7: Convergence
 
 **Purpose**: Close gaps surfaced in post-implementation review (user feedback on the
-published UX). Append-only; completing these is the job of `/speckit.implement`.
+published UX). Append-only; completing these is the job of the implement step.
 
 - [X] T023 Relocate the mobile attribution (map data / copyright footer) to the top-left corner so it stays visible with the bottom sheet collapsed or expanded, and let its long text wrap to the next line when expanded, per FR-005 (partial) — file: `src/site/style.css`
 - [X] T024 Relocate the Impressum link to the top-left corner under the attribution on mobile so it is always visible with the sheet in any state, per plan DDG § 5 / FR-005 (partial) — file: `src/site/style.css`
@@ -228,7 +228,7 @@ published UX). Append-only; completing these is the job of `/speckit.implement`.
 ## Phase 8: Convergence
 
 **Purpose**: Close the last gaps found on the second converge pass (post-review
-state). Append-only; completing these is the job of `/speckit.implement`.
+state). Append-only; completing these is the job of the implement step.
 
 - [X] T028 Give the mobile buildings-failure message slot (`#attribution`, populated only when the buildings layer fails) a distinct top-left position below the MapLibre attribution control, with a narrower `max-width` so the failure text never overlaps the attribution control or the zoom column, per plan pmtiles-sources contract / FR-005 (partial) — file: `src/site/style.css`
 - [X] T029 Update `tests/frontend/smoke_mobile.md` to the relocated mobile chrome (attribution and Impressum now top-left, not bottom-right / above the sheet) and add checks for the 30% scale-bar boundary and the bare-arrow expand toggle, per FR-005 / FR-008 (partial) — file: `tests/frontend/smoke_mobile.md`

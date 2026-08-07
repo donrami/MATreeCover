@@ -84,7 +84,7 @@ Worker; mobile browsers (320px+ phones, landscape phones) and desktop browsers (
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No `.specify/memory/constitution.md` file exists in the repository, so no constitution gates
+No constitution file exists in the repository, so no constitution gates
 are defined. The project's standing governance gates (documented in README/DEVELOPMENT.md and
 enforced by the Makefile) are adopted as the applicable constitution:
 
@@ -107,16 +107,16 @@ No violations. No complexity justification table required.
 
 ```text
 specs/012-mobile-native-ux/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
+├── plan.md              # This file (plan command output)
+├── research.md          # Phase 0 output (plan command)
+├── data-model.md        # Phase 1 output (plan command)
+├── quickstart.md        # Phase 1 output (plan command)
+├── contracts/           # Phase 1 output (plan command)
 │   ├── README.md
 │   ├── layout-ux.md
 │   ├── surface-interaction.md
 │   └── touch-a11y-copy.md
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (tasks command - NOT created by the plan step)
 ```
 
 ### Source Code (repository root)

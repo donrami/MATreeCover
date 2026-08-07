@@ -6,8 +6,8 @@
 
 ## 1. Date and run context
 
-- Literature review conducted and finalized on 2026-08-06 in `/home/mainuser/Desktop/MATreeCover`.
-- Gathering: web searches (`web_search`, ~15 query rounds, 6 results/query) + full-text fetches (`fetch_content`, `get_search_content`) + one local PDF (Song et al. 2024) parsed from `/home/mainuser/Downloads/do-greenspaces-really-reduce-heat-health-impacts-evidence-for-different-vegetation-types-and-distanc.md`.
+- Literature review conducted and finalized on 2026-08-06 in the repository root.
+- Gathering: web searches (`web_search`, ~15 query rounds, 6 results/query) + full-text fetches (`fetch_content`, `get_search_content`) + one local PDF (Song et al. 2024) parsed from a local copy outside the repository.
 
 ## 2. Sources consulted vs. accepted vs. rejected
 
@@ -32,7 +32,7 @@
 | `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-cited.md` | Cited draft after verifier pass and reviewer-fix pass |
 | `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-verification.md` | Verifier report (per-URL status, metadata resolutions) |
 | `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-review.md` | Reviewer report (FATAL/MAJOR/MINOR findings) |
-| `/home/mainuser/Downloads/do-greenspaces-really-reduce-heat-health-impacts-evidence-for-different-vegetation-types-and-distanc.md` | Full text of Song et al. 2024 (Environment International 191:108950) |
+| local copy (outside the repository) | Full text of Song et al. 2024 (Environment International 191:108950) |
 | `outputs/neighborhood-tree-canopy-heat-aggregation.md` | **Final deliverable** (this run's canonical artifact) |
 | `outputs/neighborhood-tree-canopy-heat-aggregation.provenance.md` | This file |
 

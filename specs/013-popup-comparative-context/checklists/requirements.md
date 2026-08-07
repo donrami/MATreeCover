@@ -31,6 +31,6 @@
 
 ## Notes
 
-- Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`.
+- Items marked incomplete require spec updates before the clarify or plan step.
 - All items pass on first validation run (2026-08-07).
-- No [NEEDS CLARIFICATION] markers: every open decision has a documented reasonable default in Assumptions (metric definitions, 0.1 pp neutral band, quartile split 10/9/9/10, dot-decimal convention, city-average reference). These are adjustable during `/speckit.clarify` if the user prefers different choices.
+- No [NEEDS CLARIFICATION] markers: every open decision has a documented reasonable default in Assumptions (metric definitions, 0.1 pp neutral band, quartile split 10/9/9/10, dot-decimal convention, city-average reference). These are adjustable during clarification if the user prefers different choices.

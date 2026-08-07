@@ -35,4 +35,4 @@
 - The scope boundary ("no feature inflation") is enforced by Out of Scope, FR-010 (parity with the existing feature set), and Assumptions.
 - Success criteria are measurable and user-facing (map occupies ≥ 80% viewport, 44x44 px targets, popups visible in 100% of positions, zero layout shift, zero new network requests) and reference existing project gates (`make check-public`, smoke checklists, interaction budget) only as parity checks, not as new implementation detail.
 - Design direction was grounded in external research (thumb-zone ergonomics, WCAG 2.5.5 / Apple HIG / Material touch-target consensus, native map conventions) per the user's request to use skills and online resources rather than inference alone.
-- Ready for `/speckit.plan`. The `/speckit.clarify` step is unnecessary because zero clarification markers remain.
+- Ready for the plan step. The clarify step is unnecessary because zero clarification markers remain.
