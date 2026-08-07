@@ -354,3 +354,4 @@
 {"ts": "2026-08-07T19:40:16+00:00", "subcommand": "runpod-infer", "rss_peak_bytes": 44314624, "gpu_used": false, "exit_code": 2, "inputs": []}
 {"ts": "2026-08-07T19:40:17+00:00", "subcommand": "values", "rss_peak_bytes": 180314112, "gpu_used": false, "exit_code": 1, "inputs": []}
 {"ts": "2026-08-07T19:40:17+00:00", "subcommand": "accept", "rss_peak_bytes": 49127424, "gpu_used": false, "exit_code": 0, "inputs": []}
+{"ts": "2026-08-07T19:43:01+00:00", "subcommand": "publish", "rss_peak_bytes": 561786880, "gpu_used": false, "exit_code": 0, "inputs": []}
