@@ -31,6 +31,12 @@ Make the "no personal data in the public repository" requirement machine-checkab
 | P11 | `\.spec-workflow` | Harness-internal directory |
 | P12 | `\.specify` (case-insensitive) | Harness-internal directory |
 | P13 | `root@[A-Za-z0-9_.-]+` | SSH root login target in public content |
+| P14 | `[Ff]eynman\|opencode` | Harness product names |
+| P15 | `local://` | Harness-internal URI scheme — not a real URL scheme; leaks internal tooling references |
+| P16 | `alpha[ _]search` | Harness literature-search tool (`alpha_search` / `alpha search`) |
+| P17 | `fetch_content\|get_search_content` | Harness content-fetch tools |
+| P18 | `web_search` | Harness web-search tool (underscore form; prose "web search" is allowed) |
+| P19 | `subagent` | Harness subagent role label |
 
 ## Allow-listed (must NOT be flagged)
 
@@ -43,8 +49,8 @@ Make the "no personal data in the public repository" requirement machine-checkab
 The following tracked files are exempt from the scan because they must quote the forbidden strings to do their job:
 
 1. `.gitignore` — its purpose is to exclude `.specify/`, `.spec-workflow/`, and `.env*` etc. from the repository; naming them is the mechanism, not a leak.
-2. `specs/006-public-release-prep/contracts/public-hygiene.md` — this file defines the patterns P1–P13; it must quote them verbatim.
-3. `scripts/check-public.sh` — the enforcement script itself carries the pattern literals P1–P13; it must quote them verbatim.
+2. `specs/006-public-release-prep/contracts/public-hygiene.md` — this file defines the patterns P1–P19; it must quote them verbatim.
+3. `scripts/check-public.sh` — the enforcement script itself carries the pattern literals P1–P19; it must quote them verbatim.
 
 All other tracked files, including the remaining planning documents of this feature, avoid quoting the forbidden strings and are scanned normally. The exemption list lives in the script as `EXEMPT_FILES`. Adding or removing an exemption is a contract change: update this document and the script together.
 

@@ -8,15 +8,15 @@
 - `outputs/tree-canopy-30-heat.md` — final literature review (canonical artifact)
 - `outputs/tree-canopy-30-heat.provenance.md` — this file
 - `outputs/tree-canopy-30-heat-cooling.png` — figure embedded in the review (matplotlib; data from refs 6, 9, 10, 11, 12, 13 of the review)
-- `outputs/tree-canopy-30-heat-research-1.md` — researcher subagent evidence brief (39 candidate items; low/medium-confidence items excluded from the final review unless re-verified)
-- `outputs/tree-canopy-30-heat-verifier-report.md` — verifier subagent URL/citation audit (0 broken URLs; 16 fixes, all applied)
-- `outputs/tree-canopy-30-heat-reviewer-report.md` — reviewer subagent evidence audit (0 FATAL; 4 MAJOR + minors, all applied)
+- `outputs/tree-canopy-30-heat-research-1.md` — research evidence brief (39 candidate items; low/medium-confidence items excluded from the final review unless re-verified)
+- `outputs/tree-canopy-30-heat-verifier-report.md` — automated URL/citation audit (0 broken URLs; 16 fixes, all applied)
+- `outputs/tree-canopy-30-heat-reviewer-report.md` — independent evidence audit (0 FATAL; 4 MAJOR + minors, all applied)
 - `outputs/.plans/tree-canopy-30-heat.md` — plan + task ledger + verification log
 - `notes/s2_abstracts.json`, `notes/s2_abstracts2.json` — Semantic Scholar abstract pulls
-- `/tmp/konijn.pdf` (downloaded Konijnendijk 2023 full text), `/tmp/ngbs.pdf` (ICC 700-2020 NGBS full text) — primary-source parses (grep-verified)
+- Downloaded PDFs of the Konijnendijk 2023 and ICC 700-2020 NGBS full texts — primary-source parses (grep-verified)
 
 ## Sources consulted (44 unique URLs in final review)
-All 44 URLs in the final Sources section were checked by the verifier subagent: **0 dead links**; bot-blocked pages (PNAS, IOP ×3, ScienceDirect ×3, Science.org, EHP, SSRN, ICC platform, Elsevier captcha ×2) were confirmed via Crossref/Semantic Scholar/repository records. Five URLs added after the verifier pass (BMWSB, DUH, IÖW Steckbrief, EC news, Acta Ecologica Sinica) were spot-checked by the author (HTTP status above) and independently inspected by the reviewer subagent.
+All 44 URLs in the final Sources section were checked by the automated verification pass: **0 dead links**; bot-blocked pages (PNAS, IOP ×3, ScienceDirect ×3, Science.org, EHP, SSRN, ICC platform, Elsevier captcha ×2) were confirmed via Crossref/Semantic Scholar/repository records. Five URLs added after the verifier pass (BMWSB, DUH, IÖW Steckbrief, EC news, Acta Ecologica Sinica) were spot-checked by the author (HTTP status above) and independently inspected in a second review pass.
 
 ## Verification status per core claim
 | Claim | Status | Evidence |
@@ -60,7 +60,7 @@ All 44 URLs in the final Sources section were checked by the verifier subagent: 
 
 ## Verification chain
 1. Author: primary-source retrieval (Konijnendijk PDF, NGBS PDF, abstracts via Semantic Scholar/PubMed/PMC/Nature/Springer) — 2026-08-06
-2. `researcher` subagent: breadth sweep (39 items) → outputs/tree-canopy-30-heat-research-1.md
-3. `verifier` subagent: 47 URLs + Crossref metadata audit → 0 dead, 16 fixes applied → outputs/tree-canopy-30-heat-verifier-report.md
-4. `reviewer` subagent: adversarial evidence audit + independent spot checks → 0 FATAL, 4 MAJOR fixed → outputs/tree-canopy-30-heat-reviewer-report.md
+2. Automated research sweep (39 items) → outputs/tree-canopy-30-heat-research-1.md
+3. URL/citation verification: 47 URLs + Crossref metadata audit → 0 dead, 16 fixes applied → outputs/tree-canopy-30-heat-verifier-report.md
+4. Independent evidence audit + spot checks → 0 FATAL, 4 MAJOR fixed → outputs/tree-canopy-30-heat-reviewer-report.md
 5. Author: final on-disk verification of all deliverables.

@@ -2,9 +2,9 @@
 
 **Draft verified:** `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-draft.md`
 **Cited draft (deliverable):** `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-cited.md`
-**Verifier:** Feynman verifier agent · **Date:** 2026-08-06
+**Verifier:** automated citation audit · **Date:** 2026-08-06
 
-Method: every URL in the draft's Sources section (plus inline DOIs) was loaded with `fetch_content` (with CrossRef/journal records as fallback for paywalled/blocked pages; web_search used for targeted metadata). Status legend: **OK** = resolves to the cited work and content matches; **OK-M** = URL/metadata confirmed but a specific numeric detail is unverified; **SUSPECT** = loads but content does not match the claim; **DEAD** = does not load; **BLOCKED** = page blocked to fetchers (metadata confirmed via second source).
+Method: every URL in the draft's Sources section (plus inline DOIs) was loaded with an automated fetcher (with CrossRef/journal records as fallback for paywalled/blocked pages; targeted web searches for metadata). Status legend: **OK** = resolves to the cited work and content matches; **OK-M** = URL/metadata confirmed but a specific numeric detail is unverified; **SUSPECT** = loads but content does not match the claim; **DEAD** = does not load; **BLOCKED** = page blocked to fetchers (metadata confirmed via second source).
 
 ---
 
@@ -33,7 +33,7 @@ Method: every URL in the draft's Sources section (plus inline DOIs) was loaded w
 | https://www.mdpi.com/1660-4601/19/19/12314 | OK | Johnson 2022, IJERPH 19(19):12314. |
 | https://doi.org/10.1093/pnasnexus/pgae176 | OK | Liu & Smith-Greenaway, PNAS Nexus 3(5):pgae176, **2024** (draft said 2023). Population-weighted tract-level exposure confirmed. |
 | https://www.sciencedirect.com/science/article/abs/pii/S2210670724005729 | BLOCKED | ScienceDirect bot wall. Metadata resolved via CrossRef/other sources: **Deng, Liu, Feng & Xiong 2024, Sustain Cities Soc 114:105747** (DOI 10.1016/j.scs.2024.105747). "87 cities, 12 scales" detail UNVERIFIED. |
-| https://link.springer.com/article/10.1007/s10980-026-02339-6 | OK | Zhang et al. 2026, Landscape Ecology 41(5):77. ⚠ resolved: authors Huina Zhang et al.; 3×3 km optimal unit and green-space ratio q=0.641 confirmed (web_search). |
+| https://link.springer.com/article/10.1007/s10980-026-02339-6 | OK | Zhang et al. 2026, Landscape Ecology 41(5):77. ⚠ resolved: authors Huina Zhang et al.; 3×3 km optimal unit and green-space ratio q=0.641 confirmed (targeted web search). |
 | https://pmc.ncbi.nlm.nih.gov/articles/PMC6462107/ | OK | Ziter et al. 2019, PNAS 116(15):7575–7580. |
 | https://www.mdpi.com/2073-445X/13/11/1741 | OK | Ralls, Polyakov & Shandas 2024, Land 13(11):1741. ⚠ resolved; 10/30/60/90 m scales confirmed. |
 | https://www.mdpi.com/2073-445X/14/8/1686 | OK | Grace, Bolleter, Barghchi & Lund 2025, Land 14(8):1686. ⚠ resolved (year 2025, not 2026); ΔTs 10–15 °C vs ΔTa ≈ 2 °C claims confirmed. |

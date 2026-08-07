@@ -210,4 +210,4 @@ Either add a body reference or remove these entries.
 
 ---
 
-*Verifier: Feynman verifier subagent · All DOI metadata from Crossref REST API (queried 2026-08-06). Bot-blocked items verified via Crossref/Semantic Scholar/repository abstracts; content claims for the 20 risk-spot papers confirmed at abstract or full-text level.*
+*Verifier: automated citation audit · All DOI metadata from Crossref REST API (queried 2026-08-06). Bot-blocked items verified via Crossref/Semantic Scholar/repository abstracts; content claims for the 20 risk-spot papers confirmed at abstract or full-text level.*

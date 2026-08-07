@@ -16,7 +16,7 @@
 
 - Peer-reviewed literature, ~2009–2026, with classic MAUP background (Openshaw 1984; Fotheringham & Wong 1991) and older HVI roots (Reid et al. 2009).
 - Grey literature: EPA/CDC/UKHSA heat vulnerability guidance, city HVI reports (NYC, Portland, Baltimore, London) if needed for "standard practice."
-- Databases: alphaXiv/arXiv (limited for applied env-health; use primarily PubMed-adjacent sources via web + alpha semantic search), Google Scholar via web_search, journal pages.
+- Databases: alphaXiv/arXiv (limited for applied env-health; use primarily PubMed-adjacent sources via web search), Google Scholar via web search, journal pages.
 - Methodological anchors: MAUP (Modifiable Areal Unit Problem), ecological fallacy, buffer vs. administrative-unit green space exposure (Labib et al. 2020), dasymetric/building-footprint population weighting.
 
 ## Expected sections
@@ -36,10 +36,10 @@
 | # | Task | Status |
 |---|------|--------|
 | T1 | Write plan | done |
-| T2 | Search: alpha semantic/keyword (HVI + canopy, LST + canopy, MAUP + green space) | blocked — alphaXiv API unreachable (tool + CLI both "fetch failed"); recorded in provenance |
+| T2 | Search: alpha semantic/keyword (HVI + canopy, LST + canopy, MAUP + green space) | blocked — alphaXiv API unreachable (API errors); recorded in provenance |
 | T3 | Search: web (HVI methods, buffer vs. area aggregation, building-weighted exposure, population-weighted LST) | done — ~15 query rounds; key sources identified (see draft) |
 | T4 | Read key papers (full text where available): HVI reviews (Niu 2021, Reid 2009, Wolf & McGregor 2013), Labib 2020, Song 2024, Garrett 2025, MAUP-heat, population-weighted exposure | done — full texts: Niu 2021, Labib 2020, Song 2024 (local PDF), Garrett 2025; abstracts/snippets for rest |
-| T5 | Delegate researcher subagent for wide triage (if sweep warrants) | superseded — direct search sweep achieved wide coverage; skipped to save cycles |
+| T5 | Delegate a wide triage sweep (if the direct sweep warrants) | superseded — direct search sweep achieved wide coverage; skipped to save cycles |
 | T6 | Synthesize draft `outputs/.plans/<slug>-draft.md` | done |
 | T7 | Verifier: inline citations + URL checks on draft | done — all URLs checked 0 dead; ⚠ metadata resolved; report `-verification.md` |
 | T8 | Reviewer: unsupported claims / single-source criticals / logic gaps | done — 1 FATAL + 6 MAJOR + 10 MINOR; report `-review.md` |
@@ -54,4 +54,4 @@
 | Reviewer science pass | 1 FATAL (Chen Gini misstatement), 6 MAJOR, 10 MINOR — all fixed |
 | Post-fix grep re-check | no residual `0.27`, `per 1000`, `13:6461`, `US/global`, `Tate 2012`, `where greenery sits`, `(SOAs)`; formula normalized; Mermaid added |
 | Final files on disk | `outputs/neighborhood-tree-canopy-heat-aggregation.md` (277 lines) + `.provenance.md` present; final doc has no verification-header/appendix noise |
-| alphaXiv | BLOCKED (tool + CLI `fetch failed`); noted in provenance |
+| alphaXiv | BLOCKED (API errors); noted in provenance |

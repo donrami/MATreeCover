@@ -1,6 +1,6 @@
 # Research: Public Release Preparation
 
-Research date: 2026-08-05. Two research streams: (A) repository public-readiness audit, (B) reference-project and data-license attribution requirements. Full evidence: `local://repo-audit.md` (audit inventory) and `local://ref-license.md` (license research).
+Research date: 2026-08-05. Two research streams: (A) repository public-readiness audit, (B) reference-project and data-license attribution requirements. Full evidence: the audit inventory summarized in section A and the license research in section B (full citations recorded in `contracts/license.md`).
 
 ## A. Repository audit — current public-readiness state
 

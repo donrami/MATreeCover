@@ -1,6 +1,6 @@
 # Science review — `neighborhood-tree-canopy-heat-aggregation`
 
-**Reviewer:** Feynman AI research reviewer · **Date:** 2026-08-06
+**Reviewer:** independent AI research reviewer · **Date:** 2026-08-06
 **Scope:** Science review of `outputs/.plans/neighborhood-tree-canopy-heat-aggregation-cited.md` (not a re-run of URL verification). Primary sources re-inspected directly: Chen et al. 2022 (Nat Commun), Huang et al. 2025 (Sci Rep), Ibebuchi & Abu 2026 (*World* 7(1):6), Garrett et al. 2025 (IJHG 24:37), O'Brien et al. 2020 (AJPH), Reid et al. 2009 (EHP), Wolf & McGregor 2013, Song et al. 2024 (Environ Int), Lancet Planetary Health 9(11) buffer guidance, Zhang & Tan 2019.
 
 ---

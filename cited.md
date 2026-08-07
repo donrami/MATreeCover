@@ -252,13 +252,13 @@ Legend: **[OK]** = URL loads and content matches the cited claim/metadata. **[OK
 - Reid, C.E.; Clougherty, J.E.; Shmool, J.L.; Kubzansky, L.D. (2017) "Is All Urban Green Space the Same? A Comparison of the Health Benefits of Trees and Grass in New York City", IJERPH 14(11):1411
 - Kwan, M.-P. (2012) "The Uncertain Geographic Context Problem", *Ann Assoc Am Geogr* 102(5):958–968
 
-**Blocked (tool-level):** alphaXiv API (tool `alpha_search` and CLI `alpha search`) returned "fetch failed" for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.
+**Blocked (tool-level):** alphaXiv API returned errors for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.
 
 ---
 
 ## Appendix. Verification of sources and metadata (summary)
 
-All checks performed 2026-08-06 (fetch_content / CrossRef / journal records). Detailed per-URL status is in the companion report `neighborhood-tree-canopy-heat-aggregation-verification.md`. Highlights:
+All checks performed 2026-08-06 (automated fetch + CrossRef / journal records). Detailed per-URL status is in the companion report `neighborhood-tree-canopy-heat-aggregation-verification.md`. Highlights:
 
 - **Dead links found: 0.** All URLs in the Sources section resolved to a live page or PDF.
 - **SUSPECT resolved:** Baltimore study is *World* 7(1):6 (not *Urban Science*); Singapore study is Zhang & Tan 2019 (not Labib); Paris study is *Environ. Res.: Infrastruct. Sustain.* (not *Environ. Res.: Health*); UGCoP paper DOI corrected to 10.1016/j.ufug.2023.127972; PNAS Nexus year corrected to 2024; Sci Rep coefficient corrected to per-10,000 persons/km²/decade; Chen et al. Gini corrected to 0.24 and article number to 4636.

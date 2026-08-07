@@ -273,5 +273,5 @@ Legend: **[OK]** = URL loads and content matches the cited claim/metadata. **[OK
 - Reid, C.E.; Clougherty, J.E.; Shmool, J.L.; Kubzansky, L.D. (2017) "Is All Urban Green Space the Same? A Comparison of the Health Benefits of Trees and Grass in New York City", IJERPH 14(11):1411
 - Kwan, M.-P. (2012) "The Uncertain Geographic Context Problem", *Ann Assoc Am Geogr* 102(5):958–968
 
-**Blocked (tool-level):** alphaXiv API (tool `alpha_search` and CLI `alpha search`) returned "fetch failed" for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.
+**Blocked (tool-level):** alphaXiv API returned errors for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.
 

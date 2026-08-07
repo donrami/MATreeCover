@@ -1,6 +1,6 @@
 # DRAFT — Neighborhood-level tree canopy cover quantification in urban heat exposure studies
 
-**Slug:** `neighborhood-tree-canopy-heat-aggregation` · **Draft date:** 2026-08-06 · **Status:** pre-verification draft (citations and URLs to be checked by verifier agent)
+**Slug:** `neighborhood-tree-canopy-heat-aggregation` · **Draft date:** 2026-08-06 · **Status:** pre-verification draft (citations and URLs to be checked in the verification pass)
 
 > This is the synthesis draft. Inline citations are URLs or DOI-style identifiers as found during gathering. Author/year claims marked ⚠ were not confirmed against the source page and must be checked before final delivery.
 
@@ -243,4 +243,4 @@ Key geometric differences:
 - Wakefield & (⚠), "Spatial Aggregation and the Ecological Fallacy" (Handbook of Spatial Epidemiology chapter) — https://pmc.ncbi.nlm.nih.gov/articles/PMC4209486/
 - Morgenstern 2008, "Ecologic Studies Revisited", *Annu Rev Public Health* 29:37–52 — https://www.annualreviews.org/content/journals/10.1146/annurev.publhealth.29.020907.090821
 
-**Blocked:** alphaXiv API (tool `alpha_search` and CLI `alpha search`) returned "fetch failed" for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.
+**Blocked:** alphaXiv API returned errors for all queries on 2026-08-06 — no alphaXiv-sourced papers in this review; provenance notes this gap.

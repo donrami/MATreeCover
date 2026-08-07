@@ -1,6 +1,6 @@
 # Contract: License and Credits
 
-Targets: `LICENSE` (new, repo root), README credits + license sections, `src/site/attribution.html` (alignment). Requirement sources: FR-004, FR-005, FR-006, FR-007, FR-011; SC-002, SC-005, SC-007. Legal grounding: research in `research.md` (section B), full citations in `local://ref-license.md`.
+Targets: `LICENSE` (new, repo root), README credits + license sections, `src/site/attribution.html` (alignment). Requirement sources: FR-004, FR-005, FR-006, FR-007, FR-011; SC-002, SC-005, SC-007. Legal grounding: research in `research.md` (section B), full citations recorded there.
 
 ## 1. Project license file (`LICENSE`)
 

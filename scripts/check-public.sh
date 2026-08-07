@@ -42,6 +42,18 @@ patterns=(
   '\.specify'
   # P13: SSH root login target
   'root@[A-Za-z0-9_.-]+'
+  # P14: harness product names (case-tolerant)
+  '[Ff]eynman|opencode'
+  # P15: harness-internal URI scheme (not a real URL scheme)
+  'local://'
+  # P16: harness literature-search tool (`alpha_search` / `alpha search`)
+  'alpha[ _]search'
+  # P17: harness content-fetch tools
+  'fetch_content|get_search_content'
+  # P18: harness web-search tool (underscore form; prose "web search" is fine)
+  'web_search'
+  # P19: harness subagent role label
+  'subagent'
 )
 
 files="$(git ls-files)"

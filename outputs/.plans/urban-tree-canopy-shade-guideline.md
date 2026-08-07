@@ -55,7 +55,7 @@ literature, and the main critiques/open questions.
 ## 5. Task ledger
 
 - [x] Write plan
-- [ ] G1: Academic sweep (alpha_search + web) — canopy %, heat stress, 3-30-300
+- [ ] G1: Academic sweep (academic search + web) — canopy %, heat stress, 3-30-300
 - [ ] G2: Policy/guideline sweep (web) — American Forests, city goals, EPA/WHO
 - [ ] G3: Deep-read top primary sources (Konijnendijk 2022; Iungman 2023; reviews)
 - [ ] S: Synthesize (consensus / disagreement / gaps) into draft

@@ -221,11 +221,11 @@ etc. in the bundle contract).
 
 ## R-8 Literature grounding for the 30 % guideline (external, non-blocking)
 
-Status note: a feynman literature pass was attempted but is not
-operational on this machine (`feynman search status` reports no
-Perplexity/Exa/Gemini backend configured). The findings below come
-from built-in web search with cited sources, not a feynman consensus
-review. Primary sources not yet read in full; claims marked
+Status note: an automated literature-search pass was attempted but is not
+operational in this environment (no search backend configured). The
+findings below come from built-in web search with cited sources, not
+an automated consensus review. Primary sources not yet read in full;
+claims marked
 accordingly.
 
 **Decision**: keep the 30 % anchor used by the district and city
