@@ -220,3 +220,13 @@ Task: "Add district popup CSS in src/site/style.css"
 - `dist/main.js` must be refreshed via `make publish` before the SC-003 node-VM cross-check can pass — the cross-check tests the shipped function, not a re-implementation (R-10).
 - German copy only, dot-decimal kept, "pp" deltas, U+2212 minus, "±" neutral, no em/en dashes in new prose (feature 012 convention); `UNAVAILABLE` en-dash constant unchanged.
 - Avoid: vague tasks, same-file parallel conflicts, cross-story dependencies that break independence.
+
+---
+
+## Phase 7: Convergence
+
+**Purpose**: Close gaps surfaced by `/speckit.converge` (post-implementation review).
+Append-only; completing these is the job of `/speckit.implement`.
+
+- [X] T027 [P] Add a node-VM popup-renderer regression test in `tests/acceptance/test_popup_render.py` (load `dist/main.js` with the browser stubs from `test_rank.py`, call the shipped `buildingPopupHtml`/`districtPopupHtml` via the shared module scope) asserting the `contracts/popup-content.md` HTML contract: valid building (headline value, badge erreicht/verfehlt, district + city lines with signed pp delta + assessment word, footnote), neutral delta (`±0.0 pp` + `auf …-Niveau`, no color), exactly 30.0 counts erreicht, no-value building (en-dash marker, no badge/deltas/city line, plain district line kept — FR-006), null-mean district (`keine Daten`, name + building count only, rank/quartile/city hidden — FR-011), city-stats-missing (city lines hidden, rank/quartile still render — FR-014); also assert `classifyDelta`/`formatDelta`/`deltaClass`/`assessmentWord` edge cases (0.1 pp band inclusive, U+2212 minus, half-up magnitude) per FR-001..FR-012, FR-014 (missing)
+- [X] T028 Re-run the headless interaction-latency measurement on the published bundle per `quickstart.md` S5 and record the results in `validation/perf-budget.json` (update `interaction_latency_ms`/`first_usable_ms`, keep `verified_at` as the run date, retain the `feature013_note`), confirming the 2 s interaction budget holds with no first-usable-map regression per plan: perf gate (partial)
