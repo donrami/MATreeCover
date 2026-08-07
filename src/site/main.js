@@ -17,6 +17,11 @@ let buildingPopup = null;
 // district clicks close the building popup and vice versa.
 let districtPopup = null;
 
+// Feature 013 (R-1/R-2): code -> { rank, quartile } computed once at map
+// load from the full 38-district set (never viewport-limited). null when
+// the fetch failed or fewer than two valid means (FR-014 edge cases).
+let districtRankings = null;
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -33,6 +38,140 @@ function formatPercent(value) {
 
 function formatInteger(value) {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '\u2009');
+}
+
+/* Feature 013 (R-3, FR-003/FR-004/FR-008): signed-delta comparison
+ * helpers. Pure — no map/DOM access — so the node-VM cross-check in
+ * tests/acceptance/test_rank.py can exercise them (SC-003). */
+const DELTA_TOLERANCE = 0.1; // pp neutral band, inclusive (FR wording normative)
+
+function classifyDelta(delta) {
+  if (delta > DELTA_TOLERANCE) return 'above';
+  if (delta < -DELTA_TOLERANCE) return 'below';
+  return 'neutral';
+}
+
+/* R-3/R-11: the displayed delta derives from the classification, so the
+ * word and number can never contradict — a raw |delta| <= 0.1 always
+ * renders "±0.0 pp". Otherwise sign + magnitude rounded to 1 decimal
+ * (half-up on the magnitude), plus sign "+", minus sign U+2212. */
+function formatDelta(delta, cls) {
+  if (cls === 'neutral') return '\u00b10.0 pp'; // "±0.0 pp"
+  const magnitude = Math.abs(delta).toFixed(1); // half-up on the magnitude
+  const sign = cls === 'above' ? '+' : '\u2212'; // U+2212 minus for below
+  return `${sign}${magnitude} pp`;
+}
+
+/* R-4 assessment words, exact German copy per comparison kind (FR-017).
+ * "building-district": building vs district mean; "building-city" and
+ * "district-city" share the same city-average wording. */
+const ASSESSMENT_WORDS = {
+  'building-district': {
+    above: '\u00fcber dem Stadtteil-Durchschnitt',
+    below: 'unter dem Stadtteil-Durchschnitt',
+    neutral: 'auf Stadtteil-Niveau',
+  },
+  'building-city': {
+    above: '\u00fcber dem Stadtdurchschnitt',
+    below: 'unter dem Stadtdurchschnitt',
+    neutral: 'auf Stadtniveau',
+  },
+  'district-city': {
+    above: '\u00fcber dem Stadtdurchschnitt',
+    below: 'unter dem Stadtdurchschnitt',
+    neutral: 'auf Stadtniveau',
+  },
+};
+
+function assessmentWord(kind, cls) {
+  return ASSESSMENT_WORDS[kind][cls];
+}
+
+/* Map a delta classification to its color class (R-12). Neutral gets no
+ * color; the class exists so FR-013's "never color-only" holds via the
+ * text word rendered alongside. */
+function deltaClass(cls) {
+  if (cls === 'above') return 'delta-up';
+  if (cls === 'below') return 'delta-down';
+  return 'delta-neutral';
+}
+
+/* Feature 013 (R-2, FR-009/FR-010): district ranking. Pure — no map/DOM
+ * access — so the node-VM cross-check in tests/acceptance/test_rank.py
+ * exercises the shipped function (SC-003). */
+const QUARTILE_LABELS = [
+  'oberstes Viertel',
+  'oberes Mittelfeld',
+  'unteres Mittelfeld',
+  'unterstes Viertel',
+];
+
+/* Band from rank and n: q1 = ceil(n/4), q2 = q3 = floor(n/4), remainder
+ * to the last band. For n = 38: 10/9/9/10 -> 1-10, 11-19, 20-28, 29-38.
+ * Returns the band index into QUARTILE_LABELS. */
+function quartileBand(rank, n) {
+  const q1 = Math.ceil(n / 4);
+  const q2 = Math.floor(n / 4);
+  const q3 = Math.floor(n / 4);
+  if (rank <= q1) return 0;
+  if (rank <= q1 + q2) return 1;
+  if (rank <= q1 + q2 + q3) return 2;
+  return 3;
+}
+
+/* R-12: quartile label -> badge color class (cool = better, warm = worse). */
+function quartileBadgeClass(label) {
+  if (label === 'oberstes Viertel') return 'badge-good';
+  if (label === 'oberes Mittelfeld') return 'badge-good-soft';
+  if (label === 'unteres Mittelfeld') return 'badge-mid';
+  return 'badge-bad'; // unterstes Viertel
+}
+
+/* Map district `code` -> { rank, quartile-label }. Sorts by mean_value
+ * descending then name ascending (tie-break, FR-009), assigning distinct
+ * sequential ranks. JS `<` string ordering matches Python code-point
+ * ordering for all 38 BMP names — the reproducibility contract between
+ * this implementation and the Python reference. Fewer than two valid
+ * means -> null (rank/quartile hidden everywhere). */
+function computeDistrictRankings(districtFeatures) {
+  const valid = districtFeatures.filter(
+    (f) => f.properties && typeof f.properties.mean_value === 'number'
+  );
+  if (valid.length < 2) return null;
+  const sorted = valid.slice().sort((a, b) => {
+    const byMean = b.properties.mean_value - a.properties.mean_value;
+    if (byMean !== 0) return byMean;
+    return a.properties.name < b.properties.name ? -1 : 1;
+  });
+  const rankings = new Map();
+  sorted.forEach((feature, i) => {
+    const rank = i + 1;
+    rankings.set(feature.properties.code, {
+      rank,
+      quartile: QUARTILE_LABELS[quartileBand(rank, sorted.length)],
+    });
+  });
+  return rankings;
+}
+
+/* Feature 013 (R-1, FR-014): fetch the stadtteile source once at map
+ * load (same URL the style's `stadtteile` source already loads, so the
+ * browser serves it from cache — no new network transfer) and compute
+ * the module-level districtRankings. On failure leave it null so the
+ * district popup hides rank/quartile (defensive degradation). */
+function loadDistrictRankings() {
+  fetch('stadtteile.geojson')
+    .then((response) => {
+      if (!response.ok) throw new Error(`stadtteile fetch ${response.status}`);
+      return response.json();
+    })
+    .then((data) => {
+      districtRankings = computeDistrictRankings(data.features || []);
+    })
+    .catch((err) => {
+      console.warn('district rankings unavailable:', err);
+      districtRankings = null;
+    });
 }
 
 /* Feature 011 (FR-009, R-6): district at a click coordinate via the
@@ -90,32 +229,124 @@ async function boundaryBboxFromFile() {
   return null;
 }
 
-/* Feature 011 (FR-009): building popup content — the existing value
- * line plus the district context lines (R-6). */
-function buildingPopupHtml(props) {
+/* Feature 013 (R-6, FR-001..FR-006): building popup content — district
+ * header, headline value, 30 % threshold badge, district and city
+ * comparison lines with signed deltas, and the metric footnote. Merges
+ * the former buildingDistrictHtml(lngLat) so the whole body is one
+ * renderer; the district lookup via districtAt() is unchanged. */
+function buildingPopupHtml(props, lngLat) {
+  const district = districtAt(lngLat);
+  const header = district && district.name
+    ? `<div class="popup-header">Stadtteil: ${escapeHtml(district.name)}</div>`
+    : '';
+
   const hasValue = props.has_value === true;
   const valueDisplay = hasValue ? `${escapeHtml(props.value_str)}%` : UNAVAILABLE;
-  return `<div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value">${valueDisplay}</div>`;
-}
 
-function buildingDistrictHtml(lngLat) {
-  const district = districtAt(lngLat);
-  if (!district) return '';
-  const mean = district.mean_value == null
-    ? 'keine Daten'
-    : formatPercent(district.mean_value);
-  return `<div class="popup-label">Stadtteil</div><div class="popup-value">${escapeHtml(district.name)}</div>` +
-    `<div class="popup-label">Durchschnitt im Stadtteil</div><div class="popup-value">${mean}</div>`;
+  let badge = '';
+  let districtLine = '';
+  let cityLine = '';
+
+  if (hasValue) {
+    const value = Number(props.value_str);
+    const reached = value >= 30; // exactly 30.0 counts as erreicht (FR-005)
+    badge = `<div class="popup-badge ${reached ? 'badge-good' : 'badge-bad'}">${reached ? 'erreicht' : 'verfehlt'}</div>`;
+
+    // FR-003: building vs district mean (delta + word, only when the
+    // district has a mean).
+    if (district && typeof district.mean_value === 'number') {
+      const delta = value - district.mean_value;
+      const cls = classifyDelta(delta);
+      districtLine = `<div class="popup-context-line ${deltaClass(cls)}">` +
+        `<div class="popup-label">Durchschnitt im Stadtteil</div>` +
+        `<div class="popup-value">${formatPercent(district.mean_value)} · ${formatDelta(delta, cls)} · ${assessmentWord('building-district', cls)}</div></div>`;
+    }
+
+    // FR-004: building vs city average (hidden when city stats missing,
+    // FR-014).
+    const cityMean = cityStats();
+    if (typeof cityMean === 'number') {
+      const delta = value - cityMean;
+      const cls = classifyDelta(delta);
+      cityLine = `<div class="popup-context-line ${deltaClass(cls)}">` +
+        `<div class="popup-label">Stadtdurchschnitt</div>` +
+        `<div class="popup-value">${formatPercent(cityMean)} · ${formatDelta(delta, cls)} · ${assessmentWord('building-city', cls)}</div></div>`;
+    }
+  } else if (district && district.mean_value != null) {
+    // FR-006: no value -> no badge/deltas/city line, but the plain
+    // district context line still renders.
+    districtLine = `<div class="popup-context-line">` +
+      `<div class="popup-label">Durchschnitt im Stadtteil</div>` +
+      `<div class="popup-value">${formatPercent(district.mean_value)}</div></div>`;
+  }
+
+  const context = (districtLine || cityLine)
+    ? `<div class="popup-context">${districtLine}${cityLine}</div>`
+    : '';
+
+  // FR-012 (R-8): one plain-German sentence for the metric; the 30 %
+  // threshold is explained only on the building popup.
+  const footnote = `<div class="popup-footnote"><div class="popup-label">Was bedeutet das?</div>` +
+    `<p>Der Baumanteil im 60-m-Umkreis ist der Anteil der Baumkronen an der Fl\u00e4che im Umkreis von 60 m um das Geb\u00e4ude. Ab 30 % gilt die Beschattung als ausreichend.</p></div>`;
+
+  return header +
+    `<div class="popup-headline"><div class="popup-label">Baumanteil im 60-m-Umkreis</div><div class="popup-value popup-value-headline">${valueDisplay}</div></div>` +
+    badge + context + footnote;
 }
 
 function districtPopupHtml(props) {
-  const mean = props.mean_value == null
-    ? 'keine Daten'
-    : formatPercent(props.mean_value);
-  return `<div class="popup-label">Stadtteil</div><div class="popup-value">${escapeHtml(props.name)}</div>` +
-    `<div class="popup-label">Gebäude</div><div class="popup-value">${formatInteger(props.n_buildings)}</div>` +
-    `<div class="popup-label">Baumanteil im Durchschnitt</div><div class="popup-value">${mean}</div>` +
-    `<div class="popup-label">Anteil unter 30 %</div><div class="popup-value">${formatPercent(props.share_lt30)}</div>`;
+  const hasMean = props.mean_value != null;
+  const name = escapeHtml(props.name);
+  const ranking = hasMean && districtRankings ? districtRankings.get(props.code) : undefined;
+
+  const meanDisplay = hasMean ? formatPercent(props.mean_value) : 'keine Daten';
+  const headline = `<div class="popup-headline">` +
+    `<div class="popup-label">Baumanteil im Durchschnitt</div>` +
+    `<div class="popup-value popup-value-headline">${meanDisplay}</div></div>`;
+
+  let badge = '';
+  let rankLine = '';
+  let cityLine = '';
+  let shareLine = '';
+
+  if (hasMean) {
+    // FR-010: quartile badge + FR-009 rank line, only when the
+    // rankings are available (fetch succeeded, >= 2 valid means).
+    if (ranking) {
+      badge = `<div class="popup-badge ${quartileBadgeClass(ranking.quartile)}">${ranking.quartile}</div>`;
+      rankLine = `<div class="popup-context-line"><div class="popup-value">Platz ${ranking.rank} von ${districtRankings.size}</div></div>`;
+    }
+
+    // FR-008: district vs city average (hidden when city stats missing,
+    // FR-014).
+    const cityMean = cityStats();
+    if (typeof cityMean === 'number') {
+      const delta = props.mean_value - cityMean;
+      const cls = classifyDelta(delta);
+      cityLine = `<div class="popup-context-line ${deltaClass(cls)}">` +
+        `<div class="popup-label">Stadtdurchschnitt</div>` +
+        `<div class="popup-value">${formatPercent(cityMean)} · ${formatDelta(delta, cls)} · ${assessmentWord('district-city', cls)}</div></div>`;
+    }
+
+    // FR-007: existing statistics kept when the mean is valid.
+    shareLine = `<div class="popup-context-line">` +
+      `<div class="popup-label">Anteil unter 30 %</div>` +
+      `<div class="popup-value">${formatPercent(props.share_lt30)}</div></div>`;
+  }
+
+  // FR-007: building count always shown (FR-011 keeps name + count when
+  // the mean is missing).
+  const buildingLine = `<div class="popup-context-line">` +
+    `<div class="popup-label">Geb\u00e4ude</div>` +
+    `<div class="popup-value">${formatInteger(props.n_buildings)}</div></div>`;
+
+  const context = `<div class="popup-context">${cityLine}${rankLine}${buildingLine}${shareLine}</div>`;
+
+  // FR-012 (R-8): one plain-German sentence for the district mean metric.
+  const footnote = `<div class="popup-footnote"><div class="popup-label">Was bedeutet das?</div>` +
+    `<p>Der Baumanteil im Durchschnitt ist der mittlere Baumanteil im 60-m-Umkreis aller Geb\u00e4ude in diesem Stadtteil.</p></div>`;
+
+  return `<div class="popup-header">Stadtteil: ${name}</div>` + headline + badge + context + footnote;
 }
 
 function openDistrictPopup(event, feature) {
@@ -171,7 +402,7 @@ function wireBuildingsInteractions() {
     if (districtPopup) districtPopup.remove();
     buildingPopup
       .setLngLat(event.lngLat)
-      .setHTML(buildingPopupHtml(feature.properties || {}) + buildingDistrictHtml(event.lngLat));
+      .setHTML(buildingPopupHtml(feature.properties || {}, event.lngLat));
     if (!buildingPopup.isOpen()) {
       buildingPopup.addTo(map);
     }
@@ -219,6 +450,18 @@ function wireTreesToggle() {
 /* Feature 011 (contracts/city-overview.md): the city overview card is
  * a view over publish-time metadata; it hides itself when the metadata
  * is missing (stale bundle). */
+/* Feature 013 (R-5, FR-014): city-average reference for both popups,
+ * read at render time from the same metadata block renderCityPanel()
+ * consumes, so popups and the "Mannheim im Überblick" panel can never
+ * contradict. Returns mean_value_pct (number) or null when missing. */
+function cityStats() {
+  const style = map.getStyle();
+  const stats = style && style.metadata && style.metadata.city_stats;
+  return stats && typeof stats.mean_value_pct === 'number'
+    ? stats.mean_value_pct
+    : null;
+}
+
 function renderCityPanel() {
   const panel = document.getElementById('city-panel');
   if (!panel) return;
@@ -489,6 +732,7 @@ async function onMapLoad() {
   wireBrightnessSlider();
   wireErrorHandling();
   renderCityPanel();
+  loadDistrictRankings(); // feature 013: rank/quartile from the full 38-district set
   localizeMapLibreControls();
 }
 
@@ -504,6 +748,7 @@ function init() {
   });
   window.__map = map; // debug handle (smoke checks)
   window.__renderCityPanel = renderCityPanel; // debug handle (perf re-measurement)
+  window.__districtRankings = computeDistrictRankings; // feature 013 debug handle (SC-003 cross-check)
   wireStoryModal();
 
   // Feature 012 (FR-008): the surface is collapsed by default on

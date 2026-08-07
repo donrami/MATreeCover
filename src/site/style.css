@@ -326,6 +326,81 @@ html, body {
 
 .district-popup .popup-value { font-weight: 600; }
 
+/* Feature 013: shared comparative-context popup structure (FR-013).
+ * Both popups render the same block classes; badge and delta colors
+ * follow the published palette semantics (R-12) — cool = good/high
+ * tree share, warm = bad/low — and every colored fact also carries
+ * its text label (FR-013). Neutral deltas get no color. */
+.building-popup .popup-header,
+.district-popup .popup-header {
+  font-size: 0.72rem;
+  color: var(--subtle);
+  margin-bottom: 6px;
+}
+
+.building-popup .popup-headline .popup-value,
+.district-popup .popup-headline .popup-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.building-popup .popup-badge,
+.district-popup .popup-badge {
+  display: inline-block;
+  margin: 6px 0 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.badge-good      { color: #39c2ff; background: rgba(57, 194, 255, 0.12); } /* erreicht / oberstes Viertel */
+.badge-good-soft { color: #1db6ff; background: rgba(29, 182, 255, 0.12); } /* oberes Mittelfeld */
+.badge-mid       { color: #e6854a; background: rgba(230, 133, 74, 0.12); } /* unteres Mittelfeld */
+.badge-bad       { color: #ffd524; background: rgba(255, 213, 36, 0.12); } /* verfehlt / unterstes Viertel */
+
+.building-popup .popup-context,
+.district-popup .popup-context {
+  margin: 8px 0;
+}
+
+.building-popup .popup-context-line,
+.district-popup .popup-context-line {
+  margin-bottom: 6px;
+}
+
+.delta-up      { color: #39c2ff; }
+.delta-down    { color: #ffd524; }
+.delta-neutral { color: var(--text); }
+
+.building-popup .popup-footnote,
+.district-popup .popup-footnote {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--subtle);
+}
+
+.building-popup .popup-footnote p,
+.district-popup .popup-footnote p {
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--subtle);
+  margin-top: 2px;
+}
+
+/* Feature 013 (R-9, FR-016/SC-006): the taller popup content scrolls
+ * inside the box and clamps width so no line is clipped on a 360 px
+ * viewport. MapLibre's existing anchor edge-flip keeps the popup in
+ * view; the internal scroll cap keeps it on small screens. */
+.building-popup .maplibregl-popup-content,
+.district-popup .maplibregl-popup-content {
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  max-width: min(240px, calc(100vw - 24px));
+}
+
+
+
 /* ============================================================
  * Mobile: bottom sheet (R-8). Fixed full-width sheet at the bottom;
  * the map stays full-bleed behind it. Collapsed by default (FR-001,

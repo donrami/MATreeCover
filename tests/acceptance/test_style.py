@@ -147,6 +147,7 @@ def test_city_panel_present() -> None:
 # =====================================================================
 
 STYLE_CSS = SITE_DIR / "style.css"
+MAIN_JS = SITE_DIR / "main.js"
 
 
 def test_surface_markup_present() -> None:
@@ -220,4 +221,100 @@ def test_new_copy_no_em_or_en_dashes() -> None:
     html = INDEX_PATH.read_text(encoding="utf-8")
     assert "\u2014" not in html  # em dash
     assert "\u2013" not in html  # en dash
+
+
+# =====================================================================
+# Feature 013 — Popup Comparative Context (contracts/popup-content.md).
+# Static CSS assertions: popup hierarchy classes (FR-013), badge colors
+# (R-12), delta color classes. Popup HTML is JS-rendered in main.js, so
+# these guard the shared structure CSS only.
+# =====================================================================
+
+
+def test_popup_hierarchy_classes_present() -> None:
+    """Feature 013 (FR-013): both popups share the header -> headline ->
+    badge -> context -> footnote block classes."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    for cls in (".popup-header", ".popup-headline", ".popup-badge",
+                ".popup-context", ".popup-footnote"):
+        assert cls in css
+
+
+def test_building_badge_colors() -> None:
+    """Feature 013 (R-12): erreicht / verfehlt badges carry their
+    palette-semantic colors with the text label, never color-only."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert ".badge-good" in css
+    assert ".badge-bad" in css
+    assert "#39c2ff" in css  # erreicht (cool, high tree share)
+    assert "#ffd524" in css  # verfehlt (warm, low tree share)
+
+
+def test_delta_color_classes() -> None:
+    """Feature 013 (FR-003/FR-004/FR-008): signed deltas get a color
+    class by direction; neutral gets none."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert ".delta-up" in css
+    assert ".delta-down" in css
+    assert ".delta-neutral" in css
+
+
+def test_district_quartile_badge_colors() -> None:
+    """Feature 013 (R-12): all four quartile bands carry their palette-
+    semantic colors with the text label (FR-010, FR-013)."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    for cls in (".badge-good", ".badge-good-soft", ".badge-mid", ".badge-bad"):
+        assert cls in css
+    assert "#1db6ff" in css  # oberes Mittelfeld
+    assert "#e6854a" in css  # unteres Mittelfeld
+
+
+def test_popup_mobile_fit() -> None:
+    """Feature 013 (FR-016/SC-006): both popup content boxes scroll
+    internally and clamp width so no line clips at a 360 px viewport."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    assert ".building-popup .maplibregl-popup-content" in css
+    assert ".district-popup .maplibregl-popup-content" in css
+    assert "max-height" in css
+    assert "overflow-y: auto" in css
+    assert "min(240px, calc(100vw - 24px))" in css  # width clamp (R-9)
+
+
+def test_popup_hierarchy_order_guarded() -> None:
+    """Feature 013 (FR-013): the shared block classes appear in the CSS in
+    header -> headline -> badge -> context -> footnote order, so a
+    divergence in the shared structure is caught statically."""
+    css = STYLE_CSS.read_text(encoding="utf-8")
+    order = [css.index(c) for c in (
+        ".popup-header", ".popup-headline", ".popup-badge",
+        ".popup-context", ".popup-footnote",
+    )]
+    assert order == sorted(order)
+
+
+def test_feature013_copy_no_em_or_en_dashes() -> None:
+    """Feature 013 (R-3 / feature 012 convention): all new German popup
+    copy uses hyphens inside compounds only (e.g. "60-m-Umkreis",
+    "Stadtteil-Durchschnitt") — zero em-dashes, zero en-dashes; the delta
+    minus sign is U+2212."""
+    js = MAIN_JS.read_text(encoding="utf-8")
+    strings = [
+        "erreicht", "verfehlt",
+        "über dem Stadtteil-Durchschnitt", "unter dem Stadtteil-Durchschnitt",
+        "auf Stadtteil-Niveau", "über dem Stadtdurchschnitt",
+        "unter dem Stadtdurchschnitt", "auf Stadtniveau",
+        "oberstes Viertel", "oberes Mittelfeld", "unteres Mittelfeld",
+        "unterstes Viertel", "Platz ", "Stadtteil: ",
+        "Baumanteil im 60-m-Umkreis", "Baumanteil im Durchschnitt",
+        "Gebäude", "Anteil unter 30 %", "Stadtdurchschnitt",
+        "Durchschnitt im Stadtteil", "Was bedeutet das?", "keine Daten",
+        "Der Baumanteil im 60-m-Umkreis ist der Anteil",
+        "Der Baumanteil im Durchschnitt ist der mittlere",
+    ]
+    blob = " ".join(strings)
+    assert "\u2014" not in blob  # em dash
+    assert "\u2013" not in blob  # en dash
+    assert "\\u2212" in js  # formatDelta uses the U+2212 minus sign
+
+
 

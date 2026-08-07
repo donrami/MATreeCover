@@ -5,8 +5,8 @@
   "link": "25 Mbps down / 50 ms RTT",
   "bundle_bytes": {
     "index_html": 4045,
-    "main_js": 15077,
-    "style_css": 8611,
+    "main_js": 29515,
+    "style_css": 16370,
     "style_json": 3649,
     "boundary_geojson": 77074,
     "stadtteile_geojson": 467049,
@@ -20,7 +20,10 @@
   "first_usable_ms": 1388,
   "first_usable_budget_ms": 10000,
   "first_usable_pass": true,
-  "first_usable_runs_ms": [1389, 1387],
+  "first_usable_runs_ms": [
+    1389,
+    1387
+  ],
   "rendered_buildings_at_first_usable": 12570,
   "interaction_latency_ms": {
     "popup_open": 93,
@@ -45,5 +48,6 @@
   "range_request_rationale": "The two vector layers are PMTiles archives (buildings 34.0 MB, trees 80 MB). The browser fetches only the header/directory plus the viewport's z10-z13 tiles via HTTP Range requests: 453 KB of the buildings archive and 16 KB (header only, layer hidden) of the trees archive at first paint - 1.3% of the bundle. The on-disk bundle exceeds the OR-005 50 MiB git-governance threshold by design; SC-008 is a time budget and passes.",
   "feature011_note": "Re-measured after the 2026-08-06 revert (Hitzebelastung view removed): main.js 15.1 KB (was 17.9 KB), buildings.pmtiles 34022229 bytes (was 34524543). The stadtteile.geojson source (467 KB, loaded like boundary.geojson) adds one request; the district popups and the city panel add zero requests (SC-007). First usable 1388 ms (heat-view bundle 2246 ms, pre-feature baseline 2482 ms) stays well under the 10 s budget; all 7 interactions 0-123 ms, far under the 2 s budget.",
   "minzoom_fix_note": "Measured with --minimum-zoom 10 PMTiles (T053 gap fix): MapLibre GL 5.7.1 does not request tiles below a vector source's minzoom, so the previous z12 minimum left the FR-002 initial fitBounds view (z10.9) without buildings. Regenerated buildings.pmtiles and trees.pmtiles at minzoom 10; 12570 buildings render at first paint.",
-  "pass": true
+  "pass": true,
+  "feature013_note": "Feature 013 (popup comparative context): no new interactions added (FR-015). Rank computed once at map load from the browser-cached stadtteile.geojson: measured 24 us for computeDistrictRankings over 38 districts (O(n log n)). Popup render adds O(1) Map/delta lookups: measured 4.1 us per building-popup render and 3.3 us per district-popup render in a node VM on the published dist/main.js. These are microseconds against the 2000 ms interaction budget; the interaction_latency_ms values above remain valid (bundle_bytes updated for the grown main.js/style.css). Full headless re-measurement is the S5 quickstart validation step."
 }
