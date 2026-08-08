@@ -1,18 +1,28 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-07T19:40:18+00:00",
+  "generated_at": "2026-08-08T10:21:51+00:00",
   "index_html": "index.html",
-  "style": "style.json",
+  "style": "style-7e0eb1f1ecae.json",
   "buildings": "buildings.geojson",
   "trees": "trees.pmtiles",
-  "boundary": "boundary.geojson",
+  "boundary": "boundary-68c2df610dd0.geojson",
   "boundary_bbox": [
     8.414253000885362,
     49.41033906556488,
     8.58995592642506,
     49.59047006993572
   ],
-  "stadtteile": "stadtteile.geojson",
+  "stadtteile": "stadtteile-4830756ae3b5.geojson",
+  "hashed_assets": {
+    "main.js": "main-ced8dde4ed0a.js",
+    "style.css": "style-330fbb33d1bd.css",
+    "style.json": "style-7e0eb1f1ecae.json",
+    "vendor/maplibre-gl.js": "vendor/maplibre-gl-aa49ba072cb2.js",
+    "vendor/maplibre-gl.css": "vendor/maplibre-gl-43c1d886b5fd.css",
+    "vendor/pmtiles.js": "vendor/pmtiles-4aa8f046955d.js",
+    "boundary.geojson": "boundary-68c2df610dd0.geojson",
+    "stadtteile.geojson": "stadtteile-4830756ae3b5.geojson"
+  },
   "legend": {
     "labels": [
       "0",

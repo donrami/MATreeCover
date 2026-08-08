@@ -39,7 +39,7 @@ Design decisions are in [research.md](research.md). Contracts: [contracts/](cont
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-The repo has no `.specify/memory/constitution.md`. The governing rules are the documented constraints in DEVELOPMENT.md and the specs (OR-001 to OR-005, FR-010, FR-013/FR-014, SC-005/SC-008 precedent).
+The repo ships no memory constitution file. The governing rules are the documented constraints in DEVELOPMENT.md and the specs (OR-001 to OR-005, FR-010, FR-013/FR-014, SC-005/SC-008 precedent).
 
 | Gate | Status | Evidence |
 |---|---|---|
@@ -71,7 +71,7 @@ specs/014-performance-fixes/
 │   ├── cache-headers.md
 │   ├── hashed-bundle.md
 │   └── low-zoom-simplification.md
-└── tasks.md             # Phase 2 output (NOT created by /speckit.plan)
+└── tasks.md             # Phase 2 output (created by the task-list step)
 ```
 
 ### Source Code (repository root)

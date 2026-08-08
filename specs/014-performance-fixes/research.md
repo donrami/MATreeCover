@@ -92,7 +92,7 @@ Decision:
 
 ## R7 — Local tooling verified
 
-- tippecanoe 2.80.0 at /home/mainuser/.local/bin/tippecanoe (Makefile requires >= 2.x).
+- tippecanoe 2.80.0 on PATH (Makefile requires >= 2.x).
 - nginx 1.30.4 (local harness, port 8088 precedent).
 - Workspace present: data/archive/workspace/buildings.geojson (56 MB, values-joined).
 - venv with pmtiles >= 3.0 (project dependency) for tile-level parity checks.

@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-07T22:20:55+00:00",
+  "generated_at": "2026-08-08T10:21:51+00:00",
   "artifacts": [
     {
       "path": "boundary.geojson",
@@ -223,8 +223,8 @@
     {
       "path": "buildings.pmtiles",
       "kind": "buildings-pmtiles",
-      "size_bytes": 34022229,
-      "sha256": "0f3fdc08760e13a70f77fc0c53100c48210836eccc1f588ba7f5d81f57d4ed80",
+      "size_bytes": 33275359,
+      "sha256": "61e8666cfcf01677ede6ced837d917321953656f2797f71c02e952068dbe8894",
       "source": "derived: buildings.geojson + tippecanoe",
       "license": "MIT",
       "extent": [

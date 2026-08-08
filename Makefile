@@ -76,6 +76,7 @@ pmtiles-buildings:
 	@test -f "$(WORKSPACE)/buildings.geojson" || { echo "error: $(WORKSPACE)/buildings.geojson missing (run values)"; exit 1; }
 	tippecanoe --name buildings --layer buildings --minimum-zoom 10 --maximum-zoom 18 \
 		--base-zoom 14 --drop-densest-as-needed --extend-zooms-if-still-dropping \
+		--simplification 10 --simplify-only-low-zooms \
 		--read-parallel --force --output="$(WORKSPACE)/buildings.pmtiles" "$(WORKSPACE)/buildings.geojson"
 
 pmtiles-trees:

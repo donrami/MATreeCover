@@ -50,5 +50,32 @@
   "minzoom_fix_note": "Measured with --minimum-zoom 10 PMTiles (T053 gap fix): MapLibre GL 5.7.1 does not request tiles below a vector source's minzoom, so the previous z12 minimum left the FR-002 initial fitBounds view (z10.9) without buildings. Regenerated buildings.pmtiles and trees.pmtiles at minzoom 10; 12570 buildings render at first paint.",
   "pass": true,
   "feature013_note": "Feature 013 (popup comparative context): no new interactions added (FR-015). Rank computed once at map load from the browser-cached stadtteile.geojson: measured 24 us for computeDistrictRankings over 38 districts (O(n log n)). Popup render adds O(1) Map/delta lookups: measured 4.1 us per building-popup render and 3.3 us per district-popup render in a node VM on the published dist/main.js. These are microseconds against the 2000 ms interaction budget; the interaction_latency_ms values above remain valid (bundle_bytes updated for the grown main.js/style.css). Full headless re-measurement is the S5 quickstart validation step.",
-  "feature013_remeasured_note": "T028 re-measurement (2026-08-07) on the published feature-013 bundle via headless Chromium (rAF probe: click dispatch -> popup DOM settle, 5 runs each, cold reload). popup_open avg 3 ms, district_click avg 10 ms vs the 2000 ms interaction budget; first-usable 73 ms to map loaded + buildings rendered. No regression: the feature adds a one-time O(n log n) rank at load (24 us) and O(1) popup lookups. Method differs from the original nginx+CDP latency-emulated harness above (no network latency emulation; popup render is client-side post-click), so absolute values are lower but the budget check is valid."
+  "feature013_remeasured_note": "T028 re-measurement (2026-08-07) on the published feature-013 bundle via headless Chromium (rAF probe: click dispatch -> popup DOM settle, 5 runs each, cold reload). popup_open avg 3 ms, district_click avg 10 ms vs the 2000 ms interaction budget; first-usable 73 ms to map loaded + buildings rendered. No regression: the feature adds a one-time O(n log n) rank at load (24 us) and O(1) popup lookups. Method differs from the original nginx+CDP latency-emulated harness above (no network latency emulation; popup render is client-side post-click), so absolute values are lower but the budget check is valid.",
+  "feature014_live": {
+    "measured_at": "2026-08-08",
+    "lighthouse_mobile": {
+      "score": 68,
+      "lcp_ms": 2500,
+      "fcp_ms": 1000,
+      "tbt_ms": 2840,
+      "cls": 0
+    },
+    "lighthouse_desktop": {
+      "score": 96,
+      "lcp_ms": 600,
+      "tbt_ms": 160
+    },
+    "baseline_mobile": {
+      "score": 67,
+      "tbt_ms": 6310,
+      "lcp_ms": 2459
+    },
+    "delta": {
+      "tbt_pct": -55,
+      "score_delta": 1,
+      "desktop_score_delta": 15
+    },
+    "sc001_target_note": "SC-001 (mobile >= 85, TBT < 1500 ms, LCP < 2000 ms) NOT met. Isolation test (buildings layer hidden) leaves TBT at ~3190 ms: the residual driver is MapLibre 5.7.1 init plus raster basemap processing on the 4x-throttled profile. Reaching the target needs a product-level basemap change; tracked as follow-up. SC-002 exceeded (desktop 96).",
+    "sc004_edge_caching": "ADJUSTED per spec fallback: repeated range requests carry no cf-cache-status on this zone; the edge does not cache worker-generated 206s (matches Workers Cache docs). Browser caching of the 206s applies via the new cache-control; byte-level browser verification is environment-limited (local headless Chromium does not exercise the HTTP cache)."
+  }
 }

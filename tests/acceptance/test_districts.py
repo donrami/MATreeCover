@@ -16,10 +16,11 @@ import json
 from pathlib import Path
 
 import pytest
+from tests.conftest import dist_path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DIST_STADTTEILE = REPO_ROOT / "dist" / "stadtteile.geojson"
-DIST_STYLE = REPO_ROOT / "dist" / "style.json"
+DIST_STADTTEILE = dist_path("stadtteile.geojson")
+DIST_STYLE = dist_path("style.json")
 
 
 @pytest.fixture(scope="session")

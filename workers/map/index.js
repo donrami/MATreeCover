@@ -86,6 +86,22 @@ export default {
     // (the browser-visible URL stays /map/style.json).
     const assetUrl = new URL(request.url);
     assetUrl.pathname = path.slice("/map".length) || "/";
-    return env.ASSETS.fetch(new Request(assetUrl, request));
+    const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+
+    // Feature 014 (contracts/cache-headers.md): content-hashed assets are
+    // immutable, so serve them with a long-lived browser cache. Everything
+    // else (index.html and un-hashed files) keeps the ASSETS default
+    // `public, max-age=0, must-revalidate` + ETag.
+    const hashed = /-[0-9a-f]{12}\.(js|css|json|geojson|svg)$/.test(path);
+    if (hashed) {
+      const headers = new Headers(assetResponse.headers);
+      headers.set("Cache-Control", "public, max-age=31536000, immutable");
+      return new Response(assetResponse.body, {
+        status: assetResponse.status,
+        statusText: assetResponse.statusText,
+        headers,
+      });
+    }
+    return assetResponse;
   },
 };

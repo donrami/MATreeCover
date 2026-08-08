@@ -88,8 +88,8 @@ cmd_storage_check() {
 cmd_upload_data() {
   require_dist
   local entries=(
-    "buildings.pmtiles application/vnd.pmtiles no-store, no-transform"
-    "trees.pmtiles application/vnd.pmtiles no-store, no-transform"
+    "buildings.pmtiles application/vnd.pmtiles public, max-age=86400, stale-while-revalidate=604800, no-transform"
+    "trees.pmtiles application/vnd.pmtiles public, max-age=86400, stale-while-revalidate=604800, no-transform"
     "buildings.geojson application/geo+json no-cache"
   )
   local entry key ctype ccache
@@ -136,8 +136,13 @@ cmd_verify() {
   [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "www /map/ -> canonical" || fail "www /map/ location: $out"
 
   out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles")
-  echo "$out" | grep -q '206' && echo "$out" | grep -qi 'content-range: bytes 0-1023/34022229' \
+  local expected_size
+  expected_size=$(stat -c %s "$DIST_DIR/buildings.pmtiles" 2>/dev/null || echo 0)
+  echo "$out" | grep -q '206' && echo "$out" | grep -qi "content-range: bytes 0-1023/$expected_size" \
     && pass "Range 206 with correct Content-Range" || fail "Range: $(echo "$out" | grep -iE '^(HTTP|content-range)' | tr -d '\r')"
+  out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles" | grep -i 'cache-control' | tr -d '\r')
+  echo "$out" | grep -q 'max-age=86400' && echo "$out" | grep -qi 'no-transform' \
+    && pass "pmtiles cache-control ($out)" || fail "pmtiles cache-control: $out"
   out=$(curl -s $edge -D - -o /dev/null "$base/map/" | grep -i 'cache-control' | tr -d '\r')
   [ -n "$out" ] && pass "cache-control present ($out)" || fail "no cache-control on /map/"
 

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-08-08 — performance fixes (014)
+- Repeat visits: PMTiles archives now served with `public, max-age=86400, stale-while-revalidate=604800, no-transform` (browser + edge cacheable); static assets ship with content-hashed filenames and `immutable` caching; only the HTML revalidates per visit.
+- Main-thread load: initial render without cross-fade (`fadeDuration: 0`) and simplified low-zoom building geometry (`-S 10 --simplify-only-low-zooms`). Median mobile TBT 6310 ms to 2790 ms (−56 %). Visual parity gates pass (rendered counts, properties, screenshots at z10-z18).
+- Critical path: stylesheets inlined into the HTML (no render-blocking stylesheet requests), map library preloaded, basemap origin preconnected, favicon added (no more 404).
+- Verification: committed perf harness (scripts/perf-measure.sh, perf-probe.mjs, parity-render.mjs), publish hashing engine with unit tests, full suite green, deploy gates extended with a pmtiles cache-control check.
+
 ## 2026-08-08 — popup comparative context (013)
 - Building popup: headline tree-share value ("Baumanteil im 60-m-Umkreis"), 30 % threshold badge ("erreicht"/"verfehlt"), district and city comparison lines with signed pp delta and assessment word, metric footnote.
 - District popup: name header, mean headline, rank "Platz X von 38", quartile band badge, city comparison, existing building-count and below-30 % lines kept, metric footnote.

@@ -1,0 +1,53 @@
+{
+  "feature": "014-performance-fixes",
+  "captured_at": "2026-08-08",
+  "method": "Canonical baseline from the 2026-08-08 audit (Lighthouse 13.4.1, live site, mobile Moto G Power profile 4x CPU / 1.6 Mbps / 150 ms RTT; desktop preset). The published bundle was verified byte-identical to local dist-assets/ (md5 match, index/main.js/style.css). Warm-visit transfer measured against the live site via headless Chromium + CDP (Network.clearBrowserCache, then two navigations; same-origin resource timing bytes). Local nginx measurements were captured but are not canonical: network throttling does not behave like the edge and concurrent runs added variance.",
+  "lighthouse_mobile": {
+    "score": 67,
+    "fcp_ms": 900,
+    "lcp_ms": 2459,
+    "speed_index_ms": 2100,
+    "tbt_ms": 6310,
+    "cls": 0,
+    "ttfb_ms": 50,
+    "tti_ms": 10600,
+    "requests": 56,
+    "transfer_kb": 2311
+  },
+  "lighthouse_desktop": {
+    "score": 81,
+    "fcp_ms": 300,
+    "lcp_ms": 500,
+    "speed_index_ms": 800,
+    "tbt_ms": 420,
+    "cls": 0,
+    "ttfb_ms": 40,
+    "transfer_kb": 3193
+  },
+  "warm_visit_live": {
+    "cold_same_origin_kb": 336,
+    "warm_same_origin_kb": 334,
+    "finding": "Warm visit transfers ~= cold visit. No caching benefit: pmtiles no-store, text assets max-age=0. The favicon 404 (2 KB) disappears on the warm run only because the browser stops requesting it after the first 404."
+  },
+  "interactions_ms": {
+    "source": "validation/perf-budget.json (2026-08-07, headless Chromium, desktop hardware)",
+    "popup_open": 3,
+    "zoom_in": 122,
+    "zoom_out": 123,
+    "trees_toggle_on": 122,
+    "trees_toggle_off": 123,
+    "district_click": 10,
+    "panel_render": 0,
+    "surface_toggle": 16,
+    "budget_ms": 2000,
+    "pass": "8/8 within budget"
+  },
+  "targets": {
+    "sc001_mobile_score": 85,
+    "sc001_tbt_ms": 1500,
+    "sc001_lcp_ms": 2000,
+    "sc003_warm_transfer_kb": 100,
+    "sc005_desktop_interaction_median_ms": 123
+  },
+  "warm_visit_note": "Local headless Chromium (Arch build 150) does not exercise the HTTP cache in this environment (verified: repeated fetch() re-downloads; disk-cache flags ineffective). Warm-visit byte verification is therefore deferred to the deployed site (quickstart S7 / T019), where real user browsers and the edge apply. Local verification covers header correctness only."
+}

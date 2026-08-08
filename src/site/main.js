@@ -745,6 +745,7 @@ function init() {
     container: 'map',
     style: STYLE_URL,
     attributionControl: false,
+    fadeDuration: 0, // feature 014: no cross-fade render pass at init/zoom (contracts/low-zoom-simplification.md)
   });
   window.__map = map; // debug handle (smoke checks)
   window.__renderCityPanel = renderCityPanel; // debug handle (perf re-measurement)

@@ -8,7 +8,9 @@ loads a full raster (OR-002). Writes the PublishedMap record (E-007).
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import shutil
 from pathlib import Path
 from typing import Any
@@ -18,7 +20,7 @@ from shapely.geometry import shape
 from shapely.ops import transform
 
 from . import artifact_manifest as manifest_mod
-from . import io, workspace as ws
+from . import workspace as ws
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SITE_DIR = REPO_ROOT / "src" / "site"
@@ -32,7 +34,112 @@ REQUIRED_INPUTS = [
 DERIVED_BUILDINGS = "buildings.geojson"  # workspace-relative, values-joined
 DERIVED_TREES = "trees.pmtiles"
 DERIVED_STADTTEILE = "stadtteile.geojson"  # dist-relative, publish-derived
-STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "attribution.html", "impressum.html")
+STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "favicon.svg", "attribution.html", "impressum.html")
+
+# Assets that get content-hashed filenames at publish time (feature 014,
+# contracts/hashed-bundle.md). Value: (dist-relative hashed stem, suffix).
+HASHED_ASSETS: dict[str, tuple[str, str]] = {
+    "main.js": ("main", ".js"),
+    "style.css": ("style", ".css"),
+    "style.json": ("style", ".json"),
+    "vendor/maplibre-gl.js": ("vendor/maplibre-gl", ".js"),
+    "vendor/maplibre-gl.css": ("vendor/maplibre-gl", ".css"),
+    "vendor/pmtiles.js": ("vendor/pmtiles", ".js"),
+    "boundary.geojson": ("boundary", ".geojson"),
+    "stadtteile.geojson": ("stadtteile", ".geojson"),
+}
+
+
+def _sha12(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()[:12]
+
+
+def _rewrite_once(path: Path, old: str, new: str, what: str) -> None:
+    """Replace a pattern that must occur exactly once (feature 014)."""
+    text = path.read_text(encoding="utf-8")
+    count = text.count(old)
+    if count != 1:
+        raise PublishError(f"publish refused: {path.name} {what} pattern {old!r} occurs {count} times")
+    path.write_text(text.replace(old, new), encoding="utf-8")
+
+
+def _hash_static_assets(dist_dir: Path) -> dict[str, str]:
+    """Rename hashed assets and rewrite all references (feature 014).
+
+    Deterministic: identical inputs produce identical hashed names.
+    Returns a map of original dist-relative name -> hashed name.
+    """
+    hashed: dict[str, str] = {}
+    for rel, (stem, suffix) in HASHED_ASSETS.items():
+        src = dist_dir / rel
+        if not src.exists():
+            raise PublishError(f"publish refused: hashed asset missing: {src}")
+        new_rel = f"{stem}-{_sha12(src)}{suffix}"
+        src.rename(dist_dir / new_rel)
+        hashed[rel] = new_rel
+
+    # main.js: style URL + data fetches (contracts/hashed-bundle.md)
+    main_js = dist_dir / hashed["main.js"]
+    _rewrite_once(main_js, "const STYLE_URL = 'style.json'", f"const STYLE_URL = '{hashed['style.json']}'", "STYLE_URL")
+    _rewrite_once(main_js, "fetch('stadtteile.geojson')", f"fetch('{hashed['stadtteile.geojson']}')", "stadtteile fetch")
+    _rewrite_once(main_js, "fetch('boundary.geojson')", f"fetch('{hashed['boundary.geojson']}')", "boundary fetch")
+
+    # style.json: source data URLs (JSON-safe rewrite)
+    style_path = dist_dir / hashed["style.json"]
+    style = json.loads(style_path.read_text(encoding="utf-8"))
+    sources = style.get("sources", {})
+    for source_key, rel in (("boundary", "boundary.geojson"), ("stadtteile", "stadtteile.geojson")):
+        src_data = sources.get(source_key, {}).get("data")
+        if src_data != rel:
+            raise PublishError(f"publish refused: style.json {source_key} source data {src_data!r} != {rel!r}")
+        sources[source_key]["data"] = hashed[rel]
+    style_path.write_text(json.dumps(style, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    # index.html: script srcs and stylesheet hrefs (contracts/hashed-bundle.md)
+    index_path = dist_dir / "index.html"
+    for rel, attr in (
+        ("vendor/maplibre-gl.js", 'src="vendor/maplibre-gl.js"'),
+        ("vendor/pmtiles.js", 'src="vendor/pmtiles.js"'),
+        ("main.js", 'src="main.js"'),
+    ):
+        _rewrite_once(index_path, attr, attr.replace(rel, hashed[rel]), "index.html reference")
+
+    # critical path (feature 014, FR-007 to FR-010): inline the two
+    # stylesheets (no render-blocking stylesheet requests), preload the map
+    # library, preconnect to the basemap origin, add the favicon link.
+    html = index_path.read_text(encoding="utf-8")
+    stylesheet_links = re.findall(r'<link rel="stylesheet"[^>]*>', html)
+    if len(stylesheet_links) != 2:
+        raise PublishError(f"publish refused: expected 2 stylesheet links in index.html, found {len(stylesheet_links)}")
+    inline_css = "\n".join(f"/* {rel} */\n" + (dist_dir / hashed[rel]).read_text(encoding="utf-8") for rel in ("style.css", "vendor/maplibre-gl.css"))
+    html = html.replace("<head>", (
+        "<head>\n"
+        f'  <link rel="preconnect" href="https://sgx.geodatenzentrum.de">\n'
+        f'  <link rel="preload" href="{hashed["vendor/maplibre-gl.js"]}" as="script">\n'
+        '  <link rel="icon" type="image/svg+xml" href="favicon.svg">\n'
+        f"  <style>\n{inline_css}\n  </style>"
+    ))
+    for link in stylesheet_links:
+        html = html.replace(link, "", 1)
+    index_path.write_text(html, encoding="utf-8")
+
+    # every rewritten reference must resolve
+    for rel, new_rel in hashed.items():
+        if not (dist_dir / new_rel).exists():
+            raise PublishError(f"publish refused: hashed target missing after rewrite: {new_rel}")
+
+    # drop stale hashed files from previous publishes (feature 014): they
+    # would otherwise accumulate in dist/ and ship with the assets deploy.
+    current = set(hashed.values())
+    for path in dist_dir.rglob("*-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].*"):
+        rel = path.relative_to(dist_dir).as_posix()
+        if rel not in current:
+            path.unlink()
+    return hashed
 
 
 class PublishError(RuntimeError):
@@ -263,6 +370,11 @@ def publish(workspace: Path | None = None, dist_dir: Path = DIST_DIR) -> dict[st
     style["layers"] = [layer for layer in style["layers"] if layer.get("source") in available_sources]
     style_path.write_text(json.dumps(style, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
+    # feature 014: content-hash static assets and rewrite references
+    # (contracts/hashed-bundle.md). Runs after all files are final so the
+    # hashes cover the patched style.json and derived geojsons.
+    hashed_assets = _hash_static_assets(dist_dir)
+
     # public manifest (subset of artifacts.manifest.json)
     public = {
         "release_id": manifest.get("release_id"),
@@ -273,6 +385,7 @@ def publish(workspace: Path | None = None, dist_dir: Path = DIST_DIR) -> dict[st
             if a.get("kind") != "large-file"
         ],
         "excluded_from_bundle": excluded,
+        "hashed_assets": hashed_assets,
     }
     (dist_dir / "manifest.json").write_text(json.dumps(public, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -281,12 +394,13 @@ def publish(workspace: Path | None = None, dist_dir: Path = DIST_DIR) -> dict[st
         "release_id": manifest.get("release_id", "2026.01"),
         "generated_at": public["generated_at"],
         "index_html": "index.html",
-        "style": "style.json",
+        "style": hashed_assets.get("style.json", "style.json"),
         "buildings": included.get(DERIVED_BUILDINGS),
         "trees": included.get(DERIVED_TREES),
-        "boundary": "boundary.geojson",
+        "boundary": hashed_assets.get("boundary.geojson", "boundary.geojson"),
         "boundary_bbox": boundary_out["bbox4326"],
-        "stadtteile": DERIVED_STADTTEILE,
+        "stadtteile": hashed_assets.get("stadtteile.geojson", DERIVED_STADTTEILE),
+        "hashed_assets": hashed_assets,
         "legend": {"labels": ["0", "15", "30", "50", "100"]},
         "controls": ["zoom-in", "zoom-out", "compass", "baeume-toggle"],
         "attribution": [

@@ -34,4 +34,4 @@
 - Mechanism names (pmtiles, cache-control, hashed filenames, Lighthouse profile) appear only where they define testable behavior or reproduce the audit evidence. This matches the repo's established evidence-driven spec convention (013-popup-comparative-context). No code structure, functions, or frameworks are specified.
 - Success criteria name the Lighthouse 13.4.1 profile and cf-cache-status because the repo already uses this lab harness as its acceptance method (validation/perf-budget.json, SC-008 precedent). The audit used the identical profile, so the comparison is direct.
 - FR-001 through FR-015 each map to at least one acceptance scenario or success criterion. The mapping is explicit in the Requirements section.
-- All items pass. Spec is ready for `/speckit.plan`.
+- All items pass. Spec is ready for the planning step.

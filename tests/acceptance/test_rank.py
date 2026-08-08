@@ -26,10 +26,11 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from tests.conftest import dist_path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DIST_STADTTEILE = REPO_ROOT / "dist" / "stadtteile.geojson"
-DIST_MAIN = REPO_ROOT / "dist" / "main.js"
+DIST_STADTTEILE = dist_path("stadtteile.geojson")
+DIST_MAIN = dist_path("main.js")
 
 QUARTILE_LABELS = [
     "oberstes Viertel",
