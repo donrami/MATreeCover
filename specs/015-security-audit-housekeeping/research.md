@@ -22,9 +22,9 @@ New patterns (full regexes live in `scripts/public-patterns.txt`; contracts quot
 | P27 | Stripe live key `sk_live_` | Payment credential |
 | P28 | Google API key `AIza` | Cloud credential |
 | P29 | PGP private key block | Complements P5 (SSH/RSA/EC only today) |
-| P30 | PuTTY key `PuTTY-User-Key-File` | Complements P5 |
+| P30 | PuTTY key file marker | Complements P5 |
 | P31 | `.netrc`-style `machine … login … password` | Git/curl credential file marker |
-| P32 | `Desktop/…` path fragment | Personal machine layout (after DEVELOPMENT.md rewording, see R10) |
+| P32 | desktop path fragment | Personal machine layout (after DEVELOPMENT.md rewording, see R10) |
 
 - **P9 drift fix**: the script's `zone_id` regex and the 006 contract table have already drifted. Moving all regexes to one shared file removes the class of bug where contract and gate disagree.
 

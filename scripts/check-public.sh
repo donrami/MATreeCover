@@ -1,60 +1,28 @@
 #!/usr/bin/env bash
-# Public hygiene gate (FR-010 / SC-003): scan tracked files for personal
+# Public hygiene gate (FR-010 / FR-003): scan tracked files for personal
 # paths, credentials, and internal tooling references.
-# Contract: specs/006-public-release-prep/contracts/public-hygiene.md
+# Patterns: scripts/public-patterns.txt (single source of truth, P1-P32).
+# Contracts: specs/006-public-release-prep/contracts/public-hygiene.md and
+# specs/015-security-audit-housekeeping/contracts/secrets-scan.md
 set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PATTERN_FILE="$SCRIPT_DIR/public-patterns.txt"
 
 # Tracked files that must quote the forbidden strings to do their job
 # (see "Exemptions" in the contract). Add/remove only together with the
-# contract document.
+# contract documents.
 EXEMPT_FILES=(
   '.gitignore'
-  'specs/006-public-release-prep/contracts/public-hygiene.md'
   'scripts/check-public.sh'
+  'scripts/public-patterns.txt'
 )
 
-patterns=(
-  # P1: absolute Linux home path — leaks the owner's username and machine layout.
-  # No leading \b: /home is always preceded by a non-word char (quote, space,
-  # backtick), so a word boundary would never exist.
-  '/home/[A-Za-z0-9_.-]+/'
-  # P2: absolute macOS home path
-  '/Users/[A-Za-z0-9_.-]+/'
-  # P3: SSH key path reference
-  '~/.ssh/'
-  # P4: concrete SSH key filename
-  'id_ed25519'
-  # P5: embedded private key material
-  'BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY'
-  # P6: GitHub personal access token
-  'ghp_[A-Za-z0-9]{20,}'
-  # P7: OpenAI-style secret
-  'sk-[A-Za-z0-9]{20,}'
-  # P8: AWS access key id
-  'AKIA[0-9A-Z]{16}'
-  # P9: real Cloudflare zone id (32 hex chars); only a placeholder is allowed
-  'zone_id[[:space:]]*=[[:space:]]*"[0-9a-f]{32}"'
-  # P10: harness-internal workflow command
-  'speckit'
-  # P11: harness-internal directory
-  '\.spec-workflow'
-  # P12: harness-internal directory
-  '\.specify'
-  # P13: SSH root login target
-  'root@[A-Za-z0-9_.-]+'
-  # P14: harness product names (case-tolerant)
-  '[Ff]eynman|opencode'
-  # P15: harness-internal URI scheme (not a real URL scheme)
-  'local://'
-  # P16: harness literature-search tool (`alpha_search` / `alpha search`)
-  'alpha[ _]search'
-  # P17: harness content-fetch tools
-  'fetch_content|get_search_content'
-  # P18: harness web-search tool (underscore form; prose "web search" is fine)
-  'web_search'
-  # P19: harness subagent role label
-  'subagent'
-)
+# Patterns come from the shared file: one ERE per line, '#' comments allowed.
+# They are applied as a single alternation per file (fast path); a line is
+# reported once even when it matches several patterns.
+mapfile -t patterns < <(grep -vE '^[[:space:]]*(#|$)' "$PATTERN_FILE")
+alternation="$(IFS='|'; echo "${patterns[*]}")"
 
 files="$(git ls-files)"
 total=0
@@ -68,13 +36,11 @@ for file in $files; do
   [ "$exempt" = 1 ] && continue
 
   total=$((total + 1))
-  for pat in "${patterns[@]}"; do
-    while IFS= read -r line; do
-      [ -z "$line" ] && continue
-      echo "$line"
-      findings=$((findings + 1))
-    done < <(grep -nE "$pat" "$file" 2>/dev/null | sed "s|^|$file:|")
-  done
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    echo "$line"
+    findings=$((findings + 1))
+  done < <(grep -nE "$alternation" "$file" 2>/dev/null | sed "s|^|$file:|")
 done
 
 if [ "$findings" -gt 0 ]; then

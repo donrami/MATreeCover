@@ -27,7 +27,7 @@ Pattern inventory: P1–P19 (existing, feature 006/014) plus P20–P32 added by 
 | P29 | PGP private key block |
 | P30 | PuTTY private key |
 | P31 | netrc-style machine/login/password |
-| P32 | Desktop/ path fragment (personal machine layout) |
+| P32 | desktop path fragment (personal machine layout) |
 
 Rule (FR-003): adding, removing, or changing a pattern is a contract change — update this contract (or the feature-006 contract) and the pattern file in the same commit. The gates must stay green on the audited tree.
 
@@ -41,13 +41,13 @@ Rule (FR-003): adding, removing, or changing a pattern is a contract change — 
 ## Gate: git history (`check-git-history.sh`)
 
 - For every commit in `git rev-list --all`, runs `git grep -nIE '<all patterns as one alternation>' <commit>` over the commit's tree. Scans commit messages too (`git log --all --format='%H%x00%s%x00%b'`).
-- A finding is allowed only if an exemption row exists in `scripts/history-exemptions.tsv`:
+- A finding is allowed only if an exemption row exists in `scripts/history-exemptions.tsv` for **every** pattern the finding matches:
 
   ```text
-  <pattern-id>\t<commit-sha>\t<path>
+  <pattern-id>\t<commit-sha>\t<path>\t<disposition-ref>
   ```
 
-  Each row's disposition lives in the audit report (`verification/security-audit-2026-08-08.md`), referenced by finding ID.
+  `path` is `(message)` for commit-message findings; `disposition-ref` names the dispositioned finding (F1, F2, ...) in `verification/security-audit-2026-08-08.md`.
 - Exit 0: `clean: N commits scanned, M exempted findings, 0 open`. Exit 1: every unexempted finding listed as `commit:path:line: match`, plus stale exemptions (rows matching nothing) and orphaned rows (references to nonexistent report findings).
 - Semantics: history is never rewritten (spec assumption); the gate enforces forward prevention — a future commit that adds a secret fails until a dispositioned exemption exists.
 - Expected runtime on this repo: under 60 s (89 commits, ~272 files).

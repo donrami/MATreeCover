@@ -1,0 +1,74 @@
+# Shared secret patterns for the public-hygiene gates (FR-003, feature 015).
+# Single source of truth: `scripts/check-public.sh` (tracked files) and
+# `scripts/check-git-history.sh` (full history) both read this file.
+# One extended regular expression (ERE, grep -E compatible) per line.
+# Pattern ids and rationale are documented in the contracts; regexes are
+# quoted only here, never in markdown, so contract files need no exemption.
+# Contract: specs/015-security-audit-housekeeping/contracts/secrets-scan.md
+# and specs/006-public-release-prep/contracts/public-hygiene.md.
+
+# P1 — absolute Linux home path (leaks owner username and machine layout)
+/home/[A-Za-z0-9_.-]+/
+# P2 — absolute macOS home path
+/Users/[A-Za-z0-9_.-]+/
+# P3 — SSH key path reference
+~/.ssh/
+# P4 — concrete SSH key filename
+id_ed25519
+# P5 — embedded private key material
+BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY
+# P6 — GitHub personal access token (classic)
+ghp_[A-Za-z0-9]{20,}
+# P7 — OpenAI-style secret key
+sk-[A-Za-z0-9]{20,}
+# P8 — AWS access key id
+AKIA[0-9A-Z]{16}
+# P9 — real Cloudflare zone id (32 hex chars); only a placeholder is allowed
+zone_id[[:space:]]*=[[:space:]]*"[0-9a-f]{32}"
+# P10 — harness-internal workflow command
+speckit
+# P11 — harness-internal directory
+\.spec-workflow
+# P12 — harness-internal directory
+\.specify
+# P13 — SSH root login target
+root@[A-Za-z0-9_.-]+
+# P14 — harness product names (case-tolerant)
+[Ff]eynman|opencode
+# P15 — harness-internal URI scheme (not a real URL scheme)
+local://
+# P16 — harness literature-search tool
+alpha[ _]search
+# P17 — harness content-fetch tools
+fetch_content|get_search_content
+# P18 — harness web-search tool (underscore form)
+web_search
+# P19 — harness subagent role label
+subagent
+# P20 — GitHub fine-grained personal access token
+github_pat_[A-Za-z0-9_]{22,}
+# P21 — Cloudflare API token in assignment form (bare 40-char tokens are
+# rejected to avoid false positives on hashes)
+(CLOUDFLARE|CF)_[A-Z_]+_(TOKEN|KEY)[[:space:]]*=[[:space:]]*"[A-Za-z0-9_-]{35,}"
+# P22 — Cloudflare legacy API auth header form
+X-Auth-(Email|Key)[[:space:]]*:[[:space:]]*[^[:space:]]+
+# P23 — AWS secret access key (complements P8 key id)
+aws_(secret|access)[A-Za-z_]*key[[:space:]]*=[[:space:]]*"[A-Za-z0-9/+=]{40}"
+# P24 — AWS temporary session key id
+ASIA[0-9A-Z]{16}
+# P25 — npm registry token
+npm_[A-Za-z0-9]{20,}
+# P26 — Slack token or incoming-webhook URL
+xox[baprs]-[A-Za-z0-9-]+|hooks\.slack\.com/services/[A-Za-z0-9/]+
+# P27 — Stripe live secret key
+sk_live_[A-Za-z0-9]{10,}
+# P28 — Google API key
+AIza[0-9A-Za-z_-]{35}
+# P29 — PGP private key block (complements P5)
+BEGIN PGP PRIVATE KEY BLOCK
+# P30 — PuTTY private key file marker
+PuTTY-User-Key-File
+# P31 — netrc-style machine/login/password credential file marker
+machine [A-Za-z0-9.-]+ login [A-Za-z0-9_-]+ password [A-Za-z0-9_-]+
+# P32 — Desktop path fragment (personal machine layout)
+Desktop/

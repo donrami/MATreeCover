@@ -49,7 +49,7 @@ The repository ships no standalone constitution file; the governing rules are th
 | OR-003 (no local GPU) | PASS | Endpoint changes are HTTP-layer (bind address, request-size cap); no model runs locally. |
 | OR-004 (one commit per accepted spec/plan/slice) | PASS | Plan committed via `make commit-plan`; implementation in slices with own commits. |
 | OR-005 (no *.tif / *.pmtiles / >50 MiB geojson tracked) | PASS | Housekeeping moves only tracked files; `data/` stays gitignored; new artifacts are docs + small scripts. |
-| FR-010 (check-public clean) | PASS | Patterns move to a shared file; no new personal paths or credentials added; DEVELOPMENT.md rewords `Desktop/mannheim` mention. |
+| FR-010 (check-public clean) | PASS | Patterns move to a shared file; no new personal paths or credentials added; DEVELOPMENT.md rewords the desktop workspace mention. |
 | FR-013/FR-014 (deploy gates) | PASS | Header additions must keep Range 206 + cache semantics green; `verify` gains header assertions, verified before merge. |
 | SC-005 (image sanity) | PASS | No bundle/data changes; parity re-run in quickstart S8. |
 | SC-008 (time budget) | PASS | Budgets unchanged; re-measured in quickstart S8. |

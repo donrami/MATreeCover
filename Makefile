@@ -7,7 +7,7 @@ MSG ?=
 
 .PHONY: bootstrap check-prereqs commit-spec commit-plan commit-slice commit-milestone \
 	accept publish values trees runpod-infer pmtiles-buildings pmtiles-trees check-or005 \
-	check-public
+	check-public check-history
 
 ## Setup ------------------------------------------------------------------
 
@@ -26,6 +26,9 @@ check-prereqs: ## Python 3.11, tippecanoe >= 2.x, mannheim workspace readable
 
 check-public: ## FR-010 gate: no personal paths/credentials in tracked files
 	@bash scripts/check-public.sh
+
+check-history: ## FR-001 gate: full git-history secret scan (feature 015)
+	@bash scripts/check-git-history.sh
 
 ## Commit discipline (OR-004 / R-013) --------------------------------------
 
