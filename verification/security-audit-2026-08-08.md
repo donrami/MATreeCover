@@ -76,13 +76,14 @@ No credential pattern (P6–P8, P20–P28) has any occurrence in the full histor
 | Gate | Result |
 |------|--------|
 | `check-public` | clean: 293 tracked files scanned (P1–P32, shared pattern file) |
-| `check-history` | clean: 93 commits scanned, 2030 exempted findings, 0 open (F1–F6 dispositions) |
+| `check-history` | clean: 96 commits scanned, 2030 exempted findings, 0 open (F1–F6 dispositions) |
 | `check-layout` | clean: 296 tracked paths, 18 documented entries |
 | `check-or005` | OK — no tif/pmtiles/oversized files tracked; gitignored dirs untouched |
 | pytest suites | 156 passed (acceptance, pipeline, endpoint) |
-| `deploy-cf.sh verify` | FR-013 gates PASS (DNS, redirects, Range 206, cache headers, cert, unknown-key 404). Security-header assertions FAIL against the live pre-audit Worker — the reviewed Worker is committed but not yet deployed (owner-gated Cloudflare deploy); the assertions demonstrably detect the missing headers. Worker header logic proven locally on all response types (200/206/404/301) with Content-Range preserved |
-| perf harness | cold LCP 2328 ms (< 10 s budget); interaction medians 13–14 ms (≤ 2 s / ≤ 123 ms budgets) |
+| `deploy-cf.sh verify` | FR-013 gates PASS (DNS, redirects, Range 206, cache headers, cert, unknown-key 404) and FR-014 continuity gates PASS (MX, SPF, autoconfig/autodiscover CNAME, blog HTTPS). Security-header assertions PASS against the live surface — the reviewed Worker was deployed 2026-08-08 (version 3e233c3a-bae1-49c8-9a98-d87cafa724cd); headers verified live on `/map/` and on a 206 range response, unknown data-looking key answers 404 |
+| perf harness | cold LCP 2332 ms (< 10 s budget); interaction medians 13–14 ms (≤ 2 s / ≤ 123 ms budgets) |
 | parity harness | renders clean: 12886 buildings initial view; bundle inputs byte-identical to pre-audit (only PROVENANCE.md added) |
+| quickstart S1–S8 | all scenarios PASS on the converged tree (2026-08-08): S1 hygiene gate + synthetic-pattern test; S2 full-history scan clean; S3 layout gate clean; S4 full regression suite (156 passed) + check-or005; S5 endpoint trust-model tests (bind 127.0.0.1, BIND_ADDR override, 413 size cap); S6 deployed-surface review (live security headers, 206 Content-Range, unknown-key 404); S7 supply-chain/housekeeping docs (PROVENANCE.md hashes match, layout manifest ↔ DEVELOPMENT.md consistent); S8 perf + parity budgets met |
 
 ## How to re-run every check
 

@@ -253,3 +253,13 @@ Task: "Create src/site/vendor/PROVENANCE.md (T030)"
 - No new dependencies: enforcement is git + grep + shell only; no gitleaks, no new packages
 - Verify tests fail before implementation (T005/T006/T014/T015/T023); commit each logical slice; stop at each checkpoint and validate the story independently
 - Avoid: vague tasks, same-file conflicts (T017/T018 sequential), cross-story dependencies that break independence
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: Close the gaps found when the implementation was assessed against the spec, plan, and tasks after the implement command completed all prior phases (converge run 2026-08-08). All prior phases verified green: `check-public` (293 files), `check-history` (96 commits, 2030 exempted, 0 open), `check-layout` (296 paths / 18 entries), `check-or005`, pytest 156 passed, CSP byte-identical header/meta, PROVENANCE.md hashes match, 3-key R2 whitelist with 206 preserved, endpoint loopback bind + 413 cap, all 5 contracts present.
+
+- [X] T045 Commit or revert the regenerated `artifacts.manifest.json` (timestamp-only diff, uncommitted since the last slice) so the audited tree is a clean, fully committed state per T044 and FR-010 (`partial`)
+- [X] T046 Deploy the reviewed Worker to Cloudflare (owner-gated, requires `scripts/deploy-cf.env` or `MATREECOVER_*` credentials) and re-run `bash scripts/deploy-cf.sh verify` so the security-header and unknown-key-404 assertions pass against the live surface per FR-004/SC-002 (`partial`)
+- [X] T047 Record quickstart S1–S8 run results as a row in `verification/security-audit-2026-08-08.md`'s gate summary per T041/SC-006 (`partial`)
