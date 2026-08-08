@@ -1,70 +1,55 @@
 # Mannheim Tree Cover Map (Baumfläche)
 
-A web map of Mannheim where every building is colored by the average
-tree cover within 60 meters of it. Dark, quiet, and free to browse.
-No account. No tracking. Nothing to install.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Live map](https://img.shields.io/badge/status-live-brightgreen.svg)](https://abu-hamad.de/map/)
+
+A web map of Mannheim. Every building is colored by the average tree cover within 60 meters of it. Dark, quiet, and free to browse. No account, no tracking, nothing to install.
 
 ## Open the live map
 
-**[https://abu-hamad.de/map/](https://abu-hamad.de/map/)**
+**[Open the live map](https://abu-hamad.de/map/)**
 
 ![Mannheim tree cover map](screenshot/map.png)
 
+The map interface is in German.
+
 ## What this map shows
 
-Every building in Mannheim is colored according to how much tree cover
-surrounds it. Green buildings sit in leafy surroundings. Red and orange
-ones are in areas with little shade. The dark theme makes the colors
-stand out, and the map stays readable on phones and large screens.
+Every building in Mannheim is colored by how much tree cover surrounds it. Cool blue colors mean leafy surroundings. Yellow, orange, and brown colors mean little shade. The dark theme keeps the colors easy to read. It works on phones and large screens alike.
 
-The map is in German. The color legend labels `0` to `100` percent, and
-the `Bäume` button toggles the detected tree layer.
+## How to read the map
 
-## How to read it
+- **Colors.** A building's color is its tree-cover percentage within a 60 m radius. The legend runs from 0 to 100 percent.
 
-- **Colors**: each building's color is its tree-cover percentage within
-  a 60 m radius. The greener the building, the more trees around it.
-- **Click a building**: a small popup shows its exact percentage.
-- **`Bäume` toggle**: switches the detected tree areas on and off, so
-  you can compare the colored buildings with the actual tree canopy.
-- **Click a Stadtteil**: every one of the 38 districts opens a popup
-  with its building count, average tree cover, and the share below the
-  30 % guideline. The building popup also shows which district a
-  building belongs to and the district average.
-- **City overview**: the "Mannheim im Überblick" card shows the city
-  averages: mean tree cover, the share of buildings with sufficient
-  shade, and the number of detected tree areas.
+- **Click a building.** The popup shows the exact percentage. It also marks whether the building reaches the 30 % shading guideline. It compares the building with its district and with the city.
+
+- **Toggle "Bäume".** Switch the detected tree areas on or off. This lets you compare the colored buildings with the actual tree canopy.
+
+- **Click a district.** The popup shows the district's average. It shows the rank among Mannheim's 38 districts. It also compares the district with the city.
+
+- **"Mannheim im Überblick".** The overview card shows city-wide averages: mean tree cover, buildings with sufficient shade, and detected tree areas.
 
 ## Where the data comes from
 
-The map starts from official aerial imagery (20 cm resolution) and
-building data for Mannheim. A computer-vision model detects the tree
-canopy in the imagery. Every building then gets the average tree-cover
-value of its 60 m surroundings. The result is a static, pre-computed
-map. There is no server, no database, and no analytics behind it.
+The map starts with official aerial imagery (20 cm resolution) and building data for Mannheim. A computer-vision model detects tree canopy in the imagery. Each building gets the average tree-cover value within its 60 m surroundings.
+
+The result is a static, pre-computed map. There is no server. There is no database. There is no analytics behind it. The values are automatic estimates from aerial images. They are not measurements on the ground.
 
 ## Credits
 
-This map reproduces the presentation of **CityTreeCover** by Jakob
-Schultz, [github.com/jcscaptures/CityTreeCover](https://github.com/jcscaptures/CityTreeCover),
-published under the MIT License. The reference copyright and permission
-notice are preserved in this repository's [LICENSE](LICENSE).
+This map reproduces the presentation of [CityTreeCover](https://github.com/jcscaptures/CityTreeCover) by Jakob Schultz.
 
 Map data:
 
-- Buildings and city boundary: LGL — Datenquelle: LGL, www.lgl-bw.de,
-  dl-de/by-2-0 (Daten verändert). License text:
-  [govdata.de/dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
-- Base map: © GeoBasis-DE / BKG (2026) dl-de/by-2-0 —
-  [bkg.bund.de](https://www.bkg.bund.de).
-- Stadtteile: Stadt Mannheim, GDI-MA, dl-de/by-2-0 (Daten verändert).
+**Buildings and city boundary.** LGL. Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0 (Daten verändert). License text: [govdata.de/dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
+
+**Base map.** © GeoBasis-DE / BKG (2026) dl-de/by-2-0. [bkg.bund.de](https://www.bkg.bund.de).
+
+**Stadtteile.** Stadt Mannheim, GDI-MA, dl-de/by-2-0 (Daten verändert).
 
 ## License
 
-This project is published under the [MIT License](LICENSE). The map data
-is used under its own terms, see the credits above.
+This project is published under the [MIT License](LICENSE). The map data is used under its own terms. See the credits above.
 
 ## For developers
 
-The pipeline, deployment, and test setup live in
-[DEVELOPMENT.md](DEVELOPMENT.md).
+The source code is on [GitHub](https://github.com/donrami/MATreeCover). The pipeline, deployment, and tests are documented in [DEVELOPMENT.md](DEVELOPMENT.md).
