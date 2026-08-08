@@ -112,3 +112,16 @@ The FR-013 gate checks, against the live site: `/map` → 301 →
 `buildings.pmtiles` Range → 206 + Content-Range; `www` map path →
 canonical; certificate valid for both hostnames. Exact commands in
 `quickstart.md` Scenario 6.
+
+Feature 015 additions (contracts/security-headers.md is the reference):
+
+- Security headers present on `/map/` and on a 206 Range response from
+  an R2 key: `Content-Security-Policy` (byte-identical to the meta tag
+  in `src/site/index.html`), `X-Content-Type-Options: nosniff`,
+  `X-Frame-Options: DENY`, `Strict-Transport-Security` (no
+  `includeSubDomains`/`preload`), `Referrer-Policy`,
+  `Permissions-Policy`, `X-XSS-Protection: 0`.
+- An unknown data-looking key under `/map/` answers 404 (only the three
+  declared R2 keys are reachable; Range 206 passthrough unchanged).
+- The R2 bucket public-access setting stays OFF (manual dashboard check,
+  quickstart S6); access exists only through the Worker binding.

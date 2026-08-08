@@ -34,6 +34,45 @@ const DATA_KEYS = new Set([
   "buildings.geojson",
 ]);
 
+// Security headers applied to EVERY Worker response (feature 015,
+// contracts/security-headers.md, FR-004): static assets, R2 passthroughs
+// (200 and 206), 404s, and redirects. The CSP value mirrors the <meta>
+// tag in src/site/index.html byte-for-byte: header and meta both apply
+// (intersection), so they must stay identical.
+const SECURITY_HEADERS = {
+  "Content-Security-Policy":
+    "default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy":
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+  "Strict-Transport-Security": "max-age=31536000",
+  "X-XSS-Protection": "0",
+};
+
+// Set or override only the security keys; never touch anything else
+// (Content-Range, ETag, Accept-Ranges, Content-Length pass through
+// untouched on 206 responses — FR-013).
+function applySecurityHeaders(headers) {
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+  return headers;
+}
+
+// Wrap a response so it carries the security headers without altering
+// body, status, or caching semantics.
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  applySecurityHeaders(headers);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -41,19 +80,19 @@ export default {
 
     // www variant of the map path -> canonical apex (single 301, FR-003).
     if (url.hostname.startsWith("www.") && (path === "/map" || path.startsWith("/map/"))) {
-      return Response.redirect(CANONICAL_ORIGIN + (path === "/map" ? "/map/" : path), 301);
+      return withSecurityHeaders(Response.redirect(CANONICAL_ORIGIN + (path === "/map" ? "/map/" : path), 301));
     }
 
     // /map without trailing slash -> /map/ (relative asset refs require
     // the trailing slash, research R-004).
     if (path === "/map") {
-      return Response.redirect(CANONICAL_ORIGIN + "/map/", 301);
+      return withSecurityHeaders(Response.redirect(CANONICAL_ORIGIN + "/map/", 301));
     }
 
     // The production routes only ever send /map* here (contract
     // hosting-config.md §1); anything else falls through to the origin.
     if (!path.startsWith("/map/")) {
-      return env.ASSETS.fetch(request);
+      return withSecurityHeaders(await env.ASSETS.fetch(request));
     }
 
     // Data files (>25 MiB, not in assets) are served from R2 with
@@ -65,7 +104,7 @@ export default {
       const range = request.headers.get("Range");
       const object = await env.DATA.get(key, range ? { range: request.headers } : undefined);
       if (object === null) {
-        return new Response("Not Found", { status: 404 });
+        return withSecurityHeaders(new Response("Not Found", { status: 404 }));
       }
       const headers = new Headers();
       object.writeHttpMetadata(headers);
@@ -74,10 +113,10 @@ export default {
       if (range) {
         const cr = contentRange(range, object.size);
         if (cr) headers.set("Content-Range", cr);
-        return new Response(object.body, { status: 206, headers });
+        return withSecurityHeaders(new Response(object.body, { status: 206, headers }));
       }
       headers.set("Content-Length", object.size);
-      return new Response(object.body, { status: 200, headers });
+      return withSecurityHeaders(new Response(object.body, { status: 200, headers }));
     }
 
     // Everything else under /map/ is a static asset from dist/.
@@ -96,12 +135,12 @@ export default {
     if (hashed) {
       const headers = new Headers(assetResponse.headers);
       headers.set("Cache-Control", "public, max-age=31536000, immutable");
-      return new Response(assetResponse.body, {
+      return withSecurityHeaders(new Response(assetResponse.body, {
         status: assetResponse.status,
         statusText: assetResponse.statusText,
         headers,
-      });
+      }));
     }
-    return assetResponse;
+    return withSecurityHeaders(assetResponse);
   },
 };

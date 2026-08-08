@@ -151,6 +151,19 @@ cmd_verify() {
   echo | timeout 10 openssl s_client -servername www.abu-hamad.de -connect "$ip:443" 2>/dev/null \
     | openssl x509 -noout -checkhost www.abu-hamad.de >/dev/null 2>&1 && pass "cert valid for www" || fail "cert check www"
 
+  # Feature 015 (contracts/security-headers.md, FR-004/FR-005): security
+  # headers on the index response and on a 206 range response; the CSP
+  # header must be present; unknown data-looking keys answer 404.
+  out=$(curl -s $edge -D - -o /dev/null "$base/map/")
+  echo "$out" | grep -qi 'content-security-policy' && echo "$out" | grep -qi 'x-content-type-options: nosniff' \
+    && echo "$out" | grep -qi 'x-frame-options: deny' && echo "$out" | grep -qi 'strict-transport-security' \
+    && pass "security headers on /map/" || fail "security headers on /map/"
+  out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles")
+  echo "$out" | grep -qi 'x-content-type-options: nosniff' \
+    && pass "security headers on 206 range response" || fail "security headers on 206 range response"
+  out=$(curl -s $edge -o /dev/null -w '%{http_code}' "$base/map/nonexistent-data-key.pmtiles")
+  [ "$out" = "404" ] && pass "unknown data key -> 404" || fail "unknown data key -> $out"
+
   [ "$fails" -gt 0 ] && die "$fails FR-013 gate(s) failed"
   log "FR-013 gate PASS"
 }

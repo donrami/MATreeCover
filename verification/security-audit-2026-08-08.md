@@ -47,6 +47,11 @@ Out of scope: git-history rewriting (forward prevention only), GitHub repository
 
 No credential pattern (P6–P8, P20–P28) has any occurrence in the full history; no live secret was found, so nothing required rotation.
 
+| F7 | high | `src/endpoint/server.py` | Endpoint bound `0.0.0.0` by default: on a RunPod pod with inbound port exposure, `/infer` would be publicly reachable without authentication | remediated — default bind is now loopback (`127.0.0.1`) with a `BIND_ADDR` override for deliberate pod-internal access; SSH-tunnel workflow unchanged; covered by `tests/endpoint/test_bind.py` |
+| F8 | medium | `src/endpoint/server.py` | No request-size cap: `Content-Length` was trusted and the body read in full | remediated — bodies over 1 MiB rejected with 413 before any read; non-numeric lengths 400; covered by `tests/endpoint/test_request_size.py` |
+| F9 | low | `scripts/runpod-deploy.sh` | Pod dependency install used unpinned `pip install segmentation-models-pytorch rasterio` | remediated — pinned to `segmentation-models-pytorch==0.3.4`, `rasterio==1.4.4` (matching the local reference environment) |
+| F10 | medium | `workers/map/index.js` | Security headers and CSP were absent from every Worker response; the CSP existed only as the meta tag and was not documented as a contract | remediated — `applySecurityHeaders()` sets the documented 7-header set on every response (assets, R2 200/206, 404s, redirects); the CSP header mirrors the meta tag byte-for-byte; contract `contracts/security-headers.md`; verified by `deploy-cf.sh verify` assertions |
+
 ## Housekeeping decisions
 
 | Path | Action | Destination / reason | Owner sign-off |
@@ -57,7 +62,8 @@ No credential pattern (P6–P8, P20–P28) has any occurrence in the full histor
 
 | Risk | Severity | Reason | Owner sign-off |
 |------|----------|--------|----------------|
-| _pending_ | | | |
+| No authentication on `/infer` | low | Loopback-only after the bind fix; single owner; token auth would add key management for no threat-model gain | 2026-08-08 (feature plan approval) |
+| Inference runs for hours, serialized by a global lock | low | Owner-only workload; parallelism would multiply GPU memory | 2026-08-08 (feature plan approval) |
 
 ## Gate summary
 

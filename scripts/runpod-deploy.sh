@@ -33,8 +33,8 @@ WS="${MANNHEIM_WORKSPACE:-data/archive/workspace}"
 "${SSH[@]}" "$HOST" 'bash -s' <<'REMOTE'
 set -euo pipefail
 PIP="pip install -q --break-system-packages"
-python3 -c "import segmentation_models_pytorch" 2>/dev/null || $PIP segmentation-models-pytorch
-python3 -c "import rasterio" 2>/dev/null || $PIP rasterio
+python3 -c "import segmentation_models_pytorch" 2>/dev/null || $PIP "segmentation-models-pytorch==0.3.4"
+python3 -c "import rasterio" 2>/dev/null || $PIP "rasterio==1.4.4"
 python3 - <<'PY'
 import torch, rasterio, segmentation_models_pytorch
 print("deps ok; torch", torch.__version__, "cuda", torch.cuda.is_available())

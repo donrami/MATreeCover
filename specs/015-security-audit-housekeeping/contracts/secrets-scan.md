@@ -41,6 +41,7 @@ Rule (FR-003): adding, removing, or changing a pattern is a contract change — 
 ## Gate: git history (`check-git-history.sh`)
 
 - For every commit in `git rev-list --all`, runs `git grep -nIE '<all patterns as one alternation>' <commit>` over the commit's tree. Scans commit messages too (`git log --all --format='%H%x00%s%x00%b'`).
+- The three files whose purpose is to quote the forbidden strings are exempt by file, with the same set and rationale as the tracked gate's `EXEMPT_FILES`: `.gitignore`, `scripts/check-public.sh`, `scripts/public-patterns.txt`. Everything else is exempted only by explicit row.
 - A finding is allowed only if an exemption row exists in `scripts/history-exemptions.tsv` for **every** pattern the finding matches:
 
   ```text

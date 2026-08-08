@@ -14,6 +14,15 @@ PATTERN_FILE="$SCRIPT_DIR/public-patterns.txt"
 EXEMPTIONS_FILE="$SCRIPT_DIR/history-exemptions.tsv"
 REPORT_FILE="verification/security-audit-2026-08-08.md"
 
+# Files whose purpose is to quote the forbidden strings (same set and
+# rationale as the tracked gate's EXEMPT_FILES): their historical content
+# is exempted by file, not by per-finding rows (feature 015, R2).
+EXEMPT_FILES=(
+  '.gitignore'
+  'scripts/check-public.sh'
+  'scripts/public-patterns.txt'
+)
+
 mapfile -t patterns < <(grep -vE '^[[:space:]]*(#|$)' "$PATTERN_FILE")
 mapfile -t pattern_ids < <(grep -oE '^# P[0-9]+' "$PATTERN_FILE" | awk '{print $2}')
 alternation="$(IFS='|'; echo "${patterns[*]}")"
@@ -53,6 +62,11 @@ exempted=0
 
 # attribute patterns and check exemptions per finding line
 while IFS=$'\t' read -r commit path lineno content; do
+  exempt_file=0
+  for e in "${EXEMPT_FILES[@]}"; do
+    [ "$path" = "$e" ] && exempt_file=1
+  done
+  if [ "$exempt_file" = 1 ]; then continue; fi
   matched=()
   for i in "${!patterns[@]}"; do
     if printf '%s' "$content" | grep -qE "${patterns[$i]}"; then

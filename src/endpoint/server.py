@@ -41,6 +41,19 @@ OVERLAP_PX = 64
 THRESHOLD = 0.5
 GSD_M = 0.2
 
+# Request-size cap (feature 015, FR-007): reject oversized bodies with
+# 413 before reading them, bounding HTTP-layer memory use.
+MAX_REQUEST_BYTES = 1_048_576
+
+# The endpoint is reachable only through the owner's SSH tunnel; loopback
+# binding is the default and BIND_ADDR exists for deliberate pod-internal
+# exposure (feature 015, contracts/endpoint-trust-model.md).
+DEFAULT_BIND_ADDR = "127.0.0.1"
+
+
+def _resolve_bind_addr() -> str:
+    return os.environ.get("BIND_ADDR", DEFAULT_BIND_ADDR)
+
 # CityTreeCover reference preprocessing (`A.Normalize()` defaults):
 # (x/255 - mean) / std per channel, ImageNet statistics.
 NORM_MEAN = (0.485, 0.456, 0.406)
@@ -338,10 +351,19 @@ class _Handler(BaseHTTPRequestHandler):
         if self.path.split("?")[0] != "/infer":
             self._send_json(404, {"error": "not found"})
             return
+        # Size cap first (FR-007): reject oversized bodies before any read;
+        # non-numeric lengths fall into the 400 path.
         try:
             length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            self._send_json(400, {"error": "bad content-length"})
+            return
+        if length > MAX_REQUEST_BYTES:
+            self._send_json(413, {"error": "request too large"})
+            return
+        try:
             payload = json.loads(self.rfile.read(length) or b"{}")
-        except (ValueError, json.JSONDecodeError) as exc:
+        except json.JSONDecodeError as exc:
             self._send_json(400, {"error": f"bad json: {exc}"})
             return
         if payload.get("model") != MODEL_ID:
@@ -396,8 +418,9 @@ def main() -> None:
 
     print(f"[endpoint] TILE_ROOT={tile_dir} WEIGHTS_PATH={weights} OUT_DIR={out_dir} PORT={port}", flush=True)
     print(f"[endpoint] CUDA available: {torch_cuda_ok()}", flush=True)
-    server = EndpointServer(("0.0.0.0", port), tile_dir, weights, boundary, out_dir)
-    print(f"[endpoint] listening on 0.0.0.0:{port} (POST /infer, GET /health)", flush=True)
+    bind_addr = _resolve_bind_addr()
+    server = EndpointServer((bind_addr, port), tile_dir, weights, boundary, out_dir)
+    print(f"[endpoint] listening on {bind_addr}:{port} (POST /infer, GET /health)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
