@@ -115,7 +115,7 @@ def _hash_static_assets(dist_dir: Path) -> dict[str, str]:
     stylesheet_links = re.findall(r'<link rel="stylesheet"[^>]*>', html)
     if len(stylesheet_links) != 2:
         raise PublishError(f"publish refused: expected 2 stylesheet links in index.html, found {len(stylesheet_links)}")
-    inline_css = "\n".join(f"/* {rel} */\n" + (dist_dir / hashed[rel]).read_text(encoding="utf-8") for rel in ("style.css", "vendor/maplibre-gl.css"))
+    inline_css = "\n".join(f"/* {rel} */\n" + (dist_dir / hashed[rel]).read_text(encoding="utf-8") for rel in ("vendor/maplibre-gl.css", "style.css"))
     html = html.replace("<head>", (
         "<head>\n"
         f'  <link rel="preconnect" href="https://sgx.geodatenzentrum.de">\n'

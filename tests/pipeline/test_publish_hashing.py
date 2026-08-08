@@ -99,6 +99,8 @@ def test_critical_path_head_transforms(tmp_path: Path) -> None:
     assert '<link rel="stylesheet"' not in index
     assert index.count("<style>") == 1
     assert "/* style.css */" in index and "/* vendor/maplibre-gl.css */" in index
+    # cascade order preserved: maplibre-gl.css first, then style.css (regression guard)
+    assert index.index("/* vendor/maplibre-gl.css */") < index.index("/* style.css */")
     # preload, preconnect, favicon present
     assert f'rel="preload" href="{hashed["vendor/maplibre-gl.js"]}" as="script"' in index
     assert 'rel="preconnect" href="https://sgx.geodatenzentrum.de"' in index
