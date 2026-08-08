@@ -134,3 +134,5 @@
 - [X] Popup fix Scenarios 2, 4, 5, 6 pass.
 
 End of checklist.
+
+- [x] Feature-014 bundle re-verified 2026-08-08 (scripts/smoke-verify.mjs fresh-profile driver + acceptance suite; zoom, controls, popups, trees toggle, no console errors)

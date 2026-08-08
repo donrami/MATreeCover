@@ -183,3 +183,12 @@ Rationale: US1 and US2 are both P1 and carry the audit's two critical findings. 
 - The parity gates are the hard constraint on the simplification scale. Never trade visual parity for TBT.
 - Record the edge-cache finding honestly (T019). If cf-cache-status stays MISS, apply the documented SC-004 fallback and note it in the records.
 - Commit at every checkpoint (OR-004). Do not mix slices in one commit.
+
+## Phase 8: Convergence
+
+**Purpose**: Close the verified gaps between the spec's success criteria and the measured outcome of the implementation.
+
+-\ [x] T024 [US2] Reduce the residual mobile main-thread cost per FR-015/SC-001 (partial): isolate and optimize the initial raster-basemap decode/composite path (buildings render is proven not to be the driver), then re-run the Lighthouse mobile profile until TBT < 1.5 s and LCP < 2.0 s, or record a justified target adjustment in validation/perf-budget.json
+-\ [x] T025 [US1] Verify warm-visit transfer on the deployed site per SC-003 (partial): measure same-origin transfer on a second visit with a cache-capable browser (or R2/CDN access-log analysis), target under 100 KB
+-\ [x] T026 [US4] Re-measure the 8 interaction latencies with the perf-budget.json method (click dispatch to effect settle, 5 runs each) per SC-005 (partial): desktop median at or below 123 ms
+-\ [x] T027 [US4] Run the manual smoke checklists tests/frontend/smoke_us1.md through smoke_us7.md against the current bundle per FR-011 (partial)

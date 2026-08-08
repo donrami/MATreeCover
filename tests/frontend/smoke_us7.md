@@ -100,3 +100,5 @@ Click ten districts. For each verify against the reference table:
 
 Completed runs are logged to `validation/event.log.jsonl` as smoke-us7 rows
 (project convention).
+
+- [x] Feature-014 bundle re-verified 2026-08-08 (scripts/smoke-verify.mjs fresh-profile driver + acceptance suite; zoom, controls, popups, trees toggle, no console errors)

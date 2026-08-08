@@ -58,3 +58,5 @@ Measured 2026-08-04; matrix evidence in
 ## Result
 
 - [X] All applicable checks pass.
+
+- [x] Feature-014 bundle re-verified 2026-08-08 (scripts/smoke-verify.mjs fresh-profile driver + acceptance suite; zoom, controls, popups, trees toggle, no console errors)

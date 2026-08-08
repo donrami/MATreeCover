@@ -148,12 +148,23 @@ try {
   };
 
   const interactions = {};
-  interactions.story_dismiss = await realClick('#story-close');
-  interactions.surface_expand = await realClick('#surface-toggle');
-  interactions.zoom_in = await realClick('.maplibregl-ctrl-zoom-in');
-  interactions.zoom_out = await realClick('.maplibregl-ctrl-zoom-out');
-  interactions.trees_toggle = await realClick('#baeume');
-  interactions.popup = await clickMapAt(0.55, 0.55);
+  // SC-005 method: click dispatch to effect settle, 5 runs each, median reported
+  const med = (vals) => { const s = [...vals].sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; };
+  for (const [key, fn] of Object.entries({
+    zoom_in: () => realClick('.maplibregl-ctrl-zoom-in'),
+    zoom_out: () => realClick('.maplibregl-ctrl-zoom-out'),
+    trees_toggle: () => realClick('#baeume'),
+    popup: () => clickMapAt(0.5, 0.5),
+    surface_toggle: () => realClick('#surface-toggle'),
+  })) {
+    const runs = [];
+    for (let i = 0; i < 5; i++) {
+      const t = await fn();
+      if (t !== null) runs.push(t);
+      await sleep(250);
+    }
+    interactions[key] = { runs, median_ms: runs.length ? med(runs) : null };
+  }
   await sleep(400);
   const popupSettled = await evalJs(`(() => { const p = document.querySelector('.maplibregl-popup'); if (p) { p.querySelector('.maplibregl-popup-close-button')?.click(); return true; } return false; })()`);
   const inps = await evalJs(`window.__perf.inps.length ? Math.round(Math.max(...window.__perf.inps)) : null`);
