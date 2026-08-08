@@ -4,7 +4,7 @@
 **Date**: 2026-08-08
 **Branch**: `015-security-audit-housekeeping`
 **Audit type**: repository and code review (scanning, static inspection, verification against existing gates and harness). Not penetration testing of third-party services (Cloudflare, RunPod, LGL) and no GitHub account settings changes.
-**Status**: in progress — filled by implementation slices (T003 skeleton → T012/T022/T034/T040)
+**Status**: complete — all slices implemented and verified (2026-08-08)
 
 ## Scope
 
@@ -75,12 +75,14 @@ No credential pattern (P6–P8, P20–P28) has any occurrence in the full histor
 
 | Gate | Result |
 |------|--------|
-| `check-public` | clean: 283 tracked files scanned (P1–P32, shared pattern file) |
-| `check-history` | clean: 90 commits scanned, 2592 exempted findings, 0 open (F1–F6 dispositions) |
-| `check-layout` | _pending (US3)_ |
-| `check-or005` | clean (baseline) |
-| pytest suites | acceptance: 101 passed (incl. SC-007 + history-scan tests) |
-| `deploy-cf.sh verify` | _pending (US2/US4)_ |
+| `check-public` | clean: 293 tracked files scanned (P1–P32, shared pattern file) |
+| `check-history` | clean: 93 commits scanned, 2030 exempted findings, 0 open (F1–F6 dispositions) |
+| `check-layout` | clean: 296 tracked paths, 18 documented entries |
+| `check-or005` | OK — no tif/pmtiles/oversized files tracked; gitignored dirs untouched |
+| pytest suites | 156 passed (acceptance, pipeline, endpoint) |
+| `deploy-cf.sh verify` | FR-013 gates PASS (DNS, redirects, Range 206, cache headers, cert, unknown-key 404). Security-header assertions FAIL against the live pre-audit Worker — the reviewed Worker is committed but not yet deployed (owner-gated Cloudflare deploy); the assertions demonstrably detect the missing headers. Worker header logic proven locally on all response types (200/206/404/301) with Content-Range preserved |
+| perf harness | cold LCP 2328 ms (< 10 s budget); interaction medians 13–14 ms (≤ 2 s / ≤ 123 ms budgets) |
+| parity harness | renders clean: 12886 buildings initial view; bundle inputs byte-identical to pre-audit (only PROVENANCE.md added) |
 
 ## How to re-run every check
 

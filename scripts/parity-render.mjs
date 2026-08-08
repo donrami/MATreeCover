@@ -17,7 +17,7 @@ const archive = args.archive;
 if (!archive) { console.error('usage: --archive <pmtiles> --out <dir> [--chrome <path>]'); process.exit(2); }
 const chrome = args.chrome ?? '/usr/bin/chromium';
 const outDir = args.out;
-const URL = 'http://127.0.0.1:8088/';
+const PAGE_URL = 'http://127.0.0.1:8088/';
 const DIST_PMTILES = fileURLToPath(new URL('../dist/buildings.pmtiles', import.meta.url));
 
 copyFileSync(archive, DIST_PMTILES);
@@ -61,7 +61,7 @@ try {
 
   const evalJs = async (expr) => (await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true })).result.value;
 
-  await send('Page.navigate', { url: URL });
+  await send('Page.navigate', { url: PAGE_URL });
   await new Promise((resolve) => {
     const onMsg = (ev) => {
       const msg = JSON.parse(ev.data);
