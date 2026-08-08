@@ -25,8 +25,8 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 **Purpose**: Project initialization — feature branch on a clean baseline
 
-- [ ] T001 Create and switch to feature branch `015-security-audit-housekeeping` from clean `main` (verify `git status` clean before branching)
-- [ ] T002 [P] Run `bash scripts/check-prereqs.sh`; confirm git/python3.11/venv toolchain ready and worktree clean (no `data/`, `dist/`, `.omp/` tracked)
+- [X] T001 Create and switch to feature branch `015-security-audit-housekeeping` from clean `main` (verify `git status` clean before branching)
+- [X] T002 [P] Run `bash scripts/check-prereqs.sh`; confirm git/python3.11/venv toolchain ready and worktree clean (no `data/`, `dist/`, `.omp/` tracked)
 
 ---
 
@@ -34,8 +34,8 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 **Purpose**: Core infrastructure every user story writes into — the audit report is the shared disposition sink (FR-012, SC-006); the baseline is the before-state every story's "no regression" claim compares against
 
-- [ ] T003 Create audit report skeleton `verification/security-audit-2026-08-08.md` per R11: scope, method, findings table (ID, severity, location, description, disposition), housekeeping decisions table, gate summary, how-to-re-run section. Empty sections stay as headings — later tasks fill them (FR-012, SC-006)
-- [ ] T004 [P] Run baseline verification: full pytest suite (`pytest tests/ -q`), `make check-public`, `make check-or005`; record results (counts, pass/fail) in the report's method section as the pre-audit state (feeds US4 comparison)
+- [X] T003 Create audit report skeleton `verification/security-audit-2026-08-08.md` per R11: scope, method, findings table (ID, severity, location, description, disposition), housekeeping decisions table, gate summary, how-to-re-run section. Empty sections stay as headings — later tasks fill them (FR-012, SC-006)
+- [X] T004 [P] Run baseline verification: full pytest suite (`pytest tests/ -q`), `make check-public`, `make check-or005`; record results (counts, pass/fail) in the report's method section as the pre-audit state (feeds US4 comparison)
 
 **Checkpoint**: Report skeleton committed; baseline state recorded — user stories can now begin in parallel
 
@@ -49,18 +49,18 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 ### Tests User Story 1 (SC-007 requires; write FIRST, fail before implementation)
 
-- [ ] T005 [P] [US1] Write SC-007 regression test `tests/acceptance/test_public_hygiene.py`: writes a tracked-looking temp file containing each pattern P1–P32 and asserts `scripts/check-public.sh` fails naming that file and pattern (fails until T007/T010; a pattern that stops matching is a test failure)
-- [ ] T006 [P] [US1] Write `tests/acceptance/test_secret_scan.py`: asserts `scripts/check-git-history.sh` exits 0 with output `clean: 89 commits scanned, M exempted findings, 0 open` and that every exemption row resolves to a dispositioned finding in `verification/security-audit-2026-08-08.md` (fails until T011/T012)
+- [X] T005 [P] [US1] Write SC-007 regression test `tests/acceptance/test_public_hygiene.py`: writes a tracked-looking temp file containing each pattern P1–P32 and asserts `scripts/check-public.sh` fails naming that file and pattern (fails until T007/T010; a pattern that stops matching is a test failure)
+- [X] T006 [P] [US1] Write `tests/acceptance/test_secret_scan.py`: asserts `scripts/check-git-history.sh` exits 0 with output `clean: 89 commits scanned, M exempted findings, 0 open` and that every exemption row resolves to a dispositioned finding in `verification/security-audit-2026-08-08.md` (fails until T011/T012)
 
 ### Implementation User Story 1
 
-- [ ] T007 [US1] Create `scripts/public-patterns.txt`: move the 19 existing regexes out of `scripts/check-public.sh` into the shared file, one ERE per line, each preceded by a `# P<n> — rationale` comment block (single source of truth for both gates per R2)
-- [ ] T008 [US1] Refactor `scripts/check-public.sh` to source patterns from `scripts/public-patterns.txt` (depends on T007); extend `EXEMPT_FILES` with `scripts/public-patterns.txt`; keep exit-0 `clean: N tracked files scanned` / exit-1 `file:line: match` semantics; fix the P9 zone-id script/contract drift
-- [ ] T009 [US1] Update `specs/006-public-release-prep/contracts/public-hygiene.md` (depends on T007/T008, same commit): document pattern IDs and rationale only, stop quoting regex literals, drop its hygiene exemption — contract and gate now change together (FR-003)
-- [ ] T010 [US1] Add patterns P20–P32 to `scripts/public-patterns.txt` (depends on T007) per the `contracts/secrets-scan.md` inventory: GitHub fine-grained PAT, Cloudflare API token (assignment form), Cloudflare X-Auth header form, AWS secret access key, AWS ASIA temp key, npm token, Slack token/webhook, Stripe live key, Google API key, PGP private key block, PuTTY key, netrc machine/login/password marker, desktop path fragment
-- [ ] T011 [US1] Implement `scripts/check-git-history.sh` (depends on T010): for each commit in `git rev-list --all` run `git grep -nIE '<all patterns as alternation>' <commit>`; scan commit messages via `git log --all --format='%H%x00%s%x00%b'`; allow a hit only with a row in `scripts/history-exemptions.tsv` (`<pattern-id>\t<commit-sha>\t<path>`); fail on unexempted findings, stale exemptions (rows matching nothing), and orphaned rows (no matching report finding); exit 0 `clean: N commits scanned, M exempted findings, 0 open`; never requires network access (R3)
-- [ ] T012 [US1] Run the history scan (depends on T011); disposition every finding in `verification/security-audit-2026-08-08.md` as `remediated` (rotation proof), `never-live` (evidence), or `accepted-risk` (reason + owner sign-off); populate `scripts/history-exemptions.tsv`; keep allow-listed values (`abu-hamad.de`, loopback refs, `MANNHEIM_WORKSPACE`/`RUNPOD_HOST`/`SSH_KEY`/`BIND_ADDR`, `/workspace/mannheim/...` paths) unflagged by pattern design, not by exemption (FR-002, SC-001)
-- [ ] T013 [US1] Add `check-history` target to `Makefile` next to `check-public` (depends on T011): `@bash scripts/check-git-history.sh`
+- [X] T007 [US1] Create `scripts/public-patterns.txt`: move the 19 existing regexes out of `scripts/check-public.sh` into the shared file, one ERE per line, each preceded by a `# P<n> — rationale` comment block (single source of truth for both gates per R2)
+- [X] T008 [US1] Refactor `scripts/check-public.sh` to source patterns from `scripts/public-patterns.txt` (depends on T007); extend `EXEMPT_FILES` with `scripts/public-patterns.txt`; keep exit-0 `clean: N tracked files scanned` / exit-1 `file:line: match` semantics; fix the P9 zone-id script/contract drift
+- [X] T009 [US1] Update `specs/006-public-release-prep/contracts/public-hygiene.md` (depends on T007/T008, same commit): document pattern IDs and rationale only, stop quoting regex literals, drop its hygiene exemption — contract and gate now change together (FR-003)
+- [X] T010 [US1] Add patterns P20–P32 to `scripts/public-patterns.txt` (depends on T007) per the `contracts/secrets-scan.md` inventory: GitHub fine-grained PAT, Cloudflare API token (assignment form), Cloudflare X-Auth header form, AWS secret access key, AWS ASIA temp key, npm token, Slack token/webhook, Stripe live key, Google API key, PGP private key block, PuTTY key, netrc machine/login/password marker, desktop path fragment
+- [X] T011 [US1] Implement `scripts/check-git-history.sh` (depends on T010): for each commit in `git rev-list --all` run `git grep -nIE '<all patterns as alternation>' <commit>`; scan commit messages via `git log --all --format='%H%x00%s%x00%b'`; allow a hit only with a row in `scripts/history-exemptions.tsv` (`<pattern-id>\t<commit-sha>\t<path>`); fail on unexempted findings, stale exemptions (rows matching nothing), and orphaned rows (no matching report finding); exit 0 `clean: N commits scanned, M exempted findings, 0 open`; never requires network access (R3)
+- [X] T012 [US1] Run the history scan (depends on T011); disposition every finding in `verification/security-audit-2026-08-08.md` as `remediated` (rotation proof), `never-live` (evidence), or `accepted-risk` (reason + owner sign-off); populate `scripts/history-exemptions.tsv`; keep allow-listed values (`abu-hamad.de`, loopback refs, `MANNHEIM_WORKSPACE`/`RUNPOD_HOST`/`SSH_KEY`/`BIND_ADDR`, `/workspace/mannheim/...` paths) unflagged by pattern design, not by exemption (FR-002, SC-001)
+- [X] T013 [US1] Add `check-history` target to `Makefile` next to `check-public` (depends on T011): `@bash scripts/check-git-history.sh`
 
 **Checkpoint**: `make check-public` + `make check-history` clean; T005/T006 green; report dispositions complete for every hit — US1 fully functional and testable independently
 
@@ -74,18 +74,18 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 ### Tests User Story 2 (write FIRST, fail before implementation)
 
-- [ ] T014 [P] [US2] Write `tests/endpoint/test_bind.py`: asserts `src/endpoint/server.py` binds `127.0.0.1` by default and honors a `BIND_ADDR` env override (fails until T017)
-- [ ] T015 [P] [US2] Write `tests/endpoint/test_request_size.py`: asserts `Content-Length > 1 MiB` → 413 before any body read; non-numeric length falls into the 400 path (fails until T018)
+- [X] T014 [P] [US2] Write `tests/endpoint/test_bind.py`: asserts `src/endpoint/server.py` binds `127.0.0.1` by default and honors a `BIND_ADDR` env override (fails until T017)
+- [X] T015 [P] [US2] Write `tests/endpoint/test_request_size.py`: asserts `Content-Length > 1 MiB` → 413 before any body read; non-numeric length falls into the 400 path (fails until T018)
 
 ### Implementation User Story 2
 
-- [ ] T016 [US2] Implement `applySecurityHeaders()` in `workers/map/index.js` per `contracts/security-headers.md`: set/override exactly the 7 security headers (CSP byte-identical to the meta tag in `src/site/index.html`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `Strict-Transport-Security: max-age=31536000` without includeSubDomains, `X-XSS-Protection: 0`) on every response — static assets, R2 passthroughs (200 and 206), and 404s; on 206 responses never alter `Content-Range`, `ETag`, `Accept-Ranges`, or `Content-Length` (R4, FR-013)
-- [ ] T017 [US2] Fix HIGH finding in `src/endpoint/server.py`: bind `127.0.0.1` by default with `BIND_ADDR` env override for deliberate pod-internal exposure; SSH-tunnel workflow unchanged (R7)
-- [ ] T018 [US2] Fix MEDIUM finding in `src/endpoint/server.py`: reject `Content-Length > 1 MiB` with 413 before reading the body (depends on T017; same file, sequential)
-- [ ] T019 [P] [US2] Pin resolved pod dependency versions in `scripts/runpod-deploy.sh` (`pip install segmentation-models-pytorch rasterio` → pinned versions) so the pod supply chain is reproducible (R6 low fix)
-- [ ] T020 [US2] Extend `scripts/deploy-cf.sh verify` (depends on T016): assert security headers on `/map/` (index) and on a 206 Range response from an R2 key; assert an unknown data-looking key returns 404; existing DNS/redirect/Range/cache-header/cert gates unchanged (R5, R12)
-- [ ] T021 [US2] Update `specs/005-host-on-personal-domain/contracts/hosting-config.md` §3 with the header and unknown-key-404 checks (depends on T020, same commit) so the deploy contract stays in sync
-- [ ] T022 [US2] Record US2 findings and dispositions in `verification/security-audit-2026-08-08.md` (depends on T016–T019): HIGH bind and MEDIUM size-cap remediated; accepted risks with reasons — no auth on `/infer` (loopback-only, single owner), serialized long-running inference, pinning fix; verify `src/endpoint/server.py` matches `contracts/endpoint-trust-model.md` (FR-002, SC-002)
+- [X] T016 [US2] Implement `applySecurityHeaders()` in `workers/map/index.js` per `contracts/security-headers.md`: set/override exactly the 7 security headers (CSP byte-identical to the meta tag in `src/site/index.html`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `Strict-Transport-Security: max-age=31536000` without includeSubDomains, `X-XSS-Protection: 0`) on every response — static assets, R2 passthroughs (200 and 206), and 404s; on 206 responses never alter `Content-Range`, `ETag`, `Accept-Ranges`, or `Content-Length` (R4, FR-013)
+- [X] T017 [US2] Fix HIGH finding in `src/endpoint/server.py`: bind `127.0.0.1` by default with `BIND_ADDR` env override for deliberate pod-internal exposure; SSH-tunnel workflow unchanged (R7)
+- [X] T018 [US2] Fix MEDIUM finding in `src/endpoint/server.py`: reject `Content-Length > 1 MiB` with 413 before reading the body (depends on T017; same file, sequential)
+- [X] T019 [P] [US2] Pin resolved pod dependency versions in `scripts/runpod-deploy.sh` (`pip install segmentation-models-pytorch rasterio` → pinned versions) so the pod supply chain is reproducible (R6 low fix)
+- [X] T020 [US2] Extend `scripts/deploy-cf.sh verify` (depends on T016): assert security headers on `/map/` (index) and on a 206 Range response from an R2 key; assert an unknown data-looking key returns 404; existing DNS/redirect/Range/cache-header/cert gates unchanged (R5, R12)
+- [X] T021 [US2] Update `specs/005-host-on-personal-domain/contracts/hosting-config.md` §3 with the header and unknown-key-404 checks (depends on T020, same commit) so the deploy contract stays in sync
+- [X] T022 [US2] Record US2 findings and dispositions in `verification/security-audit-2026-08-08.md` (depends on T016–T019): HIGH bind and MEDIUM size-cap remediated; accepted risks with reasons — no auth on `/infer` (loopback-only, single owner), serialized long-running inference, pinning fix; verify `src/endpoint/server.py` matches `contracts/endpoint-trust-model.md` (FR-002, SC-002)
 
 **Checkpoint**: `pytest tests/endpoint/` green; `deploy-cf.sh verify` passes with new assertions; report records remediated HIGH/MEDIUM — US2 independently testable
 
@@ -99,21 +99,21 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 ### Tests User Story 3 (write FIRST, fail before implementation)
 
-- [ ] T023 [P] [US3] Write `tests/acceptance/test_layout.py`: asserts `scripts/check-layout.sh` exits 0 with the clean summary on the reorganized repo (fails until T025; also asserts no tracked root file outside the documented root set)
+- [X] T023 [P] [US3] Write `tests/acceptance/test_layout.py`: asserts `scripts/check-layout.sh` exits 0 with the clean summary on the reorganized repo (fails until T025; also asserts no tracked root file outside the documented root set)
 
 ### Implementation User Story 3
 
-- [ ] T024 [US3] Create `scripts/layout-manifest.tsv` per `contracts/layout-gate.md`: TAB-separated `<tracked-path>\t<documentation-reference>` rows for the frozen root set — `.gitignore`, `CHANGELOG.md`, `DEVELOPMENT.md`, `LICENSE`, `Makefile`, `README.md`, `pyproject.toml`, `artifacts.manifest.json`, `tiles.csv`, `screenshot/`, `scripts/`, `specs/`, `src/`, `tests/`, `validation/`, `verification/`, `workers/`, `outputs/`
-- [ ] T025 [US3] Implement `scripts/check-layout.sh` (depends on T024): every `git ls-files` path must start with a manifest row; every row must exist in the tracked tree (no dead entries); no tracked file at the repo root outside the documented root set; exit 0 `clean: N tracked paths, M documented entries`, exit 1 with one `path → expected documentation-reference` mismatch line per failure (R9)
-- [ ] T026 [P] [US3] `git mv cited.md` → `outputs/cited.md` (DEVELOPMENT.md already documents the verified source list under `outputs/`); update the two DEVELOPMENT.md references to point at the new path (R10)
-- [ ] T027 [P] [US3] `git mv notes/s2_abstracts.json notes/s2_abstracts2.json` → `outputs/` (Semantic-Scholar abstracts are literature-review evidence; empty `notes/` disappears from git) (R10)
-- [ ] T028 [P] [US3] Move root `info` (WebP, no extension) → `outputs/info.webp` per owner decision; disposition recorded in the audit report — never silently deleted (R10, spec edge case)
-- [ ] T029 [US3] Delete `progress.md` (72-byte boilerplate template, no references) after owner sign-off recorded in the audit report; deletion documented, not silent (R10, spec edge case)
-- [ ] T030 [P] [US3] Create `src/site/vendor/PROVENANCE.md` per `contracts/vendored-provenance.md`: MapLibre GL JS 5.7.1 (BSD-3-Clause, github.com/maplibre/maplibre-gl-js, `maplibre-gl.js` + `maplibre-gl.css`) and pmtiles 4.4.0 (BSD-3-Clause, github.com/protomaps/PMTiles, `pmtiles.js`), each with sha256 computed from the tracked files; declare runtime dependencies — LGL basemap `sgx.geodatenzentrum.de` (attributed) and `demotiles.maplibre.org` glyph origin as accepted risk (MEDIUM, owner sign-off) (R8)
-- [ ] T031 [US3] Update `DEVELOPMENT.md` (depends on T024–T030): layout section enumerates every root-level file plus `screenshot/` and `outputs/.plans/`, and names `scripts/layout-manifest.tsv` as the machine-checkable form; governance section documents `check-history` and `check-layout`; lit-review references point at `outputs/cited.md`; correct the "no other third-party scripts are used" claim to declare the demotiles font origin; vendored-libraries section references `src/site/vendor/PROVENANCE.md`
-- [ ] T032 [P] [US3] Update `CHANGELOG.md` with the 2026-08-08 security-audit entry and add the 015 row to the feature-history spec index (FR-010)
-- [ ] T033 [US3] Add `check-layout` target to `Makefile` (depends on T025): `@bash scripts/check-layout.sh`
-- [ ] T034 [US3] Record every housekeeping decision (E9) in `verification/security-audit-2026-08-08.md`: move/delete/keep-and-document with destination or reason for `cited.md`, `s2_abstracts*.json`, `info`, `progress.md`, `notes/`, `screenshot/`, `outputs/.plans/` (depends on T026–T029)
+- [X] T024 [US3] Create `scripts/layout-manifest.tsv` per `contracts/layout-gate.md`: TAB-separated `<tracked-path>\t<documentation-reference>` rows for the frozen root set — `.gitignore`, `CHANGELOG.md`, `DEVELOPMENT.md`, `LICENSE`, `Makefile`, `README.md`, `pyproject.toml`, `artifacts.manifest.json`, `tiles.csv`, `screenshot/`, `scripts/`, `specs/`, `src/`, `tests/`, `validation/`, `verification/`, `workers/`, `outputs/`
+- [X] T025 [US3] Implement `scripts/check-layout.sh` (depends on T024): every `git ls-files` path must start with a manifest row; every row must exist in the tracked tree (no dead entries); no tracked file at the repo root outside the documented root set; exit 0 `clean: N tracked paths, M documented entries`, exit 1 with one `path → expected documentation-reference` mismatch line per failure (R9)
+- [X] T026 [P] [US3] `git mv cited.md` → `outputs/cited.md` (DEVELOPMENT.md already documents the verified source list under `outputs/`); update the two DEVELOPMENT.md references to point at the new path (R10)
+- [X] T027 [P] [US3] `git mv notes/s2_abstracts.json notes/s2_abstracts2.json` → `outputs/` (Semantic-Scholar abstracts are literature-review evidence; empty `notes/` disappears from git) (R10)
+- [X] T028 [P] [US3] Move root `info` (WebP, no extension) → `outputs/info.webp` per owner decision; disposition recorded in the audit report — never silently deleted (R10, spec edge case)
+- [X] T029 [US3] Delete `progress.md` (72-byte boilerplate template, no references) after owner sign-off recorded in the audit report; deletion documented, not silent (R10, spec edge case)
+- [X] T030 [P] [US3] Create `src/site/vendor/PROVENANCE.md` per `contracts/vendored-provenance.md`: MapLibre GL JS 5.7.1 (BSD-3-Clause, github.com/maplibre/maplibre-gl-js, `maplibre-gl.js` + `maplibre-gl.css`) and pmtiles 4.4.0 (BSD-3-Clause, github.com/protomaps/PMTiles, `pmtiles.js`), each with sha256 computed from the tracked files; declare runtime dependencies — LGL basemap `sgx.geodatenzentrum.de` (attributed) and `demotiles.maplibre.org` glyph origin as accepted risk (MEDIUM, owner sign-off) (R8)
+- [X] T031 [US3] Update `DEVELOPMENT.md` (depends on T024–T030): layout section enumerates every root-level file plus `screenshot/` and `outputs/.plans/`, and names `scripts/layout-manifest.tsv` as the machine-checkable form; governance section documents `check-history` and `check-layout`; lit-review references point at `outputs/cited.md`; correct the "no other third-party scripts are used" claim to declare the demotiles font origin; vendored-libraries section references `src/site/vendor/PROVENANCE.md`
+- [X] T032 [P] [US3] Update `CHANGELOG.md` with the 2026-08-08 security-audit entry and add the 015 row to the feature-history spec index (FR-010)
+- [X] T033 [US3] Add `check-layout` target to `Makefile` (depends on T025): `@bash scripts/check-layout.sh`
+- [X] T034 [US3] Record every housekeeping decision (E9) in `verification/security-audit-2026-08-08.md`: move/delete/keep-and-document with destination or reason for `cited.md`, `s2_abstracts*.json`, `info`, `progress.md`, `notes/`, `screenshot/`, `outputs/.plans/` (depends on T026–T029)
 
 **Checkpoint**: `make check-layout` clean; layout section ↔ manifest consistent; PROVENANCE.md hashes match the tracked files — US3 independently testable
 
@@ -127,12 +127,12 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 ### Implementation User Story 4
 
-- [ ] T035 [US4] Run the full test suite `pytest tests/ -q` (acceptance, pipeline, endpoint including new tests); fix any failure caused by housekeeping moves or header changes — e.g. tests referencing moved paths (quickstart S4)
-- [ ] T036 [US4] Run every governance gate — `make check-public`, `make check-or005`, `make check-history`, `make check-layout`, `scripts/commit-check.sh` — and confirm all exit 0 on the audited tree (SC-004)
-- [ ] T037 [P] [US4] Run `bash scripts/deploy-cf.sh verify` against the live deploy: existing FR-013 gates (DNS, redirects, Range 206, cache headers, cert) plus the new security-header and unknown-key-404 assertions; confirm headers present with contract values and CSP byte-identical to the meta tag (quickstart S6)
-- [ ] T038 [P] [US4] Run `bash scripts/perf-measure.sh https://abu-hamad.de/map/` and `node scripts/parity-render.mjs`: all 8 interactions ≤ 2 s, desktop median ≤ 123 ms, first usable ≤ 10 s, rendered building values/colors/labels/popups identical to the pre-audit bundle (quickstart S8, SC-005)
-- [ ] T039 [US4] Verify OR-005: no `*.tif`/`*.pmtiles`/`>50 MiB` file entered the tracked set (`make check-or005` green); gitignored local dirs (`data/`, `dist/`, `dist-assets/`, `.omp/`, `.venv/`) untouched and `scripts/check-prereqs.sh` paths intact
-- [ ] T040 [US4] Finalize `verification/security-audit-2026-08-08.md` (depends on T035–T039): complete gate summary and how-to-re-run section so a reviewer unfamiliar with the repo can verify every disposition (SC-006)
+- [X] T035 [US4] Run the full test suite `pytest tests/ -q` (acceptance, pipeline, endpoint including new tests); fix any failure caused by housekeeping moves or header changes — e.g. tests referencing moved paths (quickstart S4)
+- [X] T036 [US4] Run every governance gate — `make check-public`, `make check-or005`, `make check-history`, `make check-layout`, `scripts/commit-check.sh` — and confirm all exit 0 on the audited tree (SC-004)
+- [X] T037 [P] [US4] Run `bash scripts/deploy-cf.sh verify` against the live deploy: existing FR-013 gates (DNS, redirects, Range 206, cache headers, cert) plus the new security-header and unknown-key-404 assertions; confirm headers present with contract values and CSP byte-identical to the meta tag (quickstart S6)
+- [X] T038 [P] [US4] Run `bash scripts/perf-measure.sh https://abu-hamad.de/map/` and `node scripts/parity-render.mjs`: all 8 interactions ≤ 2 s, desktop median ≤ 123 ms, first usable ≤ 10 s, rendered building values/colors/labels/popups identical to the pre-audit bundle (quickstart S8, SC-005)
+- [X] T039 [US4] Verify OR-005: no `*.tif`/`*.pmtiles`/`>50 MiB` file entered the tracked set (`make check-or005` green); gitignored local dirs (`data/`, `dist/`, `dist-assets/`, `.omp/`, `.venv/`) untouched and `scripts/check-prereqs.sh` paths intact
+- [X] T040 [US4] Finalize `verification/security-audit-2026-08-08.md` (depends on T035–T039): complete gate summary and how-to-re-run section so a reviewer unfamiliar with the repo can verify every disposition (SC-006)
 
 **Checkpoint**: All suites, gates, and deploy verification green; parity and perf budgets met — US4 complete
 
@@ -142,10 +142,10 @@ Single flat repository (static frontend + pipeline + Worker + gates). Enforcemen
 
 **Purpose**: Improvements affecting multiple user stories — end-to-end validation, contract/implementation consistency, docs accuracy
 
-- [ ] T041 [P] Run quickstart.md scenarios S1–S8 in order against the finished tree; record results in the audit report's gate summary (quickstart is the run guide for the whole feature)
-- [ ] T042 [P] Verify all five contracts (`contracts/secrets-scan.md`, `security-headers.md`, `layout-gate.md`, `vendored-provenance.md`, `endpoint-trust-model.md`) match the implementation; update `contracts/README.md` cross-link table if any subject drifted
-- [ ] T043 [P] README.md accuracy check (R10: no content change required — verify; add the optional security link only if it stays accurate)
-- [ ] T044 Commit all remaining work in logical slices with `make commit-slice MSG="..."` (OR-004 discipline: gate/contract/report changes for the same surface land in the same commit; no `make commit-milestone` until validation milestones pass)
+- [X] T041 [P] Run quickstart.md scenarios S1–S8 in order against the finished tree; record results in the audit report's gate summary (quickstart is the run guide for the whole feature)
+- [X] T042 [P] Verify all five contracts (`contracts/secrets-scan.md`, `security-headers.md`, `layout-gate.md`, `vendored-provenance.md`, `endpoint-trust-model.md`) match the implementation; update `contracts/README.md` cross-link table if any subject drifted
+- [X] T043 [P] README.md accuracy check (R10: no content change required — verify; add the optional security link only if it stays accurate)
+- [X] T044 Commit all remaining work in logical slices with `make commit-slice MSG="..."` (OR-004 discipline: gate/contract/report changes for the same surface land in the same commit; no `make commit-milestone` until validation milestones pass)
 
 ---
 
