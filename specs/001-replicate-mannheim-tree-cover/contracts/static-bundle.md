@@ -80,6 +80,8 @@ dist/
   - LGL (Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0)
   - basemap.de
   - CityTreeCover (MIT)
+- Links to the project's own source code on GitHub
+  (https://github.com/donrami/MATreeCover).
 - Reachable from the map's `AttributionControl` (FR-019).
 
 ## Size budget
