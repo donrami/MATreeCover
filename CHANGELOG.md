@@ -1,3 +1,9 @@
+## 2026-08-08 — security audit and housekeeping (015)
+- Secrets audit: full git-history scan (`make check-history`, 91 commits) plus extended tracked-file gate (`make check-public`, P1–P32) against the shared pattern file `scripts/public-patterns.txt`; every historical finding dispositioned in `verification/security-audit-2026-08-08.md`; no live credential found, nothing rotated.
+- Deployed surface: security headers + CSP (byte-identical to the meta tag) on every Worker response; deploy verification gains header and unknown-key-404 assertions; endpoint binds loopback by default and rejects bodies over 1 MiB with 413; pod dependencies pinned.
+- Supply chain: committed provenance record `src/site/vendor/PROVENANCE.md`; demotiles font origin declared as accepted risk.
+- Housekeeping: layout gate (`make check-layout`) enforces the documented tree; root strays relocated into `outputs/` (cited.md, s2_abstracts, info) or deleted with recorded disposition (progress.md); docs (DEVELOPMENT.md, CHANGELOG, feature history) now match reality.
+
 # CHANGELOG
 
 ## 2026-08-08 — performance fixes (014)

@@ -12,7 +12,7 @@
 - `outputs/tree-canopy-30-heat-verifier-report.md` — automated URL/citation audit (0 broken URLs; 16 fixes, all applied)
 - `outputs/tree-canopy-30-heat-reviewer-report.md` — independent evidence audit (0 FATAL; 4 MAJOR + minors, all applied)
 - `outputs/.plans/tree-canopy-30-heat.md` — plan + task ledger + verification log
-- `notes/s2_abstracts.json`, `notes/s2_abstracts2.json` — Semantic Scholar abstract pulls
+- `outputs/s2_abstracts.json`, `outputs/s2_abstracts2.json` — Semantic Scholar abstract pulls
 - Downloaded PDFs of the Konijnendijk 2023 and ICC 700-2020 NGBS full texts — primary-source parses (grep-verified)
 
 ## Sources consulted (44 unique URLs in final review)

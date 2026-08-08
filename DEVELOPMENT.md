@@ -5,6 +5,26 @@ For an introduction to the map itself, see the [README](README.md).
 
 ## What is in this repository
 
+This section is the human form of the layout; the machine form is
+`scripts/layout-manifest.tsv`, enforced by `make check-layout`.
+
+Root-level files:
+
+- `README.md` — user-facing description and live-map link.
+- `LICENSE` — MIT license.
+- `DEVELOPMENT.md` — this file: architecture, commands, governance.
+- `CHANGELOG.md` — release log.
+- `Makefile` — the command surface (`make bootstrap`, `make publish`, `make check-*`).
+- `pyproject.toml` — Python package metadata and dev dependencies.
+- `.gitignore` — exclusions for local and harness directories.
+- `artifacts.manifest.json` — the single source of truth for every
+  pipeline artifact (source, extent, resolution, completeness, lineage,
+  acceptance state).
+- `tiles.csv` — index of the accepted DOP20 imagery tiles.
+- `screenshot/` — `map.png`, the README screenshot.
+
+Directories:
+
 - `src/pipeline/` — offline Python data pipeline (CLI, no server).
 - `src/site/` — the static frontend (MapLibre GL + PMTiles, no build tool).
 - `src/endpoint/` — the RunPod HTTP endpoint that runs the canopy-model
@@ -12,28 +32,29 @@ For an introduction to the map itself, see the [README](README.md).
 - `workers/map/` — the Cloudflare Worker that serves the map from a
   static-assets binding plus R2 data files.
 - `scripts/` — deploy (`deploy-cf.sh`, `runpod-deploy.sh`), governance
-  gates (`check-public.sh`, `check_or005.py`, `commit-check.sh`,
-  `next-tag.sh`, `check-prereqs.sh`), and the performance harness
-  (`perf-measure.sh`, `perf-probe.mjs`, `parity-render.mjs`,
-  `smoke-verify.mjs`).
-- `specs/` — one directory per feature (001–014): spec, plan, research,
+  gates (`check-public.sh`, `check-git-history.sh`, `check-layout.sh`,
+  `check_or005.py`, `commit-check.sh`, `next-tag.sh`, `check-prereqs.sh`),
+  the shared secret patterns (`public-patterns.txt`), the history
+  exemption ledger (`history-exemptions.tsv`), the layout manifest
+  (`layout-manifest.tsv`), and the performance harness (`perf-measure.sh`,
+  `perf-probe.mjs`, `parity-render.mjs`, `smoke-verify.mjs`).
+- `specs/` — one directory per feature (001–015): spec, plan, research,
   tasks, quickstart, data model, and contracts. The feature history is
   summarized below; the spec directories are the primary record.
 - `tests/` — pytest suites (acceptance, pipeline, endpoint) plus manual
   browser smoke checklists (`tests/frontend/`).
 - `verification/` — evidence for how well the tree-detection model works
   on Mannheim imagery (features 008/009): the reproducible 100-patch
-  sample, per-patch ratings, the German findings report, and the
-  calibration value deltas.
+  sample, per-patch ratings, the German findings report, the
+  calibration value deltas, and the committed security audit report
+  (`security-audit-2026-08-08.md`, feature 015).
 - `validation/` — machine records: `event.log.jsonl` (per-run RSS/exit
   codes), perf budgets and live measurements, `published-map.json`.
 - `outputs/` — the tree-canopy-30-heat literature review artifacts
   (draft, research brief, provenance, reviewer/verifier reports, cooling
-  chart); `cited.md` is the verified source list.
-- `artifacts.manifest.json` — the single source of truth for every
-  pipeline artifact (source, extent, resolution, completeness, lineage,
-  acceptance state).
-- `tiles.csv` — index of the accepted DOP20 imagery tiles.
+  chart); `cited.md` is the verified source list; the Semantic-Scholar
+  abstract pulls (`s2_abstracts*.json`) and the info image live here
+  too. Internal planning drafts stay in `outputs/.plans/`.
 
 Files above 50 MiB are recorded in the manifest. They are never committed
 (OR-005).
@@ -59,10 +80,11 @@ directory under `specs/` with the full record. Short version:
 | 012 | 08-06 | Mobile-first native UX | Bottom-sheet surfaces, thumb-reachable tool buttons, desktop panel, 30 %-scale mockups, German tooltips, native-feeling motion. |
 | 013 | 08-07 | Popup comparative context | Building popup: headline value, 30 % badge, district/city comparison with signed pp deltas; district popup: rank “Platz X von 38”, quartile band, city comparison. Rank computed client-side once. |
 | 014 | 08-08 | Performance fixes | PMTiles edge/browser caching, content-hashed immutable assets, no cross-fade init, low-zoom geometry simplification, inlined styles, preload/preconnect, favicon; committed perf harness; mobile attribution alignment fix. |
+| 015 | 08-08 | Security audit & housekeeping | Full-history secrets scan (`make check-history`) plus extended public-hygiene gate (P1–P32, shared pattern file); security headers + CSP on every Worker response; endpoint loopback bind + 1 MiB size cap; vendored-library provenance record; layout gate (`make check-layout`) and housekeeping moves into `outputs/`; committed audit report in `verification/security-audit-2026-08-08.md`. |
 
 There is also a heatwave-context literature review (not a numbered
 feature): the 30 % guideline evidence base lives in `outputs/` and
-`cited.md` (39 items, URLs verified, reviewer/verifier passes clean).
+`outputs/cited.md` (39 items, URLs verified, reviewer/verifier passes clean).
 
 ## Architecture in one paragraph
 
@@ -423,15 +445,38 @@ equivalent of the smoke checks is `scripts/smoke-verify.mjs`.
 - OR-005: `make check-or005` asserts no `*.tif`, `*.pmtiles`, or
   > 50 MiB `*.geojson` is tracked in git. It also asserts that every
   > 50 MiB workspace file is recorded in the manifest.
-- FR-010: `make check-public` scans tracked files for personal paths,
-  credentials, and internal tooling references. It must stay clean —
+- FR-010/FR-003 (feature 015): `make check-public` scans tracked files
+  for personal paths, credentials, and internal tooling references
+  against the shared pattern file `scripts/public-patterns.txt`
+  (P1–P32, one source of truth for both gates). It must stay clean —
   it is the gate for making the repository public. The gate grew with
-  the repo (P14–P19 rules added in feature 014) and has caught real
-  leaks before (harness paths, absolute render paths) — keep it green.
+  the repo and has caught real leaks before (harness paths, absolute
+  render paths) — keep it green. Adding a pattern is a contract
+  change: update the pattern file and the contract together.
+- FR-001/FR-002 (feature 015): `make check-history` scans the full git
+  history (trees and commit messages) with the same pattern set;
+  historical findings are allowed only via dispositioned exemption
+  rows in `scripts/history-exemptions.tsv`, each resolving to a
+  finding in `verification/security-audit-2026-08-08.md`. History is
+  never rewritten; the gate enforces forward prevention.
+- FR-009/FR-011 (feature 015): `make check-layout` asserts the tracked
+  tree matches `scripts/layout-manifest.tsv` (the machine form of the
+  layout section above); moving a file requires updating the manifest
+  and the section together.
 
 ## Vendored frontend libraries
 
 - MapLibre GL JS 5.7.1 (`src/site/vendor/maplibre-gl.js`, 3-Clause BSD).
 - pmtiles 4.4.0 (`src/site/vendor/pmtiles.js`, BSD-3-Clause).
 
-No build tool and no other third-party scripts are used.
+Committed provenance (version, license, source URL, sha256 of the
+vendored files, and the declared runtime dependencies) lives in
+`src/site/vendor/PROVENANCE.md` (FR-008, feature 015). Updating a
+vendored library updates the record in the same commit.
+
+Runtime dependencies: besides the vendored files, the map fetches the
+LGL basemap tiles (`sgx.geodatenzentrum.de`, attributed) and the glyph
+font origin `demotiles.maplibre.org` (MapLibre's public demo CDN,
+accepted risk — GET-only, no data leaves the page, CSP-restricted to
+fonts; see PROVENANCE.md). No build tool and no other third-party
+scripts are used.

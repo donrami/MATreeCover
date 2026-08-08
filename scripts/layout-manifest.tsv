@@ -1,0 +1,22 @@
+# Layout manifest (feature 015, FR-009/011): machine-checkable form of the
+# DEVELOPMENT.md "What is in this repository" section. One TAB-separated
+# row per top-level tracked entry: <tracked-path>\t<documentation-reference>.
+# `make check-layout` enforces it. Contract: specs/015-security-audit-housekeeping/contracts/layout-gate.md
+.gitignore	DEVELOPMENT.md "What is in this repository" (root files)
+CHANGELOG.md	DEVELOPMENT.md "What is in this repository" (root files)
+DEVELOPMENT.md	DEVELOPMENT.md "What is in this repository" (root files)
+LICENSE	DEVELOPMENT.md "What is in this repository" (root files)
+Makefile	DEVELOPMENT.md "What is in this repository" (root files)
+README.md	DEVELOPMENT.md "What is in this repository" (root files)
+pyproject.toml	DEVELOPMENT.md "What is in this repository" (root files)
+artifacts.manifest.json	DEVELOPMENT.md "What is in this repository" (pipeline artifact manifest)
+tiles.csv	DEVELOPMENT.md "What is in this repository" (DOP20 tile index)
+screenshot/	DEVELOPMENT.md "What is in this repository" (README screenshot)
+scripts/	DEVELOPMENT.md "What is in this repository"
+specs/	DEVELOPMENT.md "What is in this repository"
+src/	DEVELOPMENT.md "What is in this repository"
+tests/	DEVELOPMENT.md "What is in this repository"
+validation/	DEVELOPMENT.md "What is in this repository"
+verification/	DEVELOPMENT.md "What is in this repository"
+workers/	DEVELOPMENT.md "What is in this repository"
+outputs/	DEVELOPMENT.md "What is in this repository"

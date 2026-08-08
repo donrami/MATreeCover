@@ -7,7 +7,7 @@ MSG ?=
 
 .PHONY: bootstrap check-prereqs commit-spec commit-plan commit-slice commit-milestone \
 	accept publish values trees runpod-infer pmtiles-buildings pmtiles-trees check-or005 \
-	check-public check-history
+	check-public check-history check-layout
 
 ## Setup ------------------------------------------------------------------
 
@@ -29,6 +29,9 @@ check-public: ## FR-010 gate: no personal paths/credentials in tracked files
 
 check-history: ## FR-001 gate: full git-history secret scan (feature 015)
 	@bash scripts/check-git-history.sh
+
+check-layout: ## FR-009/011 gate: tracked tree matches layout manifest (feature 015)
+	@bash scripts/check-layout.sh
 
 ## Commit discipline (OR-004 / R-013) --------------------------------------
 

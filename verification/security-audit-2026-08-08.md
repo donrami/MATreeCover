@@ -56,7 +56,13 @@ No credential pattern (P6–P8, P20–P28) has any occurrence in the full histor
 
 | Path | Action | Destination / reason | Owner sign-off |
 |------|--------|----------------------|----------------|
-| _pending_ | | | |
+| `cited.md` (root) | moved | `outputs/cited.md` — the layout section already documented the verified source list under `outputs/`; the two DEVELOPMENT.md references updated | 2026-08-08 (feature plan approval) |
+| `notes/s2_abstracts.json`, `notes/s2_abstracts2.json` | moved | `outputs/` — Semantic-Scholar abstract pulls are literature-review evidence; empty `notes/` disappeared with git; the provenance-doc reference updated | 2026-08-08 (feature plan approval) |
+| `info` (WebP 1024×640, no extension) | moved | `outputs/info.webp` — undocumented binary media with no code references; extension added on move | 2026-08-08 (feature plan approval) |
+| `progress.md` (72-byte boilerplate template) | deleted | No content (empty Status/Tasks/Files-Changed/Notes scaffold), no references; deletion recorded, not silent | 2026-08-08 (feature plan approval) |
+| `screenshot/` | kept, documented | README references `screenshot/map.png`; layout section + manifest gained the entry | 2026-08-08 (feature plan approval) |
+| `outputs/.plans/` | kept, documented | Internal planning drafts; layout section + manifest cover `outputs/` | 2026-08-08 (feature plan approval) |
+| root docs (`.gitignore`, `CHANGELOG.md`, `DEVELOPMENT.md`, `LICENSE`, `Makefile`, `README.md`, `pyproject.toml`, `artifacts.manifest.json`, `tiles.csv`) | kept, enumerated | Layout section now names every root-level file (SC-003) | 2026-08-08 (feature plan approval) |
 
 ## Accepted risks
 
