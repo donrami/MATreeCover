@@ -7,6 +7,7 @@
 // Usage: node scripts/parity-render.mjs --archive <pmtiles> --out <dir> [--chrome /usr/bin/chromium]
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdirSync, copyFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -17,7 +18,7 @@ if (!archive) { console.error('usage: --archive <pmtiles> --out <dir> [--chrome 
 const chrome = args.chrome ?? '/usr/bin/chromium';
 const outDir = args.out;
 const URL = 'http://127.0.0.1:8088/';
-const DIST_PMTILES = '/home/mainuser/Desktop/MATreeCover/dist/buildings.pmtiles';
+const DIST_PMTILES = fileURLToPath(new URL('../dist/buildings.pmtiles', import.meta.url));
 
 copyFileSync(archive, DIST_PMTILES);
 
