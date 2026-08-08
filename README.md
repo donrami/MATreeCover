@@ -1,6 +1,6 @@
 # Mannheim Tree Cover Map (Baumfläche)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Live map](https://img.shields.io/badge/status-live-brightgreen.svg)](https://abu-hamad.de/map/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Live map](https://img.shields.io/badge/status-live-brightgreen.svg)](https://abu-hamad.de/map/) [![MapLibre GL JS 5.7.1](https://img.shields.io/badge/maplibre--gl-5.7.1-1db6ff.svg)](https://github.com/maplibre/maplibre-gl-js) [![pmtiles 4.4.0](https://img.shields.io/badge/pmtiles-4.4.0-56ceff.svg)](https://github.com/protomaps/PMTiles) [![Python 3.11](https://img.shields.io/badge/python-3.11-3776AB.svg)](https://www.python.org/)
 
 A web map of Mannheim. Every building is colored by the average tree cover within 60 meters of it. Dark, quiet, and free to browse. No account, no tracking, nothing to install.
 
