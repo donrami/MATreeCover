@@ -17,7 +17,10 @@
   "first_usable_budget_ms": 10000,
   "first_usable_pass": true,
   "first_usable_note": "2482 ms is the LOCAL reference (validation/perf-budget.json): headless software-WebGL cannot render the vector buildings layer (deprecated SwiftShader fallback; live == local bundle parity verified in headless), so the full 'first usable' (map load + buildings rendered) is not directly measurable headless on the live site. The user's real browser renders buildings and trees on live (confirmed 2026-08-05). The live-measurable first-content milestone: first basemap tile at 865/925 ms (two runs) - well inside the 10 s budget.",
-  "first_basemap_tile_ms": [865, 925],
+  "first_basemap_tile_ms": [
+    865,
+    925
+  ],
   "interaction_latency_ms": {
     "popup_open": 80,
     "zoom_in": 341,
@@ -30,5 +33,6 @@
   "interactions_pass": true,
   "interaction_note": "zoom_in/zoom_out/trees_toggle_on measured live under the throttle (341/168/304 ms; a second run: 341/168/304 - stable). popup_open (80 ms) and trees_toggle_off (205 ms) are LOCAL reference values: headless cannot click rendered buildings (vector layer not drawn under software WebGL) and hiding a layer issues no network request to measure; both are far inside the 2 s budget and the local method measured them identically on the same bundle.",
   "range_request_rationale": "Data layers are served by the Worker from R2 with HTTP Range passthrough (206 + Content-Range; pmtiles objects served with Cache-Control: no-store, no-transform to avoid Chrome's URL-keyed range cache serving wrong ranges). First paint fetches only the viewport ranges, matching the local budget model.",
-  "pass": true
+  "pass": true,
+  "feature014_note": "2026-08-08 re-measurement after feature 014 (see validation/perf-budget.json feature014_live): desktop Lighthouse 96 (was 81), mobile TBT 2840 ms median (was 6310 ms). SC-008 time budget unchanged and passing. Edge caching of range responses not available on this zone (no cf-cache-status on repeated 206s); browser caching applies via the new cache-control."
 }
