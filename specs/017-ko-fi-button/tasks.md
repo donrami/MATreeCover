@@ -22,8 +22,8 @@ Tasks: Ko-fi Donation Button
 
 **Purpose**: Project initialization and branch baseline.
 
-- [ ] T001 Create and switch to feature branch `017-ko-fi-button` (repo is currently on `016-seo-improvement`; verify branch does not exist yet, then `git checkout -b 017-ko-fi-button`)
-- [ ] T002 [P] Verify prerequisites per quickstart.md: `git`, `bash`, `python3.11`, `.venv` with dev extras (`make bootstrap`), `node`, Chromium at `CHROME_PATH` (default `/usr/bin/chromium`) — run `make check-prereqs` if available; record any gaps before implementation starts
+- [X] T001 Create and switch to feature branch `017-ko-fi-button` (repo is currently on `016-seo-improvement`; verify branch does not exist yet, then `git checkout -b 017-ko-fi-button`)
+- [X] T002 [P] Verify prerequisites per quickstart.md: `git`, `bash`, `python3.11`, `.venv` with dev extras (`make bootstrap`), `node`, Chromium at `CHROME_PATH` (default `/usr/bin/chromium`) — run `make check-prereqs` if available; record any gaps before implementation starts
 
 **Checkpoint**: Branch created, toolchain verified — proceed to foundational work.
 
@@ -33,7 +33,7 @@ Tasks: Ko-fi Donation Button
 
 **Purpose**: Core infrastructure that MUST complete before ANY user story is implemented.
 
-- [ ] T003 ⚠️ Apply the CSP image-host extension in lockstep across all three policy carriers — `img-src` gains exactly one origin (`https://storage.ko-fi.com`), every other directive stays byte-identical (contract: csp-image-host.md, FR-009, research R-2):
+- [X] T003 ⚠️ Apply the CSP image-host extension in lockstep across all three policy carriers — `img-src` gains exactly one origin (`https://storage.ko-fi.com`), every other directive stays byte-identical (contract: csp-image-host.md, FR-009, research R-2):
 
 - `<meta http-equiv="Content-Security-Policy">` in `src/site/index.html` (line 6; source truth)
 - `SECURITY_HEADERS["Content-Security-Policy"]` string in `workers/map/index.js` (line 44; must stay byte-identical to the meta tag)
@@ -55,14 +55,14 @@ New `img-src` value: `img-src 'self' data: https://sgx.geodatenzentrum.de https:
 
 ⚠️ **NOTE: Write tests FIRST, FAIL before implementation**
 
-- [ ] T004 [P] [US1] Write acceptance test module `tests/acceptance/test_ko_fi.py` asserting the contract machine checks from contracts/ko-fi-button.md, mirroring `tests/acceptance/test_seo_metadata.py` conventions: anchor `.ko-fi` exists with exact `href="https://ko-fi.com/M4Q624RYOV"`, `target="_blank"`, `rel="noopener"`; `<img>` has exact `src="https://storage.ko-fi.com/cdn/kofi3.png?v=6"`, `width="143"`, `height="36"`, and German alt mentioning "Ko-fi" and a donation/support word; CSP meta `img-src` contains `https://storage.ko-fi.com` while `script-src`/`connect-src`/`style-src` stay byte-identical to the locked values; Worker header CSP byte-identical to the meta; `.ko-fi` participates in the mobile touch-target rule group (44 px min CSS). Run it — markup assertions MUST fail (no `.ko-fi` in the page yet)
+- [X] T004 [P] [US1] Write acceptance test module `tests/acceptance/test_ko_fi.py` asserting the contract machine checks from contracts/ko-fi-button.md, mirroring `tests/acceptance/test_seo_metadata.py` conventions: anchor `.ko-fi` exists with exact `href="https://ko-fi.com/M4Q624RYOV"`, `target="_blank"`, `rel="noopener"`; `<img>` has exact `src="https://storage.ko-fi.com/cdn/kofi3.png?v=6"`, `width="143"`, `height="36"`, and German alt mentioning "Ko-fi" and a donation/support word; CSP meta `img-src` contains `https://storage.ko-fi.com` while `script-src`/`connect-src`/`style-src` stay byte-identical to the locked values; Worker header CSP byte-identical to the meta; `.ko-fi` participates in the mobile touch-target rule group (44 px min CSS). Run it — markup assertions MUST fail (no `.ko-fi` in the page yet)
 
 ### Implementation User Story 1
 
-- [ ] T005 [US1] Add the ko-fi anchor markup as a direct child of `.surface-header` in `src/site/index.html` (after `.surface-tools` closing tag, before `#surface-toggle` — DOM order title → tools → ko-fi → toggle so the chevron stays rightmost, research R-4): `<a class="ko-fi" href="https://ko-fi.com/M4Q624RYOV" target="_blank" rel="noopener"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=6" width="143" height="36" alt="Baumfläche auf Ko-fi unterstützen"></a>`. Exact attributes per data-model.md DonationLink/DonationButton — no `onerror`, no inline `style`, no extra attributes (FR-008, research R-5/R-6/R-8/R-9)
-- [ ] T006 [P] [US1] Add desktop `.ko-fi` styles in `src/site/style.css` (non-media-query base rules): inline-flex link with the brand image rendered at natural size, `width: 143px; height: 36px` on the image, subtle vertical alignment to sit with header tools. Additive `.ko-fi` rules ONLY — do not modify any rule owned by features 012/014 (contract regression constraints)
-- [ ] T007 [P] [US1] Add the ko-fi scenario to `scripts/smoke-verify.mjs`: load page, assert `.ko-fi` anchor is visible in the header (desktop viewport), click it, assert a new tab opens with the EXACT URL `https://ko-fi.com/M4Q624RYOV`, assert the map page is still open and interactive in the original tab
-- [ ] T008 [P] [US1] Create manual smoke checklist `tests/frontend/smoke_ko_fi.md` covering US1–US4 checks plus the spec edge cases (CSP-blocked image, 36 px image vs 44 px touch target, 320 px header packing, safe-area insets, external-link safety, Ko-fi unavailability, language consistency) as a browser checklist
+- [X] T005 [US1] Add the ko-fi anchor markup as a direct child of `.surface-header` in `src/site/index.html` (after `.surface-tools` closing tag, before `#surface-toggle` — DOM order title → tools → ko-fi → toggle so the chevron stays rightmost, research R-4): `<a class="ko-fi" href="https://ko-fi.com/M4Q624RYOV" target="_blank" rel="noopener"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=6" width="143" height="36" alt="Baumfläche auf Ko-fi unterstützen"></a>`. Exact attributes per data-model.md DonationLink/DonationButton — no `onerror`, no inline `style`, no extra attributes (FR-008, research R-5/R-6/R-8/R-9)
+- [X] T006 [P] [US1] Add desktop `.ko-fi` styles in `src/site/style.css` (non-media-query base rules): inline-flex link with the brand image rendered at natural size, `width: 143px; height: 36px` on the image, subtle vertical alignment to sit with header tools. Additive `.ko-fi` rules ONLY — do not modify any rule owned by features 012/014 (contract regression constraints)
+- [X] T007 [P] [US1] Add the ko-fi scenario to `scripts/smoke-verify.mjs`: load page, assert `.ko-fi` anchor is visible in the header (desktop viewport), click it, assert a new tab opens with the EXACT URL `https://ko-fi.com/M4Q624RYOV`, assert the map page is still open and interactive in the original tab
+- [X] T008 [P] [US1] Create manual smoke checklist `tests/frontend/smoke_ko_fi.md` covering US1–US4 checks plus the spec edge cases (CSP-blocked image, 36 px image vs 44 px touch target, 320 px header packing, safe-area insets, external-link safety, Ko-fi unavailability, language consistency) as a browser checklist
 
 **Checkpoint**: `pytest tests/acceptance/test_ko_fi.py -q` green for markup/CSP/desktop-style assertions (touch-target assertions may still be red — they land in US2); `node scripts/smoke-verify.mjs <url>` ko-fi scenario passes at 768/1280/1920 px; manual quickstart Q1/Q2 pass. User Story 1 fully functional and testable independently — commit this slice (OR-004).
 
@@ -76,8 +76,8 @@ New `img-src` value: `img-src 'self' data: https://sgx.geodatenzentrum.de https:
 
 ### Implementation User Story 2
 
-- [ ] T009 [US2] Join `.ko-fi` to the existing feature-012 mobile touch-target rule group in `src/site/style.css` mobile block (the `#baeume, .surface-toggle, .brightness input[type=range]` → `min-width: 44px; min-height: 44px` group, ~line 478-487): add `.ko-fi` as a member so the hit area is ≥ 44 × 44 px while the 36 px-tall image visual is preserved via vertical padding (research R-3). Spacing ≥ 8 px comes from the existing flex `gap: 8px` — verify, do not add new gap rules. Nothing else in the mobile media query changes (contract regression constraints)
-- [ ] T010 [US2] Add the ≤ 350 px header packing rules in `src/site/style.css` mobile block per research R-4: `order` overrides so row 1 is `[title, ko-fi, toggle]` and row 2 is `[tools]` (measured fit 295 ≤ 296 px at 320 px), keeping the header at ≤ 2 rows with no horizontal overflow; if browser measurement at 320 × 568 shows the collapsed header exceeds 20 % viewport height (≤ 113 px), the ≤ 350 px image-height fallback (32-34 px, hit area unchanged) MAY be applied per contracts/ko-fi-button.md
+- [X] T009 [US2] Join `.ko-fi` to the existing feature-012 mobile touch-target rule group in `src/site/style.css` mobile block (the `#baeume, .surface-toggle, .brightness input[type=range]` → `min-width: 44px; min-height: 44px` group, ~line 478-487): add `.ko-fi` as a member so the hit area is ≥ 44 × 44 px while the 36 px-tall image visual is preserved via vertical padding (research R-3). Spacing ≥ 8 px comes from the existing flex `gap: 8px` — verify, do not add new gap rules. Nothing else in the mobile media query changes (contract regression constraints)
+- [X] T010 [US2] Add the ≤ 350 px header packing rules in `src/site/style.css` mobile block per research R-4: `order` overrides so row 1 is `[title, ko-fi, toggle]` and row 2 is `[tools]` (measured fit 295 ≤ 296 px at 320 px), keeping the header at ≤ 2 rows with no horizontal overflow; if browser measurement at 320 × 568 shows the collapsed header exceeds 20 % viewport height (≤ 113 px), the ≤ 350 px image-height fallback (32-34 px, hit area unchanged) MAY be applied per contracts/ko-fi-button.md
 
 **Checkpoint**: quickstart Q3/Q4/Q5/Q8 pass — collapsed header ≤ 20 % viewport (map ≥ 80 %), touch target ≥ 44 × 44, ≥ 8 px spacing, no-overlap matrix empty at 320/375/768 px in both surface states, no horizontal overflow, safe-area content never clipped, clean resize across the 768 px breakpoint. User Story 2 independently testable — commit this slice.
 
@@ -91,8 +91,8 @@ New `img-src` value: `img-src 'self' data: https://sgx.geodatenzentrum.de https:
 
 ### Implementation User Story 3
 
-- [ ] T011 [US3] Add `:focus-visible` and hover/active feedback styles for `.ko-fi` in `src/site/style.css` matching the existing control pattern (`.surface-toggle` uses `outline: 2px solid var(--subtle)`; research R-3/data-model states) so the button shows a visible focus indicator consistent with the rest of the header. CSS-only, no script
-- [ ] T012 [US3] Run quickstart Q6–Q7 end to end and fix any failures: `pytest tests/acceptance/test_ko_fi.py -q -k csp` green (img-src extension present, locked directives byte-identical, Worker header CSP byte-identical to meta); browser console shows zero CSP violations and the Ko-fi image renders (no broken/blank state); Tab reaches the button with a visible focus indicator; Enter opens Ko-fi in a new tab; accessible name identifies a donation/support link in German ("Baumfläche auf Ko-fi unterstützen")
+- [X] T011 [US3] Add `:focus-visible` and hover/active feedback styles for `.ko-fi` in `src/site/style.css` matching the existing control pattern (`.surface-toggle` uses `outline: 2px solid var(--subtle)`; research R-3/data-model states) so the button shows a visible focus indicator consistent with the rest of the header. CSS-only, no script
+- [X] T012 [US3] Run quickstart Q6–Q7 end to end and fix any failures: `pytest tests/acceptance/test_ko_fi.py -q -k csp` green (img-src extension present, locked directives byte-identical, Worker header CSP byte-identical to meta); browser console shows zero CSP violations and the Ko-fi image renders (no broken/blank state); Tab reaches the button with a visible focus indicator; Enter opens Ko-fi in a new tab; accessible name identifies a donation/support link in German ("Baumfläche auf Ko-fi unterstützen")
 
 **Checkpoint**: quickstart Q6/Q7 pass; the full `test_ko_fi.py` module is now green (touch-target assertions from US2 included). User Story 3 independently testable — commit this slice.
 
@@ -106,11 +106,11 @@ New `img-src` value: `img-src 'self' data: https://sgx.geodatenzentrum.de https:
 
 ### Implementation User Story 4
 
-- [ ] T013 [P] [US4] Run governance gates and fix any failures: `make check-public && make check-layout && make check-or005 && make check-history` (quickstart Q9)
-- [ ] T014 [P] [US4] Run the full pytest suite `.venv/bin/python -m pytest tests/ -q` — every pre-existing test passes alongside `test_ko_fi.py` (the CSP extension breaks no pinned assertion; research R-2)
-- [ ] T015 [P] [US4] Run the perf harness `bash scripts/perf-measure.sh <url>` and verify budgets hold: 8 interactions ≤ 2 s, desktop interaction median ≤ 123 ms, first usable ≤ 10 s (feature 014 SC-008 budgets)
-- [ ] T016 [P] [US4] Run visual parity `node scripts/parity-render.mjs --archive dist/buildings.pmtiles --out /tmp/parity-017` — building values, colors, labels, popups identical to the previous bundle
-- [ ] T017 [US4] Run quickstart Q9 end to end, including the feature-015 live-map verification (S6) that csp-image-host.md requires before deploy, and manually exercise every control (map pan/zoom, Bäume toggle, brightness slider, surface toggle, popups, attribution, Impressum link, legend) — all behave exactly as before; the button is purely additive
+- [X] T013 [P] [US4] Run governance gates and fix any failures: `make check-public && make check-layout && make check-or005 && make check-history` (quickstart Q9)
+- [X] T014 [P] [US4] Run the full pytest suite `.venv/bin/python -m pytest tests/ -q` — every pre-existing test passes alongside `test_ko_fi.py` (the CSP extension breaks no pinned assertion; research R-2)
+- [X] T015 [P] [US4] Run the perf harness `bash scripts/perf-measure.sh <url>` and verify budgets hold: 8 interactions ≤ 2 s, desktop interaction median ≤ 123 ms, first usable ≤ 10 s (feature 014 SC-008 budgets)
+- [X] T016 [P] [US4] Run visual parity `node scripts/parity-render.mjs --archive dist/buildings.pmtiles --out /tmp/parity-017` — building values, colors, labels, popups identical to the previous bundle
+- [X] T017 [US4] Run quickstart Q9 end to end, including the feature-015 live-map verification (S6) that csp-image-host.md requires before deploy, and manually exercise every control (map pan/zoom, Bäume toggle, brightness slider, surface toggle, popups, attribution, Impressum link, legend) — all behave exactly as before; the button is purely additive
 
 **Checkpoint**: All gates green, budgets hold, parity identical, full suite passes. User Story 4 complete — commit this slice.
 
@@ -120,8 +120,8 @@ New `img-src` value: `img-src 'self' data: https://sgx.geodatenzentrum.de https:
 
 **Purpose**: Improvements that affect the whole feature.
 
-- [ ] T018 [P] Add the release-log entry for the ko-fi button feature in `CHANGELOG.md` (feature number 017, summary of the change, CSP note)
-- [ ] T019 Make the final commit(s) per OR-004 (one commit per accepted slice; implementation lands in slice commits), verify the worktree is clean and the branch `017-ko-fi-button` contains the full feature: markup, styles, CSP lockstep, acceptance test, smoke checklist, smoke-verify scenario, CHANGELOG entry
+- [X] T018 [P] Add the release-log entry for the ko-fi button feature in `CHANGELOG.md` (feature number 017, summary of the change, CSP note)
+- [X] T019 Make the final commit(s) per OR-004 (one commit per accepted slice; implementation lands in slice commits), verify the worktree is clean and the branch `017-ko-fi-button` contains the full feature: markup, styles, CSP lockstep, acceptance test, smoke checklist, smoke-verify scenario, CHANGELOG entry
 
 **Checkpoint**: Feature complete, committed, clean tree.
 
