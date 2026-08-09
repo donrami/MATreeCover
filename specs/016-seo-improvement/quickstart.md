@@ -62,7 +62,7 @@ Expected: the JSON-LD block parses; `WebSite` (name, url, alternateName, no `Sea
 node scripts/smoke-verify.mjs https://abu-hamad.de/map/   # or follow tests/frontend/smoke_us5.md
 ```
 
-Expected: first visit opens the modal; the modal opens and scrolls to the visible story section; dismiss persistence is unchanged (dismiss → no modal next visit). No second story copy exists in the DOM.
+Expected: first visit opens the modal over the map (no scrolling); the modal holds only a link to the attribution page, which opens in a new tab; dismiss persistence is unchanged (dismiss → no modal next visit). No second story copy exists in the DOM.
 
 ## Q7 — Nothing regresses (US4, FR-012/013, SC-008)
 

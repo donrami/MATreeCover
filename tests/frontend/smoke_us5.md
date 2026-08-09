@@ -1,14 +1,14 @@
 # US5 Frontend Smoke Checklist — First-Visit Story Modal
 
 **Goal**: Verify the first-visit story modal. It must appear
-automatically once per browser, in German. It must present the story by
-opening and scrolling to the visible story section (`#about`) below the
-map, without holding a second copy of the story text. It must dismiss
-via the close button or Escape, with no layout shift and no reload.
-Dismissal persists on-device and degrades gracefully when storage is
-blocked. The modal is fully keyboard- and screen-reader-operable, never
-overlaps the existing UI at any supported width, and never shows on the
-attribution page.
+automatically once per browser, in German. It must show over the map
+without scrolling and contain only a link to the attribution page,
+which opens in a new tab; it holds no second copy of the story text.
+It must dismiss via the close button or Escape, with no layout shift
+and no reload. Dismissal persists on-device and degrades gracefully
+when storage is blocked. The modal is fully keyboard- and
+screen-reader-operable, never overlaps the existing UI at any
+supported width, and never shows on the attribution page.
 
 **Maps**: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-007,
 FR-008, FR-009, FR-010, FR-011, FR-012, FR-013, FR-014, SC-001,
@@ -34,25 +34,29 @@ copy, feature 016). The modal itself carries no story text.
       (tiles continue loading behind the overlay).
 - [ ] The page and the modal copy are in German (`lang="de"`).
 
-### Scenario 2 — Modal presents the visible story section (feature 016, Clarifications 2026-08-09)
+### Scenario 2 — Modal over the map with an attribution link (feature 016, Clarifications 2026-08-09)
 
-- [ ] Opening the modal scrolls the page to the visible `#about`
-      section (the story, the SPIEGEL article link, the CityTreeCover
-      link, and the source-repository link "Quellcode auf GitHub" are
-      in the section).
+- [ ] The modal opens centered over the map and the page does not
+      scroll (window.scrollY is unchanged by opening). The story
+      section `#about` below remains where it is; the modal never
+      scrolls to it.
+- [ ] The modal contains a single link to the attribution page with
+      `target="_blank" rel="noopener"`; activating it opens a new tab
+      resolving `https://abu-hamad.de/map/attribution` (HTTP 200).
 - [ ] The modal contains no story text of its own. The document has
       exactly one story copy: the acceptance test
       `test_visible_single_story_copy` asserts the SPIEGEL sentence
       occurs exactly once in the raw HTML.
-- [ ] The visible section states the central value: buildings are
-      colored by the average tree cover in their 60-m surroundings,
-      matching the legend text "Durchschnittlicher Baumanteil im
-      60-m-Umkreis".
-- [ ] All three links carry `target="_blank" rel="noopener"` and the
-      article title / project name / "Quellcode auf GitHub" as link
-      text (SPIEGEL: "Hitze in Europa: Wie gut Stadtbäume vor
-      extremer Wärme schützen"; CityTreeCover: the project name;
-      source repository: "Quellcode auf GitHub").
+- [ ] The visible `#about` section states the central value: buildings
+      are colored by the average tree cover in their 60-m
+      surroundings, matching the legend text "Durchschnittlicher
+      Baumanteil im 60-m-Umkreis".
+- [ ] All three story links in `#about` carry
+      `target="_blank" rel="noopener"` and the article title / project
+      name / "Quellcode auf GitHub" as link text (SPIEGEL: "Hitze in
+      Europa: Wie gut Stadtbäume vor extremer Wärme schützen";
+      CityTreeCover: the project name; source repository: "Quellcode
+      auf GitHub").
 - [ ] Activating the SPIEGEL link opens a new tab resolving the
       article (HTTP 200); activating the CityTreeCover link opens a
       new tab resolving `github.com/jcscaptures/CityTreeCover`;
@@ -64,9 +68,9 @@ copy, feature 016). The modal itself carries no story text.
 ### Scenario 3 — Dismissal and persistence (FR-004, FR-005, SC-002, SC-004)
 
 - [ ] Dismissing via the visible close button removes the modal in a
-      single action and returns the page to the map view (scroll
-      position top). Dismissing via Escape on a fresh visit works the
-      same way.
+      single action and leaves the scroll position unchanged (the
+      modal never scrolled the page). Dismissing via Escape on a
+      fresh visit works the same way.
 - [ ] Immediately after dismissal the map is fully interactive and
       there is no layout shift: the map container
       `getBoundingClientRect()` is unchanged before/after close and
@@ -91,8 +95,9 @@ copy, feature 016). The modal itself carries no story text.
 - [ ] On first load, focus moves into the modal automatically; a
       screen reader announces the dialog name "Wie diese Karte
       entstanden ist" from `aria-labelledby`.
-- [ ] Tab cycles within the modal (close button only, the modal holds
-      no links); focus never leaves the modal while it is open.
+- [ ] Tab cycles within the modal (the close button and the
+      attribution link); focus never leaves the modal while it is
+      open.
 - [ ] Escape closes the modal and focus returns to the page (body).
 - [ ] The story text is real text content (paragraphs and links),
       never `aria-hidden` or image-only, and lives outside hidden
