@@ -25,15 +25,15 @@
 
 **Purpose**: Project readiness; verify environment and baseline build
 
-- [ ] T001 Verify branch `016-seo-improvement` and clean worktree (`git branch --show-current`, `git status --porcelain`)
-- [ ] T002 [P] Bootstrap dev environment (`make bootstrap`); confirm `.venv/bin/python -m pytest`, `node`, `curl` available
-- [ ] T003 Confirm baseline publish works: `make publish` succeeds, `dist/` populated (pre-change state)
+- [X] T001 Verify branch `016-seo-improvement` and clean worktree (`git branch --show-current`, `git status --porcelain`)
+- [X] T002 [P] Bootstrap dev environment (`make bootstrap`); confirm `.venv/bin/python -m pytest`, `node`, `curl` available
+- [X] T003 Confirm baseline publish works: `make publish` succeeds, `dist/` populated (pre-change state)
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
 **Purpose**: Capture pre-change evidence BEFORE any source change; create the committed assessment report skeleton (FR-001)
 
-- [ ] T004 Capture pre-change evidence and create `verification/seo-assessment-2026-08-09.md`: fetch raw HTML of `https://abu-hamad.de/map/`, `/map/impressum`, `/map/attribution`; record title, meta description, canonical, OG tags, JSON-LD, visible text per page; note missing `robots.txt`/`sitemap.xml` (404 today); record gate status. Write the Current state section with fetch date 2026-08-09. MUST run before any `src/` change.
+- [X] T004 Capture pre-change evidence and create `verification/seo-assessment-2026-08-09.md`: fetch raw HTML of `https://abu-hamad.de/map/`, `/map/impressum`, `/map/attribution`; record title, meta description, canonical, OG tags, JSON-LD, visible text per page; note missing `robots.txt`/`sitemap.xml` (404 today); record gate status. Write the Current state section with fetch date 2026-08-09. MUST run before any `src/` change.
 
 **Checkpoint**: Foundation ready — user story implementation can begin. US1/US2 are P1; US3–US5 are P2.
 
@@ -44,17 +44,17 @@
 
 ### Tests User Story 1 (plan-mandated)
 
-- [ ] T005 [P] [US1] Create `tests/acceptance/test_seo_metadata.py` with metadata + visible-content assertions: single title 30–60 chars (never bare "Baumfläche"), single meta description 100–160 chars, canonical tag per page matching its canonical URL, pairwise-distinct descriptions; visible section outside hidden containers, ≥ 80 % informative words visible, distinctive story phrase occurs exactly once, no "the map above" reference. Write FIRST — fail before implementation.
+- [X] T005 [P] [US1] Create `tests/acceptance/test_seo_metadata.py` with metadata + visible-content assertions: single title 30–60 chars (never bare "Baumfläche"), single meta description 100–160 chars, canonical tag per page matching its canonical URL, pairwise-distinct descriptions; visible section outside hidden containers, ≥ 80 % informative words visible, distinctive story phrase occurs exactly once, no "the map above" reference. Write FIRST — fail before implementation.
 
 ### Implementation User Story 1
 
-- [ ] T006 [US1] Add descriptive German title (30–60 chars), meta description (100–160 chars), `<link rel="canonical" href="https://abu-hamad.de/map/">` to `src/site/index.html`
-- [ ] T007 [P] [US1] Add unique German meta description (100–160 chars) and canonical `https://abu-hamad.de/map/impressum` to `src/site/impressum.html` (title "Impressum – Mannheim Baumfläche" kept, FR-003)
-- [ ] T008 [P] [US1] Add unique German meta description (100–160 chars) and canonical `https://abu-hamad.de/map/attribution` to `src/site/attribution.html` (title "Datenquellen – Mannheim Baumfläche" kept, FR-003)
-- [ ] T009 [US1] Add visible informative `<section>` to `src/site/index.html` (story incl. SPIEGEL context / CityTreeCover / GitHub link, method 60-m radius + 30 % guideline, data sources DOP20/GDI-MA, accuracy disclaimer): visible in initial HTML, self-contained, single DOM copy
-- [ ] T010 [US1] Update story modal in `src/site/main.js`: opens and scrolls to the visible section; remove the modal's hidden story copy; dismiss persistence unchanged (feature 007, Clarifications 2026-08-09)
-- [ ] T011 [US1] Update `tests/frontend/smoke_us5.md` to the new modal interaction (modal opens/scrolls to visible section; dismiss → no modal next visit)
-- [ ] T012 [US1] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k "metadata or visible"` green; raw `dist/index.html` self-sufficient for non-JS crawlers (quickstart Q4)
+- [X] T006 [US1] Add descriptive German title (30–60 chars), meta description (100–160 chars), `<link rel="canonical" href="https://abu-hamad.de/map/">` to `src/site/index.html`
+- [X] T007 [P] [US1] Add unique German meta description (100–160 chars) and canonical `https://abu-hamad.de/map/impressum` to `src/site/impressum.html` (title "Impressum – Mannheim Baumfläche" kept, FR-003)
+- [X] T008 [P] [US1] Add unique German meta description (100–160 chars) and canonical `https://abu-hamad.de/map/attribution` to `src/site/attribution.html` (title "Datenquellen – Mannheim Baumfläche" kept, FR-003)
+- [X] T009 [US1] Add visible informative `<section>` to `src/site/index.html` (story incl. SPIEGEL context / CityTreeCover / GitHub link, method 60-m radius + 30 % guideline, data sources DOP20/GDI-MA, accuracy disclaimer): visible in initial HTML, self-contained, single DOM copy
+- [X] T010 [US1] Update story modal in `src/site/main.js`: opens and scrolls to the visible section; remove the modal's hidden story copy; dismiss persistence unchanged (feature 007, Clarifications 2026-08-09)
+- [X] T011 [US1] Update `tests/frontend/smoke_us5.md` to the new modal interaction (modal opens/scrolls to visible section; dismiss → no modal next visit)
+- [X] T012 [US1] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k "metadata or visible"` green; raw `dist/index.html` self-sufficient for non-JS crawlers (quickstart Q4)
 
 **Checkpoint**: User Story 1 fully functional and testable independently.
 
@@ -65,15 +65,15 @@
 
 ### Tests User Story 2 (plan-mandated)
 
-- [ ] T013 [P] [US2] Add link-preview assertions to `tests/acceptance/test_seo_metadata.py`: all ten properties present with correct values (`og:locale=de_DE`, `og:type=website`, `og:url` = canonical, `og:image:width/height` = 1200/630, `twitter:card=summary_large_image`, exactly one `og:*` per property); `og:image` filename exists in `dist/`, PNG/JPG, exactly 1200×630 px, under 1 MB. Write FIRST — fail before implementation.
+- [X] T013 [P] [US2] Add link-preview assertions to `tests/acceptance/test_seo_metadata.py`: all ten properties present with correct values (`og:locale=de_DE`, `og:type=website`, `og:url` = canonical, `og:image:width/height` = 1200/630, `twitter:card=summary_large_image`, exactly one `og:*` per property); `og:image` filename exists in `dist/`, PNG/JPG, exactly 1200×630 px, under 1 MB. Write FIRST — fail before implementation.
 
 ### Implementation User Story 2
 
-- [ ] T014 [US2] Add og:image export mode (1200×630 viewport render) to `scripts/parity-render.mjs` (reuse existing parity pipeline; no new dependencies)
-- [ ] T015 [US2] Generate `src/site/og-image.png` via the new export mode from the current map rendering: PNG 1200×630, < 1 MB; verify it visually matches the current map (no stale or wrong city); commit the asset (research D9)
-- [ ] T016 [P] [US2] Add full OG + Twitter Card tags to `<head>` of `src/site/index.html` (`og:title`, `og:description`, `og:type=website`, `og:url`, `og:site_name`, `og:locale=de_DE`, `og:image`, `og:image:width`, `og:image:height`, `twitter:card=summary_large_image`); absolute image URL
-- [ ] T017 [US2] Add `og-image.png` to `STATIC_FILES` in `src/pipeline/publish.py` (unhashed; hashed-bundle contract untouched)
-- [ ] T018 [US2] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k og` green; `file dist/og-image.png` shows 1200×630 PNG under 1 MB
+- [X] T014 [US2] Add og:image export mode (1200×630 viewport render) to `scripts/parity-render.mjs` (reuse existing parity pipeline; no new dependencies)
+- [X] T015 [US2] Generate `src/site/og-image.png` via the new export mode from the current map rendering: PNG 1200×630, < 1 MB; verify it visually matches the current map (no stale or wrong city); commit the asset (research D9)
+- [X] T016 [P] [US2] Add full OG + Twitter Card tags to `<head>` of `src/site/index.html` (`og:title`, `og:description`, `og:type=website`, `og:url`, `og:site_name`, `og:locale=de_DE`, `og:image`, `og:image:width`, `og:image:height`, `twitter:card=summary_large_image`); absolute image URL
+- [X] T017 [US2] Add `og-image.png` to `STATIC_FILES` in `src/pipeline/publish.py` (unhashed; hashed-bundle contract untouched)
+- [X] T018 [US2] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k og` green; `file dist/og-image.png` shows 1200×630 PNG under 1 MB
 
 **Checkpoint**: User Story 2 fully functional and testable independently.
 
@@ -84,14 +84,14 @@
 
 ### Tests User Story 3 (plan-mandated)
 
-- [ ] T019 [P] [US3] Add crawler-file assertions to `tests/acceptance/test_seo_metadata.py`: `dist/robots.txt` has `User-agent: *` and exactly the three data-file `Disallow:` lines, no `Disallow:` matching any HTML path; `dist/sitemap.xml` parses to exactly 3 `<loc>` values equal to the canonical URLs, no `<lastmod>`, no data files / hashed assets / `og-image`. Write FIRST — fail before implementation.
+- [X] T019 [P] [US3] Add crawler-file assertions to `tests/acceptance/test_seo_metadata.py`: `dist/robots.txt` has `User-agent: *` and exactly the three data-file `Disallow:` lines, no `Disallow:` matching any HTML path; `dist/sitemap.xml` parses to exactly 3 `<loc>` values equal to the canonical URLs, no `<lastmod>`, no data files / hashed assets / `og-image`. Write FIRST — fail before implementation.
 
 ### Implementation User Story 3
 
-- [ ] T020 [P] [US3] Create `src/site/robots.txt`: `User-agent: *`; `Disallow: /buildings.pmtiles`, `/trees.pmtiles`, `/buildings.geojson`; optional informational `Sitemap:` line; no HTML disallow; zone-level AI-bot policy NOT duplicated (research D5)
-- [ ] T021 [P] [US3] Create `src/site/sitemap.xml`: exactly `https://abu-hamad.de/map/`, `https://abu-hamad.de/map/impressum`, `https://abu-hamad.de/map/attribution`; no `lastmod` (staleness edge case)
-- [ ] T022 [US3] Add `robots.txt` + `sitemap.xml` to `STATIC_FILES` in `src/pipeline/publish.py` (unhashed; Worker serves from assets binding — no Worker code change)
-- [ ] T023 [US3] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k robots` green; both files in `dist/` with correct content types
+- [X] T020 [P] [US3] Create `src/site/robots.txt`: `User-agent: *`; `Disallow: /buildings.pmtiles`, `/trees.pmtiles`, `/buildings.geojson`; optional informational `Sitemap:` line; no HTML disallow; zone-level AI-bot policy NOT duplicated (research D5)
+- [X] T021 [P] [US3] Create `src/site/sitemap.xml`: exactly `https://abu-hamad.de/map/`, `https://abu-hamad.de/map/impressum`, `https://abu-hamad.de/map/attribution`; no `lastmod` (staleness edge case)
+- [X] T022 [US3] Add `robots.txt` + `sitemap.xml` to `STATIC_FILES` in `src/pipeline/publish.py` (unhashed; Worker serves from assets binding — no Worker code change)
+- [X] T023 [US3] Verify: `make publish`; `pytest tests/acceptance/test_seo_metadata.py -q -k robots` green; both files in `dist/` with correct content types
 
 **Checkpoint**: User Story 3 fully functional and testable independently.
 
@@ -100,11 +100,11 @@
 **Goal**: All existing tests, governance gates, performance budgets, and the map experience stay green/identical (FR-012/013).
 **Independent Test**: Full pytest suite, governance gates, interaction-latency harness, parity comparison (quickstart Q7).
 
-- [ ] T024 [P] [US4] Run full suite `pytest tests/ -q` — every existing test passes
-- [ ] T025 [P] [US4] Run governance gates `make check-public`, `make check-layout`, `make check-or005` — all green; no new large tracked files (OR-005)
-- [ ] T026 [P] [US4] Run interaction-latency harness `scripts/perf-measure.sh` — all 8 interactions ≤ 2 s, desktop interaction median ≤ 123 ms, first usable ≤ 10 s
-- [ ] T027 [P] [US4] Run parity comparison `node scripts/parity-render.mjs --archive dist/buildings.pmtiles --out /tmp/parity-016` — building values, colors, labels, popups identical to previous bundle; `og-image.png` visually matches current render
-- [ ] T028 [P] [US4] Verify CSP meta tag and security headers byte-identical (`git diff`); hashed-bundle contract unchanged (only `main.js`/`style.css`/`style.json`/`vendor/*` hashed); no Worker code change
+- [X] T024 [P] [US4] Run full suite `pytest tests/ -q` — every existing test passes
+- [X] T025 [P] [US4] Run governance gates `make check-public`, `make check-layout`, `make check-or005` — all green; no new large tracked files (OR-005)
+- [X] T026 [P] [US4] Run interaction-latency harness `scripts/perf-measure.sh` — all 8 interactions ≤ 2 s, desktop interaction median ≤ 123 ms, first usable ≤ 10 s
+- [X] T027 [P] [US4] Run parity comparison `node scripts/parity-render.mjs --archive dist/buildings.pmtiles --out /tmp/parity-016` — building values, colors, labels, popups identical to previous bundle; `og-image.png` visually matches current render
+- [X] T028 [P] [US4] Verify CSP meta tag and security headers byte-identical (`git diff`); hashed-bundle contract unchanged (only `main.js`/`style.css`/`style.json`/`vendor/*` hashed); no Worker code change
 
 **Checkpoint**: User Story 4 green — zero regressions.
 
@@ -113,9 +113,9 @@
 **Goal**: The committed report documents before/after state, every finding with severity + disposition, research sources, and reproducible verification (FR-001/011).
 **Independent Test**: Open `verification/seo-assessment-2026-08-09.md`; re-run every check in its Verification section; stated results reproduce (quickstart Q8).
 
-- [ ] T029 [US5] Complete `verification/seo-assessment-2026-08-09.md`: post-change evidence (fetched HTML, og-image, robots, sitemap, JSON-LD); findings table with severity (high/medium/low) and disposition (`fixed` / `documented` / `owner-side`) for every finding; research summary R-001…R-009 + decisions D1–D10 + source list; root-coordination lines (exact `Sitemap:` line, optional data-file disallows, Cloudflare 120-min `robots.txt` purge note) marked owner-side; tradeoffs (AI-bot citation effect); measurement (server-side only)
-- [ ] T030 [US5] Verify report reproducibility: run every check listed in the report's Verification section (fetch page, inspect head, validate sitemap, validate structured data, og:image checks) — each stated result reproduces (SC-001)
-- [ ] T031 [US5] Document server-side property verification (Search Console + Bing Webmaster via DNS record or file upload, zero client-side tracking) as owner steps in the report's Measurement section (FR-011/SC-009)
+- [X] T029 [US5] Complete `verification/seo-assessment-2026-08-09.md`: post-change evidence (fetched HTML, og-image, robots, sitemap, JSON-LD); findings table with severity (high/medium/low) and disposition (`fixed` / `documented` / `owner-side`) for every finding; research summary R-001…R-009 + decisions D1–D10 + source list; root-coordination lines (exact `Sitemap:` line, optional data-file disallows, Cloudflare 120-min `robots.txt` purge note) marked owner-side; tradeoffs (AI-bot citation effect); measurement (server-side only)
+- [X] T030 [US5] Verify report reproducibility: run every check listed in the report's Verification section (fetch page, inspect head, validate sitemap, validate structured data, og:image checks) — each stated result reproduces (SC-001)
+- [X] T031 [US5] Document server-side property verification (Search Console + Bing Webmaster via DNS record or file upload, zero client-side tracking) as owner steps in the report's Measurement section (FR-011/SC-009)
 
 **Checkpoint**: User Story 5 complete — audit trail reproducible.
 
@@ -123,10 +123,10 @@
 
 **Purpose**: Changelog, full validation, commit discipline
 
-- [ ] T032 [P] Add feature 016 entry to `CHANGELOG.md`
-- [ ] T033 Run quickstart.md validation Q1–Q8 end to end; record results
-- [ ] T034 Commit the implementation slice per OR-004 (one commit per accepted slice; plan already committed via `make commit-plan`)
-- [ ] T035 Final gate pass on the committed tree: pytest, `check-public`, `check-layout`, `check-or005`
+- [X] T032 [P] Add feature 016 entry to `CHANGELOG.md`
+- [X] T033 Run quickstart.md validation Q1–Q8 end to end; record results
+- [X] T034 Commit the implementation slice per OR-004 (one commit per accepted slice; plan already committed via `make commit-plan`)
+- [X] T035 Final gate pass on the committed tree: pytest, `check-public`, `check-layout`, `check-or005`
 
 ## Dependencies & Execution Order
 
