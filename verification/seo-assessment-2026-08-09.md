@@ -77,7 +77,7 @@ Crawler files and preview image:
 Visible content: the `#about` section (story, method, data sources, accuracy
 disclaimer) sits below the map in page flow, outside hidden containers. The
 distinctive SPIEGEL sentence occurs exactly once in the document. The
-first-visit story modal holds no story copy; it opens and scrolls to the
+first-visit story modal holds no story copy; it shows over the map with
 section (dismissal returns to the map view, persistence unchanged).
 
 ## Findings
@@ -98,6 +98,7 @@ evidence column.
 | F-08 | Root-domain `robots.txt` (blog origin) lacks the `Sitemap:` line and data-file disallows | low | owner-side |
 | F-09 | No JSON-LD `Dataset` record | low | documented |
 | F-10 | No AI-bot HTML restrictions at the map path | low | documented |
+| F-11 | Plain-HTTP requests to the canonical URL form served 200 by the worker (no scheme redirect; zone-level Always Use HTTPS not enabled) | high | fixed |
 
 ## Research summary
 
@@ -137,8 +138,9 @@ Key decisions applied in this feature:
 Every check below reproduces on the committed tree and on the deployed
 site (quickstart Q8). The acceptance suite enforces the machine-checkable
 rules; the other commands give the observed outputs. Deployment record:
-`validation/deploy-20260809-131358.json` (version
-`33a5e699-dd4c-4f1f-8bfb-32d7ff826618`).
+`validation/deploy-20260809-134930.json` (version
+`bc57cc98-bbce-4b77-8329-c8ed61a4b616`); initial deploy record
+`validation/deploy-20260809-131358.json` (version `33a5e699`).
 
 ```text
 make publish
@@ -182,7 +184,8 @@ colors, labels, and popups are identical (property samples pass at every
 zoom; style.json and popup code unchanged).
 
 Post-deploy live verification (2026-08-09, version
-`33a5e699-dd4c-4f1f-8bfb-32d7ff826618` live):
+`bc57cc98-bbce-4b77-8329-c8ed61a4b616` live; earlier versions
+`33a5e699` and `95a7966b` superseded):
 
 ```text
 curl -s https://abu-hamad.de/map/              # title 58 chars, meta description 156 chars,
@@ -193,6 +196,9 @@ curl -s https://abu-hamad.de/map/              # title 58 chars, meta descriptio
 curl -sI /map/robots.txt                       # 200, text/plain, nosniff
 curl -sI /map/sitemap.xml                      # 200, application/xml, nosniff
 curl -sI /map/og-image.png                     # 200, image/png, 211775 bytes, 1200x630
+curl -s -D - http://abu-hamad.de/map/           # 301 -> https://abu-hamad.de/map/ (single hop,
+                                               # worker scheme redirect, SC-002; also for
+                                               # /map/impressum and /map/robots.txt)
 bash scripts/perf-measure.sh https://abu-hamad.de/map/
                                                # cold LCP 444 ms, TTFB 138 ms, CLS 0
                                                # (budgets: LCP 2.5 s, CLS 0.1 @ p75)
@@ -200,9 +206,10 @@ bash scripts/perf-measure.sh https://abu-hamad.de/map/
 node scripts/smoke-verify.mjs https://abu-hamad.de/map/
                                                # popups, trees toggle, story-modal dismissal,
                                                # consoleErrors: []
-# browser, fresh profile: first visit shows the story modal and scrolls
-# to the visible #about section; dismiss removes it and persists;
-# reload does not re-show; story phrase occurs exactly once in the DOM
+# browser, fresh profile: first visit shows the story modal over the
+# map (no scrolling, scrollY unchanged) with an attribution-page link;
+# dismiss removes it and persists; reload does not re-show; the story
+# phrase occurs exactly once in the DOM
 ```
 
 The Google Rich Results Test runs against the deployed URL in a browser
@@ -223,7 +230,7 @@ deployed site (`https://abu-hamad.de/map/`, version
 | Q3 crawler files | PASS | `robots.txt` 200 `text/plain` with exactly three data-file `Disallow:` lines, no HTML disallow; `sitemap.xml` 200 XML, exactly three canonical URLs, no `lastmod`; root-coordination lines documented owner-side below |
 | Q4 visible content | PASS | 7 matches of SPIEGEL/CityTreeCover/Datenquellen in raw HTML; `-k visible` tests green (≥ 80 % visible words, single story copy, self-contained) |
 | Q5 structured data + CSP | PASS | JSON-LD parses; WebSite + Organization; no SearchAction; no FAQPage/LocalBusiness/Speakable; CSP meta byte-identical; Rich Results Test manual step documented above |
-| Q6 story modal | PASS | Browser (fresh profile): first visit shows modal and scrolls to `#about`; dismiss persists; reload does not re-show; story phrase once in DOM; `smoke-verify.mjs` consoleErrors empty |
+| Q6 story modal | PASS | Browser (fresh profile): first visit shows modal over the map, no scroll (scrollY unchanged), attribution link opens new tab; dismiss persists; reload does not re-show; story phrase once in DOM; `smoke-verify.mjs` consoleErrors empty |
 | Q7 nothing regresses | PASS | Gates green (check-public/check-layout/check-or005); full suite 173 passed; live perf: cold LCP 444 ms, CLS 0, 5 probed interactions median 13–14 ms (budgets 2 s / 123 ms); parity: 12886 initial, property samples OK |
 | Q8 report reproducible | PASS | Every check in this report's Verification section re-run against the deployed site; stated results reproduce |
 
