@@ -11,7 +11,8 @@
 - Visible crawlable content: `#about` section (story, method, data sources, accuracy disclaimer) in the raw HTML outside hidden containers; the first-visit story modal now opens and scrolls to the section, holding no second DOM copy (feature 007 preserved).
 - Structured data: inline JSON-LD `WebSite` + `Organization` (no `FAQPage`/`LocalBusiness`/`Speakable`, no `SearchAction`); CSP untouched (data block per HTML spec §4.12.1).
 - Crawler files: `/map/robots.txt` (three data-file disallows, no HTML disallow) and `/map/sitemap.xml` (exactly three canonical URLs, no `lastmod`); root-domain coordination documented owner-side.
-- Regression sweep: 173 tests green, gates clean (public/layout/or005/history), perf budgets hold (first usable 376 ms, interactions ≤ 14 ms median), parity property samples identical, hashed-bundle contract and CSP byte-identical.
+- Regression sweep: 173 tests green, gates clean (public/layout/or005/history), perf budgets hold (first usable 376 ms, interactions ≤ 14 ms median), parity property samples identical, hashed-bundle contract CSP byte-identical.
+- Deployed 2026-08-09: live site serves the feature 016 bundle (version `33a5e699-dd4c-4f1f-8bfb-32d7ff826618`); FR-013/FR-014 gates PASS; live verification: all three pages' metadata, robots.txt 200 text/plain, sitemap.xml 200 XML, og-image.png 200 PNG 1200×630 (211,775 B); live perf cold LCP 444 ms / CLS 0 / 5 interactions median 13–14 ms; deploy record `validation/deploy-20260809-131358.json`; quickstart Q1–Q8 recorded in the assessment report.
 
 # CHANGELOG
 

@@ -1,0 +1,36 @@
+{
+  "release_id": "2026.01",
+  "deployed_at": "2026-08-09T11:06:52+00:00",
+  "version_id": "33a5e699-dd4c-4f1f-8bfb-32d7ff826618",
+  "bundle": {
+    "file_count": 20,
+    "total_bytes": 171934459
+  },
+  "sha256": {
+    "attribution.html": "00b443f9c4ba40b58b7ac78f6bb17a50d2313f394c3b406e175c01e4032cd43a",
+    "boundary-68c2df610dd0.geojson": "68c2df610dd03570fc14fb07e767a26a1dc2001ffd4450f158966ef2f9bacb48",
+    "buildings.geojson": "964dd8cac348ffebce1a7aadf6ac2c1c5cd0af21f234b722fcf4bc3c0f3dd988",
+    "buildings.pmtiles": "61e8666cfcf01677ede6ced837d917321953656f2797f71c02e952068dbe8894",
+    "favicon.svg": "81b0e43b57f0580b7bc4f14964dc28dcd7ad57397c9397bc7590217f2f2fc0d9",
+    "impressum.html": "2fb0470e1e165bf14196d801f068063a0ceaf05880c7e8e8442e52ff4ff68b7e",
+    "index.html": "dc3591042a35ba049c631474126a6eebdbe56b4557f3bdc5b22c1dc852eb95bb",
+    "main-52fcfaa8b786.js": "eb806ff076c0a41f7a024ef0f24867b05bf5c770eb299e20d06140c92280af12",
+    "manifest.json": "7851af51ec130cfab1a22aaf806e20facc72417a3377f9b29b3f40acbc5022e7",
+    "og-image.png": "ce6b9d5ef7138b3e6e9dbb1a518dece79c5a1f66766585727c999b0d827462e9",
+    "robots.txt": "476ab93503f588538110e5256b3c94741e0eb0596836fa8c15657b2a46a2ef1b",
+    "sitemap.xml": "300380d686b79dd10b99a397ba44dd97f5dc8e778f45d244956a9cd973a4fbfa",
+    "stadtteile-4830756ae3b5.geojson": "4830756ae3b54098aa982267bcb1c30796aa35ef23d4ded2e2665a95d0c2c02c",
+    "style-7e0eb1f1ecae.json": "8dec84ea3f74916eadb0b16eced1af2e380fc717881b5170f8acc97e77d4dfa5",
+    "style-a7964fed5128.css": "a7964fed512895efb554bed06d4149981b1cc262e08c08110e37b834c28df909",
+    "trees.pmtiles": "27ad668cca325ab6903aa11ac6cbd4a68b7c1c4d5576fba0287806d33469b2ae",
+    "vendor/PROVENANCE.md": "941ca8797c4407b9fc3bf6e498732a7441f02b66a3823851b791bacc0e2e2638",
+    "vendor/maplibre-gl-43c1d886b5fd.css": "43c1d886b5fdf0aac4e7135bd6f84b823d9f48283a648012665f9be52c01389f",
+    "vendor/maplibre-gl-aa49ba072cb2.js": "aa49ba072cb2d4621c365e501867cbc0ffead0d4a42dd79cb8f182525082451a",
+    "vendor/pmtiles-4aa8f046955d.js": "4aa8f046955d77116fc1c9bb71bc49d174654342af8f1284aa34c625c71fd676"
+  },
+  "gates": {
+    "fr013": "PASS",
+    "fr014": "PASS",
+    "data_checksums": "PASS (3/3 R2 vs dist)"
+  }
+}

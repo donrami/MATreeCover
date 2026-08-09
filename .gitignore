@@ -51,6 +51,10 @@ Thumbs.db
 # Rolling pipeline run record (RSS/exit codes); regenerated per run
 validation/event.log.jsonl
 
+# Local perf-harness output (perf-measure.sh); results are recorded in
+# verification/ and validation/deploy-*.json, not committed raw
+validation/perf-runs/
+
 # CLI wrapper internals (per-invocation time/inputs scratch)
 validation/.time.*
 validation/.inputs.*

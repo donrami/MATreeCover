@@ -117,7 +117,10 @@ Key decisions applied in this feature:
 - D5: the zone-level AI-bot split (Cloudflare Managed Content) is already
   enforced. The map-path `robots.txt` does not duplicate it.
 - D6: CWV budgets stay unchanged. LCP 2.5 s, INP 200 ms, CLS 0.1 at p75.
-  Eight interactions at or under 2 s. Desktop median at or under 123 ms.
+  All 8 interactions at or under 2 s (feature 014 SC-008); the latency
+  harness probes 5 of them via CDP (zoom in/out, trees toggle, popup,
+  surface toggle), the remaining interactions are code-unchanged
+  (FR-012). Desktop median at or under 123 ms.
   First usable at or under 10 s.
 - D7: impressum and attribution keep their descriptive titles. Only
   descriptions and canonicals are added.
@@ -131,9 +134,11 @@ Key decisions applied in this feature:
 
 ## Verification
 
-Every check below reproduces on the committed tree (quickstart Q8). The
-acceptance suite enforces the machine-checkable rules; the other commands
-give the observed outputs.
+Every check below reproduces on the committed tree and on the deployed
+site (quickstart Q8). The acceptance suite enforces the machine-checkable
+rules; the other commands give the observed outputs. Deployment record:
+`validation/deploy-20260809-131358.json` (version
+`33a5e699-dd4c-4f1f-8bfb-32d7ff826618`).
 
 ```text
 make publish
@@ -163,7 +168,8 @@ make check-public                              # clean (315 files)
 make check-layout                              # clean (318 paths, 18 documented)
 make check-or005                               # OK
 bash scripts/perf-measure.sh <url>             # first usable 376 ms (budget 10 s)
-                                               # 5 interactions, median 13 to 14 ms (budget 2 s, 123 ms)
+                                               # 5 probed CDP interactions, median 13 to 14 ms
+                                               # (budget 2 s, 123 ms; 8-interaction set per SC-008)
 node scripts/parity-render.mjs --archive <pmtiles> --out <dir>
                                                # property samples OK at all zooms
                                                # initial rendered count 12886 (unchanged)
@@ -174,6 +180,52 @@ scrollbar, which narrows the parity viewport by 15 px. Rendered counts at
 z14/z16 drift accordingly (3473 to 3426, 185 to 172). Building values,
 colors, labels, and popups are identical (property samples pass at every
 zoom; style.json and popup code unchanged).
+
+Post-deploy live verification (2026-08-09, version
+`33a5e699-dd4c-4f1f-8bfb-32d7ff826618` live):
+
+```text
+curl -s https://abu-hamad.de/map/              # title 58 chars, meta description 156 chars,
+                                               # canonical https://abu-hamad.de/map/, full
+                                               # OG + twitter:card set, JSON-LD WebSite +
+                                               # Organization (parses; no SearchAction;
+                                               # no FAQPage/LocalBusiness/Speakable)
+curl -sI /map/robots.txt                       # 200, text/plain, nosniff
+curl -sI /map/sitemap.xml                      # 200, application/xml, nosniff
+curl -sI /map/og-image.png                     # 200, image/png, 211775 bytes, 1200x630
+bash scripts/perf-measure.sh https://abu-hamad.de/map/
+                                               # cold LCP 444 ms, TTFB 138 ms, CLS 0
+                                               # (budgets: LCP 2.5 s, CLS 0.1 @ p75)
+                                               # 5 probed CDP interactions, medians 13-14 ms
+node scripts/smoke-verify.mjs https://abu-hamad.de/map/
+                                               # popups, trees toggle, story-modal dismissal,
+                                               # consoleErrors: []
+# browser, fresh profile: first visit shows the story modal and scrolls
+# to the visible #about section; dismiss removes it and persists;
+# reload does not re-show; story phrase occurs exactly once in the DOM
+```
+
+The Google Rich Results Test runs against the deployed URL in a browser
+and is owner-side manual (quickstart Q5): expected zero errors. The
+machine-checkable JSON-LD evidence above (parse, types, absence of
+forbidden types) is enforced by the acceptance suite.
+
+## Quickstart Q1–Q8 validation results (2026-08-09)
+
+Run end to end per `specs/016-seo-improvement/quickstart.md` on the
+deployed site (`https://abu-hamad.de/map/`, version
+`33a5e699-dd4c-4f1f-8bfb-32d7ff826618`).
+
+| Scenario | Result | Evidence |
+|----------|--------|----------|
+| Q1 on-page metadata | PASS | `17 passed` in `test_seo_metadata.py`; live fetch: title 58 chars, description 156 chars, canonical + unique descriptions on all three pages; legal-page titles kept |
+| Q2 link previews | PASS | Ten OG/Twitter properties in raw HTML; `og-image.png` 200 `image/png`, 1200×630, 211,775 B; sharing previews verified by tag set (manual share check owner-side) |
+| Q3 crawler files | PASS | `robots.txt` 200 `text/plain` with exactly three data-file `Disallow:` lines, no HTML disallow; `sitemap.xml` 200 XML, exactly three canonical URLs, no `lastmod`; root-coordination lines documented owner-side below |
+| Q4 visible content | PASS | 7 matches of SPIEGEL/CityTreeCover/Datenquellen in raw HTML; `-k visible` tests green (≥ 80 % visible words, single story copy, self-contained) |
+| Q5 structured data + CSP | PASS | JSON-LD parses; WebSite + Organization; no SearchAction; no FAQPage/LocalBusiness/Speakable; CSP meta byte-identical; Rich Results Test manual step documented above |
+| Q6 story modal | PASS | Browser (fresh profile): first visit shows modal and scrolls to `#about`; dismiss persists; reload does not re-show; story phrase once in DOM; `smoke-verify.mjs` consoleErrors empty |
+| Q7 nothing regresses | PASS | Gates green (check-public/check-layout/check-or005); full suite 173 passed; live perf: cold LCP 444 ms, CLS 0, 5 probed interactions median 13–14 ms (budgets 2 s / 123 ms); parity: 12886 initial, property samples OK |
+| Q8 report reproducible | PASS | Every check in this report's Verification section re-run against the deployed site; stated results reproduce |
 
 ## Root coordination (owner-side, FR-010)
 
