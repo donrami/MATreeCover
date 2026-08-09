@@ -92,7 +92,8 @@ html, body {
 }
 
 /* Ko-fi donation button (feature 017): plain external link to the
- * owner's Ko-fi page (FR-008), official brand image at natural size.
+ * owner's Ko-fi page (FR-008), official brand image at natural size,
+ * living in the surface footer (expanded-only, spec Clarifications).
  * The 4px vertical padding enlarges the hit area to 44px without
  * changing the 36px visual (R-3, FR-004). Additive .ko-fi rules only
  * — no rule owned by features 012/014 is modified. */
@@ -173,11 +174,32 @@ html, body {
   border-top: none;
 }
 
+/* Sticky children are not reliably clipped by the collapsed body's
+ * overflow, so the footer is hidden explicitly when collapsed
+ * (FR-001: expanded-only, spec Clarifications). */
+#surface.is-collapsed .surface-footer {
+  display: none;
+}
+
 .surface-body-inner {
   padding: 10px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Ko-fi footer (feature 017, R-4): last child of the surface body,
+ * pinned to the sheet bottom when expanded via sticky, so the button
+ * stays visible without scrolling (FR-001). Auto-hidden when the
+ * surface is collapsed by the feature-012 body collapse. */
+.surface-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 8px 14px;
+  background: var(--panel-bg);
+  border-top: 1px solid var(--subtle);
 }
 
 /* Legend content inside the surface body (no longer its own card). */
@@ -463,29 +485,16 @@ html, body {
     flex-wrap: nowrap;
   }
 
-  /* Phones and small tablets (< 681 px): title + ko-fi + toggle share the
-   * first row, the tools move to a full-width second row. This keeps the
-   * collapsed strip at two rows on every mobile width (SC-001) and the
-   * chevron rightmost on the first row (feature 012). Measured at
-   * 375 px: 100 (title) + 143 (ko-fi) + 44 (toggle) + 2x8 gap = 303 <= 351;
-   * without the override the tools' ~300 px base width pushes the header
-   * to three rows (feature 017, R-4 revisited). */
+  /* Phones and small tablets (< 681 px): title + toggle share the
+   * first row, the tools move to a full-width second row. This keeps
+   * the collapsed strip at two rows on every mobile width (SC-001)
+   * and the chevron rightmost on the first row (feature 012). */
   @media (max-width: 680px) {
     .surface-title { order: 1; }
-    .ko-fi { order: 2; }
     .surface-toggle { order: 3; margin-left: auto; }
     .surface-tools { order: 4; flex-basis: 100%; }
   }
 
-  /* Very narrow phones (< 350 px): the 36px brand image cannot share the
-   * title row at 320 px (100 + 143 + 44 + 16 = 303 > 296), so the image
-   * drops to 32 px (ko-fi-button.md fallback, R-4). The 44px hit area is
-   * preserved by the touch-target group's min-height; the image stays
-   * vertically centered. */
-  @media (max-width: 350px) {
-    .ko-fi { padding: 0; }
-    .ko-fi img { height: 32px; width: auto; }
-  }
 
   /* The brightness label grows to fill its row and never forces the
    * header to overflow the viewport (edge case, small/landscape). Inline
@@ -585,20 +594,15 @@ html, body {
     max-width: 280px;
   }
 
+  /* The footer's own background paints over the panel's rounded bottom
+   * corners when expanded; matching radius restores the corner contour. */
+  .surface-footer {
+    border-radius: 0 0 8px 8px;
+  }
+
   #surface:not(.is-collapsed) .surface-body {
     max-height: calc(100vh - 96px);
   }
-
-  /* Ko-fi button joins the title row (feature 017): 100 (title) + 127
-   * (ko-fi at 32px) + 8 gap = 235 <= 254 available inside the 280px panel.
-   * The 36px brand image would overflow the title row (259 > 254), so the
-   * 32px fallback applies; order keeps title row 1, tools row 2, chevron
-   * row 3 as before (feature 012). */
-  .surface-title { order: 1; }
-  .ko-fi { order: 2; }
-  .ko-fi img { height: 32px; width: auto; }
-  .surface-tools { order: 3; }
-  .surface-toggle { order: 4; }
 }
 
 /* Reduced motion (FR-008): every surface state change is instant,

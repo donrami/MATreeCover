@@ -112,8 +112,9 @@ try {
   results.treesToggle = await evalJs(`(() => { const b = document.querySelector('#baeume'); const a0 = b.getAttribute('aria-pressed'); b.click(); const a1 = b.getAttribute('aria-pressed'); b.click(); const a2 = b.getAttribute('aria-pressed'); return a0 === 'false' && a1 === 'true' && a2 === 'false'; })()`);
 
   // ---- ko-fi donation button (feature 017, US1): desktop viewports, button
-  // visible in the surface header, click opens the exact Ko-fi URL in a new
-  // tab, the map page stays open and interactive in the original tab ----
+  // visible in the surface footer while the panel is expanded, hidden when
+  // collapsed (FR-001), click opens the exact Ko-fi URL in a new tab, the
+  // map page stays open and interactive in the original tab ----
   const koFi = { widths: {} };
   for (const width of [768, 1280, 1920]) {
     const w = {};
@@ -130,7 +131,9 @@ try {
     // dismiss the first-visit story modal so it cannot intercept the click
     await evalJs(`document.querySelector('#story-close')?.click(); true`);
     await sleep(300);
-    w.visibleInHeader = await evalJs(`(() => { const a = document.querySelector('.ko-fi'); if (!a) return false; const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= window.innerHeight; })()`);
+    w.visibleInFooter = await evalJs(`(() => { const a = document.querySelector('.ko-fi'); if (!a) return false; const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= window.innerHeight; })()`);
+    // expanded-only visibility (FR-001): collapsing hides the footer, re-expanding restores it
+    w.collapsedHidesFooter = await evalJs(`(() => { const t = document.querySelector('#surface-toggle'); const a = document.querySelector('.ko-fi'); if (!t || !a) return false; t.click(); const r1 = a.getBoundingClientRect(); const hidden = r1.width === 0 && r1.height === 0; t.click(); const r2 = a.getBoundingClientRect(); return hidden && r2.width > 0 && r2.height > 0; })()`);
     const koFiPos = await evalJs(`(() => { const a = document.querySelector('.ko-fi'); const r = a.getBoundingClientRect(); return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + r.height / 2) }; })()`);
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: koFiPos.x, y: koFiPos.y, button: 'left', clickCount: 1 });
     await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: koFiPos.x, y: koFiPos.y, button: 'left', clickCount: 1 });

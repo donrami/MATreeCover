@@ -3,8 +3,9 @@
 Raw-HTML assertions against ``dist/`` after ``make publish``, plus source
 assertions on ``src/site/style.css`` and ``workers/map/index.js``. Enforces
 the machine checks from ``specs/017-ko-fi-button/contracts/ko-fi-button.md``
-(markup shape FR-001/002/008, German text alternative FR-006, mobile
-touch-target group membership FR-004) and the CSP image-host extension from
+(markup shape FR-001/002/008, footer placement and exact accessible name
+FR-006, mobile touch-target group membership FR-004) and the CSP image-host
+extension from
 ``contracts/csp-image-host.md`` (FR-009: one origin in ``img-src``, all other
 directives byte-identical, Worker header byte-identical to the meta tag).
 
@@ -34,8 +35,9 @@ LOCKED_SCRIPT_SRC = "script-src 'self'"
 LOCKED_CONNECT_SRC = "connect-src 'self' https://sgx.geodatenzentrum.de"
 LOCKED_WORKER_SRC = "worker-src 'self' blob:"
 LOCKED_FONT_SRC = "font-src 'self' https://demotiles.maplibre.org"
-# German donation/support words the alt text must contain (FR-006).
-DONATION_WORDS = ("spenden", "unterstütz", "unterstutz", "fördern", "förder")
+# The owner-chosen accessible name (FR-006, spec Clarifications Q3): the
+# short German label "Unterstützen" — exact match, no other wording.
+KO_FI_ALT = "Unterstützen"
 
 
 def _raw(name: str) -> str:
@@ -92,26 +94,41 @@ def test_ko_fi_img_exact_attributes(ko_fi_img) -> None:
     assert 'height="36"' in ko_fi_img, "height reserves layout space (no CLS, R-8)"
 
 
-def test_ko_fi_img_german_donation_alt(ko_fi_img) -> None:
+def test_ko_fi_img_exact_alt(ko_fi_img) -> None:
     alt = re.search(r'alt="([^"]*)"', ko_fi_img)
     assert alt, "img alt attribute required (FR-006)"
-    alt_text = alt.group(1)
-    assert "ko-fi" in alt_text.lower(), "alt must mention Ko-fi"
-    assert any(word in alt_text.lower() for word in DONATION_WORDS), (
-        "alt must identify a donation/support link in German (FR-006)"
+    assert alt.group(1) == KO_FI_ALT, (
+        "accessible name must be exactly 'Unterstützen' (FR-006, spec Clarifications Q3)"
     )
 
 
-def test_ko_fi_dom_order_in_surface_header() -> None:
-    # R-4: direct child of .surface-header, DOM order title → tools →
-    # ko-fi → toggle so the chevron stays rightmost (feature 012).
-    header = re.search(r'<header class="surface-header">(.*?)</header>', _raw("index.html"), re.DOTALL)
+def test_ko_fi_in_surface_footer() -> None:
+    # R-4: the .ko-fi anchor sits inside .surface-footer, which is the
+    # last child of .surface-body (expanded-only visibility, FR-001).
+    html = _raw("index.html")
+    body = re.search(
+        r'<div class="surface-body" id="surface-body">(.*?)</div>\s*</section>',
+        html,
+        re.DOTALL,
+    )
+    assert body, "surface body required"
+    b = body.group(1)
+    footer = re.search(r'<footer class="surface-footer">(.*?)</footer>', b, re.DOTALL)
+    assert footer, ".surface-footer required as a child of .surface-body"
+    assert 'class="ko-fi"' in footer.group(1), "ko-fi anchor must live in the surface footer"
+    footer_start = b.find('<footer class="surface-footer">')
+    after_footer = b[footer_start + len('<footer class="surface-footer">'):]
+    after_footer = after_footer[after_footer.find("</footer>") + len("</footer>"):]
+    assert after_footer.strip() == "", ".surface-footer must be the last child of .surface-body"
+
+
+def test_no_ko_fi_in_surface_header() -> None:
+    # The header carries no donation chrome (spec Clarifications Q1).
+    header = re.search(
+        r'<header class="surface-header">(.*?)</header>', _raw("index.html"), re.DOTALL
+    )
     assert header, "surface header required"
-    h = header.group(1)
-    tools = h.find('class="surface-tools"')
-    ko = h.find('class="ko-fi"')
-    toggle = h.find('id="surface-toggle"')
-    assert -1 < tools < ko < toggle, "DOM order must be title → tools → ko-fi → toggle"
+    assert 'class="ko-fi"' not in header.group(1), "no .ko-fi element in the surface header"
 
 
 # ---------------------------------------------------------------------------
@@ -171,6 +188,42 @@ def test_ko_fi_base_styles_present() -> None:
     assert re.search(
         r"\.ko-fi\s+img\s*\{[^}]*width:\s*143px[^}]*height:\s*36px", css, re.DOTALL
     ), "brand image sized 143x36 (CLS reserve, R-8)"
+
+
+def test_ko_fi_footer_styles_present() -> None:
+    # R-4/FR-001: sticky footer pinned to the body bottom when expanded;
+    # centered banner (owner direction).
+    css = SRC_CSS.read_text(encoding="utf-8")
+    footer = re.search(r"^\s*\.surface-footer\s*\{([^}]*)\}", css, re.MULTILINE | re.DOTALL)
+    assert footer, ".surface-footer rule required"
+    f = footer.group(1)
+    assert "position: sticky" in f and "bottom: 0" in f, "sticky bottom footer (FR-001, R-4)"
+    assert "justify-content: center" in f, "banner centered in the footer"
+
+
+def test_ko_fi_hidden_when_collapsed() -> None:
+    # FR-001 expanded-only: the footer is hidden explicitly when the
+    # surface is collapsed (sticky children escape overflow clipping).
+    css = SRC_CSS.read_text(encoding="utf-8")
+    assert re.search(
+        r"#surface\.is-collapsed\s+\.surface-footer\s*\{[^}]*display:\s*none",
+        css,
+        re.DOTALL,
+    ), "footer hidden when collapsed (FR-001, expanded-only)"
+
+
+def test_no_header_packing_rules_remain() -> None:
+    # R-4: the header-packing rules were deleted with the header placement:
+    # the .ko-fi order override in the <=680px block and the <=350px
+    # image-shrink fallback (no longer needed in the full-width footer).
+    css = SRC_CSS.read_text(encoding="utf-8")
+    assert not re.search(r"\.ko-fi\s*\{\s*order:", css, re.DOTALL), (
+        "no .ko-fi order rule (header packing deleted)"
+    )
+    assert not re.search(r"\.ko-fi\s+img\s*\{[^}]*height:\s*32px", css, re.DOTALL), (
+        "no 32px image-shrink fallback"
+    )
+    assert not re.search(r"@media \(max-width: 350px\)", css), "no <=350px media block"
 
 
 def test_ko_fi_in_mobile_touch_target_group() -> None:
