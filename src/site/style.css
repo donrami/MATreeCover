@@ -568,9 +568,9 @@ html, body {
 
 .story-modal {
   position: relative;
-  margin: 286px auto 0;
+  margin: 170px auto 0;
   max-width: 480px;
-  max-height: calc(100vh - 310px);
+  max-height: calc(100vh - 210px);
   overflow-y: auto;
   background: var(--panel-bg);
   border: 1px solid var(--subtle);
