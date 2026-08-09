@@ -4,6 +4,15 @@
 - Supply chain: committed provenance record `src/site/vendor/PROVENANCE.md`; demotiles font origin declared as accepted risk.
 - Housekeeping: layout gate (`make check-layout`) enforces the documented tree; root strays relocated into `outputs/` (cited.md, s2_abstracts, info) or deleted with recorded disposition (progress.md); docs (DEVELOPMENT.md, CHANGELOG, feature history) now match reality.
 
+## 2026-08-09 — SEO assessment and improvement (016)
+- Committed assessment report `verification/seo-assessment-2026-08-09.md`: before/after evidence, findings with severity + disposition, research decisions D1–D10, reproducible verification, owner-side root-coordination lines, server-side measurement (zero client-side tracking, FR-001).
+- On-page metadata on all three pages: descriptive German title (30–60 chars, never the bare "Baumfläche"), unique German meta description (100–160 chars), canonical tag per page.
+- Link previews: full Open Graph + Twitter Card set on the map page (`og:locale=de_DE`, `twitter:card=summary_large_image`, declared 1200×630 dimensions) with a committed `src/site/og-image.png` generated from the current map render via the new `scripts/parity-render.mjs --export-og` mode (1200×630, 212 KB).
+- Visible crawlable content: `#about` section (story, method, data sources, accuracy disclaimer) in the raw HTML outside hidden containers; the first-visit story modal now opens and scrolls to the section, holding no second DOM copy (feature 007 preserved).
+- Structured data: inline JSON-LD `WebSite` + `Organization` (no `FAQPage`/`LocalBusiness`/`Speakable`, no `SearchAction`); CSP untouched (data block per HTML spec §4.12.1).
+- Crawler files: `/map/robots.txt` (three data-file disallows, no HTML disallow) and `/map/sitemap.xml` (exactly three canonical URLs, no `lastmod`); root-domain coordination documented owner-side.
+- Regression sweep: 173 tests green, gates clean (public/layout/or005/history), perf budgets hold (first usable 376 ms, interactions ≤ 14 ms median), parity property samples identical, hashed-bundle contract and CSP byte-identical.
+
 # CHANGELOG
 
 ## 2026-08-08 — performance fixes (014)

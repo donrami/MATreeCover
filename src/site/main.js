@@ -577,6 +577,9 @@ function wireStoryModal() {
     closeButton.removeEventListener('click', onCloseClick);
     storage.write(); // explicit dismissal only (close button / Escape)
     if (previousFocus && previousFocus.focus) previousFocus.focus();
+    // Feature 016: the story lives in the visible #about section below
+    // the map; dismissal returns to the map view (no layout shift).
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }
 
   function onKeydown(event) {
@@ -613,6 +616,14 @@ function wireStoryModal() {
     dialog.focus(); // FR-009: screen reader announces dialog from aria-labelledby
     document.addEventListener('keydown', onKeydown);
     closeButton.addEventListener('click', onCloseClick);
+    // Feature 016 (Clarifications 2026-08-09): the story copy lives in
+    // the visible #about section; the modal presents it by scrolling
+    // there instead of holding a second DOM copy.
+    const about = document.getElementById('about');
+    if (about) {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
   }
 
   open();

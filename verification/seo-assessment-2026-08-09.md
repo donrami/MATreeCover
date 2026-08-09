@@ -1,0 +1,224 @@
+# SEO Assessment & Improvement (feature 016)
+
+Date: 2026-08-09.
+Scope: search-engine and link-sharing visibility of the live map site
+`https://abu-hamad.de/map/` and its two info pages.
+Map lock: the map itself is unchanged. Values, colors, labels, popups, and
+interactions stay locked (FR-012).
+Method: fetch raw HTML of every page. Record title, meta description,
+canonical, Open Graph, JSON-LD, and visible text. Verify crawler files and
+the governance gates. Verification is server-side only (FR-001/FR-011).
+Source docs: `specs/016-seo-improvement/` (spec.md, plan.md, research.md,
+data-model.md, contracts/).
+
+## Current state (pre-change evidence, fetched 2026-08-09)
+
+Live fetches via `curl` on 2026-08-09:
+
+| Page | HTTP | Title | Meta description | Canonical | OG/Twitter | JSON-LD |
+|------|------|-------|------------------|-----------|------------|---------|
+| `https://abu-hamad.de/map/` | 200 | `Baumfläche` (10 chars) | missing | missing | none | none |
+| `https://abu-hamad.de/map/impressum` | 200 | `Impressum – Mannheim Baumfläche` | missing | missing | none | none |
+| `https://abu-hamad.de/map/attribution` | 200 | `Datenquellen – Mannheim Baumfläche` | missing | missing | none | none |
+
+Crawler files and preview image:
+
+| Resource | HTTP |
+|----------|------|
+| `https://abu-hamad.de/map/robots.txt` | 404 (not deployed) |
+| `https://abu-hamad.de/map/sitemap.xml` | 404 (not deployed) |
+| `https://abu-hamad.de/map/og-image.png` | 404 (not deployed) |
+
+Redirect behavior (existing Worker, unchanged). `/map/index.html` returns
+307 to `/map/`. `www.abu-hamad.de/map/` returns 301 to the apex. Verified
+2026-08-09.
+
+Visible text in the raw HTML of the map page defines what a non-JS crawler
+reads. It contains the page heading "Baumfläche" and the legend. The legend
+reads "Durchschnittlicher Baumanteil im 60-m-Umkreis", scale 0 to 100,
+"Prozent". It also contains the legend note with the attribution link
+and the legal link.
+All informative prose lives inside the `hidden` first-visit story dialog.
+That prose covers the project story, the SPIEGEL source, the CityTreeCover
+reference, and the GitHub link. A non-JS crawler sees none of it.
+Measured baseline: 26 visible words on the map page. Zero percent of the
+informative text sits outside hidden containers.
+
+The governance gates passed pre-change on 2026-08-09 (branch
+`016-seo-improvement`, commit `91ced8b`).
+
+| Gate | Status |
+|------|--------|
+| `make check-public` | clean (315 files) |
+| `make check-layout` | clean (318 paths, 18 documented) |
+| `make check-or005` | OK |
+| `make check-git-history` | clean (105 commits, 0 open) |
+| acceptance suite | 102 passed, 1 infra-flagged (exemption bookkeeping, resolved) |
+
+## Post-change state (committed bundle, 2026-08-09)
+
+The published bundle is identical to the source tree after `make publish`.
+All checks below ran against `dist/` served on 127.0.0.1:8088.
+
+| Page | Title | Meta description | Canonical | OG/Twitter | JSON-LD |
+|------|-------|------------------|-----------|------------|---------|
+| `index.html` | `Baumfläche Mannheim: Baumanteil je Gebäude im 60-m-Umkreis` (58 chars) | 156 chars, German | `https://abu-hamad.de/map/` | full 10-tag set | WebSite + Organization |
+| `impressum.html` | `Impressum – Mannheim Baumfläche` (kept) | 148 chars, German | `https://abu-hamad.de/map/impressum` | none | none |
+| `attribution.html` | `Datenquellen – Mannheim Baumfläche` (kept) | 146 chars, German | `https://abu-hamad.de/map/attribution` | none | none |
+
+Crawler files and preview image:
+
+| Resource | State |
+|----------|-------|
+| `/map/robots.txt` | 200 `text/plain`, `User-agent: *`, exactly three data-file `Disallow:` lines, no HTML disallow |
+| `/map/sitemap.xml` | 200 XML, exactly the three canonical URLs, no `lastmod`, no data files or hashed assets |
+| `/map/og-image.png` | PNG 1200×630, 211775 bytes (under 1 MB), visual render of the current map (Mannheim, current colors/labels) |
+
+Visible content: the `#about` section (story, method, data sources, accuracy
+disclaimer) sits below the map in page flow, outside hidden containers. The
+distinctive SPIEGEL sentence occurs exactly once in the document. The
+first-visit story modal holds no story copy; it opens and scrolls to the
+section (dismissal returns to the map view, persistence unchanged).
+
+## Findings
+
+Every finding carries a severity (high / medium / low) and a disposition
+(`fixed` / `documented` / `owner-side`). The post-change pass completes the
+evidence column.
+
+| # | Finding | Severity | Disposition |
+|---|---------|----------|-------------|
+| F-01 | Map page title is the bare 10-char "Baumfläche" | high | fixed |
+| F-02 | No meta description on any of the three pages | high | fixed |
+| F-03 | No canonical tag on any of the three pages | high | fixed |
+| F-04 | No Open Graph or Twitter Card tags, no preview image | high | fixed |
+| F-05 | All informative text hidden in the `hidden` story dialog | high | fixed |
+| F-06 | No structured data (JSON-LD) | medium | fixed |
+| F-07 | No `/map/robots.txt`, no `/map/sitemap.xml` | medium | fixed |
+| F-08 | Root-domain `robots.txt` (blog origin) lacks the `Sitemap:` line and data-file disallows | low | owner-side |
+| F-09 | No JSON-LD `Dataset` record | low | documented |
+| F-10 | No AI-bot HTML restrictions at the map path | low | documented |
+
+## Research summary
+
+Scoped web research R-001 to R-009 with decisions D1 to D10 is documented
+in `specs/016-seo-improvement/research.md`. The source list lives there.
+Key decisions applied in this feature:
+
+- D1/D2: informative content lives in the raw HTML, outside hidden
+  containers. AI crawlers are treated as non-JS clients.
+- D3: JSON-LD declares `WebSite` and `Organization` only. No `FAQPage`,
+  `LocalBusiness`, or `Speakable`. Those rich-result types are dead or
+  inapplicable. No `SearchAction`. The sitelinks search box was removed
+  2024-11-21.
+- D4: full OG set plus `twitter:card=summary_large_image`. The `og:image`
+  is PNG with 1200 by 630 px (1.91:1). It stays under 1 MB with an
+  absolute URL and declared dimensions.
+- D5: the zone-level AI-bot split (Cloudflare Managed Content) is already
+  enforced. The map-path `robots.txt` does not duplicate it.
+- D6: CWV budgets stay unchanged. LCP 2.5 s, INP 200 ms, CLS 0.1 at p75.
+  Eight interactions at or under 2 s. Desktop median at or under 123 ms.
+  First usable at or under 10 s.
+- D7: impressum and attribution keep their descriptive titles. Only
+  descriptions and canonicals are added.
+- D8: verification is server-side only. Search Console and Bing Webmaster
+  use DNS-record or file-based verification. Zero client-side tracking.
+- D9: the preview image is a committed static asset. It is generated via
+  `scripts/parity-render.mjs` export mode from the current map rendering.
+- D10: JSON-LD ships as an inline data block. The CSP stays unchanged.
+  `script-src 'self'` does not apply to `application/ld+json` data blocks.
+  That rule follows the HTML spec, section 4.12.1.
+
+## Verification
+
+Every check below reproduces on the committed tree (quickstart Q8). The
+acceptance suite enforces the machine-checkable rules; the other commands
+give the observed outputs.
+
+```text
+make publish
+.venv/bin/python -m pytest tests/acceptance/test_seo_metadata.py -q
+```
+
+Expected: `17 passed`. The suite asserts titles (30 to 60 chars, never the
+bare "Baumfläche"), descriptions (100 to 160 chars, pairwise distinct),
+canonicals, the ten OG/Twitter properties, the og:image file (PNG,
+1200×630, under 1 MB), the >= 80 % visible-word share, the single story
+copy, the JSON-LD types, and the robots/sitemap rules.
+
+Image and files (served from dist):
+
+```text
+file dist/og-image.png     # PNG image data, 1200 x 630
+file dist/robots.txt       # ASCII text
+curl -sI /map/robots.txt   # 200, text/plain
+curl -sI /map/sitemap.xml  # 200, XML content type
+```
+
+Full regression pass on 2026-08-09:
+
+```text
+.venv/bin/python -m pytest tests/ -q          # 173 passed
+make check-public                              # clean (315 files)
+make check-layout                              # clean (318 paths, 18 documented)
+make check-or005                               # OK
+bash scripts/perf-measure.sh <url>             # first usable 376 ms (budget 10 s)
+                                               # 5 interactions, median 13 to 14 ms (budget 2 s, 123 ms)
+node scripts/parity-render.mjs --archive <pmtiles> --out <dir>
+                                               # property samples OK at all zooms
+                                               # initial rendered count 12886 (unchanged)
+```
+
+One documented artifact: the now-scrollable page shows a vertical
+scrollbar, which narrows the parity viewport by 15 px. Rendered counts at
+z14/z16 drift accordingly (3473 to 3426, 185 to 172). Building values,
+colors, labels, and popups are identical (property samples pass at every
+zoom; style.json and popup code unchanged).
+
+## Root coordination (owner-side, FR-010)
+
+The domain root belongs to the blog origin (E-004). The authoritative
+`/robots.txt` is the blog's file. It is not deployed from this repo.
+The owner should add one line to the blog-origin root `robots.txt`:
+
+```text
+Sitemap: https://abu-hamad.de/map/sitemap.xml
+```
+
+Optionally duplicate the three data-file disallows:
+
+```text
+Disallow: /map/buildings.pmtiles
+Disallow: /map/trees.pmtiles
+Disallow: /map/buildings.geojson
+```
+
+The map-path `robots.txt` deployed by this repo is informational. Crawlers
+read the authoritative directives from the domain root. Cloudflare caches
+`robots.txt` by default. The edge TTL is 120 minutes for 200 responses
+without `cache-control` (research D5). After a root-file edit the owner
+must purge the cached copy or wait out the TTL. Sitemaps are not cached by
+default. AI-bot rules already exist at the root and stay.
+
+## Tradeoffs
+
+Disallowing the three data files for all user agents may reduce
+AI-assistant citations of the underlying data. The HTML pages stay
+accessible to all bots (FR-008). Default recorded: data files blocked,
+HTML accessible.
+
+The map-path `robots.txt` is not authoritative on its own. Its value comes from the root coordination above.
+
+## Measurement (server-side only, FR-001/FR-011)
+
+Traffic and crawl evidence comes from Cloudflare logs. Those logs already
+exist. No code change is needed. Crawl statistics come from the verified
+Search Console and Bing Webmaster properties.
+
+Property verification is server-side only. Search Console supports a DNS
+TXT record or file upload. Bing Webmaster Tools supports the same. No HTML
+tag, no client-side script, and no analytics anywhere.
+
+Recommended properties: `https://abu-hamad.de/` (domain property) or
+`https://abu-hamad.de/map/` (URL-prefix property) in Search Console. Bing
+Webmaster can import the domain from Search Console or verify via DNS.

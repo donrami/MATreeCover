@@ -8,6 +8,7 @@ labels, and JSON round-trip stability.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 SITE_DIR = Path(__file__).resolve().parents[2] / "src" / "site"
@@ -132,7 +133,12 @@ def test_legend_labels_present() -> None:
 
 def test_title_baumflaeche() -> None:
     html = INDEX_PATH.read_text(encoding="utf-8")
-    assert "<title>Baumfläche</title>" in html  # FR-013
+    # Feature 016 (FR-002): the map page carries a descriptive German
+    # title, 30-60 chars, never the bare "Baumfläche".
+    title = re.search(r"<title>(.*?)</title>", html)
+    assert title, "expected a <title> in index.html"
+    assert title.group(1) != "Baumfläche"
+    assert 30 <= len(title.group(1)) <= 60
 
 
 def test_city_panel_present() -> None:
