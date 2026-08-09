@@ -90,24 +90,6 @@
     </div>
   </section>
 
-  <section id="about" aria-labelledby="about-title">
-    <h2 id="about-title">Wie diese Karte entstanden ist</h2>
-    <p>Jedes Gebäude ist nach dem durchschnittlichen Baumanteil in seinem 60-m-Umkreis eingefärbt: Je grüner, desto mehr Bäume in der Umgebung.</p>
-    <p>Im Juli 2026 berichtete der SPIEGEL, wie gut Stadtbäume vor extremer Hitze schützen: Rund 30 Prozent des 60-m-Umkreises sollten beschattet sein. Aus der Lektüre entstand das Referenzprojekt <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>, das Gebäude nach dem Baumanteil ihrer Umgebung einfärbt. Diese Karte überträgt die Idee auf Mannheim.</p>
-    <p>Im Juni und Juli 2026 erlebte Deutschland eine Hitzewelle. In dicht bebauten Vierteln wird es besonders heiß. Bäume sind der natürliche Schatten der Stadt. Diese Karte zeigt, wo Bäume fehlen: Rote und orange Gebäude stehen in Umgebungen mit wenig Schatten.</p>
-    <p class="story-links">
-      <a href="https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226" target="_blank" rel="noopener">Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen</a>
-      <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>
-      <a href="https://github.com/donrami/MATreeCover" target="_blank" rel="noopener">Quellcode auf GitHub</a>
-    </p>
-    <h3>Methode</h3>
-    <p>Der Baumanteil wird für jedes Gebäude aus dem durchschnittlichen Baumkronenanteil in seinem 60-m-Umkreis berechnet. Als Richtwert gelten rund 30 Prozent beschatteter Umkreis.</p>
-    <h3>Datenquellen</h3>
-    <p>Die Karte kombiniert Luftbilder (DOP20) des Landesamts für Geoinformation und Landentwicklung (LGL) mit der Stadtgrenze und den Stadtteilen der Stadt Mannheim (GDI-MA) und wiederverwendeten Modellgewichten aus dem Referenzprojekt CityTreeCover. <a href="attribution">Details unter Datenquellen</a>.</p>
-    <h3>Genauigkeit</h3>
-    <p>Die Baumwerte entstehen aus einer automatischen Auswertung von Luftbildern. Die Erkennung ist nicht fehlerfrei: Flächen ohne Bäume können als Baumkronen erfasst werden, einzelne Bäume können übersehen werden. Die Werte sind eine grobe Übersicht, keine exakte Messung und keine rechtliche oder wissenschaftliche Messgrundlage.</p>
-  </section>
-
   <div id="attribution"></div>
   <a class="legal-link" href="impressum">Impressum</a>
 
@@ -115,8 +97,20 @@
     <div class="story-modal" id="story-dialog" role="dialog" aria-modal="true" aria-labelledby="story-title" tabindex="-1">
       <h2 id="story-title">Wie diese Karte entstanden ist</h2>
       <button id="story-close" type="button" class="story-close" aria-label="Schließen">✕</button>
-      <p class="story-pointer">Diese Karte zeigt den Baumanteil in Mannheim. Details zu Methode und Datenquellen findest du auf der Seite „Datenquellen“.</p>
-      <p class="story-links"><a href="attribution" target="_blank" rel="noopener">Datenquellen ansehen</a></p>
+      <p>Jedes Gebäude ist nach dem durchschnittlichen Baumanteil in seinem 60-m-Umkreis eingefärbt: Je grüner, desto mehr Bäume in der Umgebung.</p>
+      <p>Im Juli 2026 berichtete der SPIEGEL, wie gut Stadtbäume vor extremer Hitze schützen: Rund 30 Prozent des 60-m-Umkreises sollten beschattet sein. Aus der Lektüre entstand das Referenzprojekt <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>, das Gebäude nach dem Baumanteil ihrer Umgebung einfärbt. Diese Karte überträgt die Idee auf Mannheim.</p>
+      <p>Im Juni und Juli 2026 erlebte Deutschland eine Hitzewelle. In dicht bebauten Vierteln wird es besonders heiß. Bäume sind der natürliche Schatten der Stadt. Diese Karte zeigt, wo Bäume fehlen: Rote und orange Gebäude stehen in Umgebungen mit wenig Schatten.</p>
+      <p class="story-links">
+        <a href="https://www.spiegel.de/wissenschaft/natur/hitze-in-europa-wie-gut-stadtbaeume-vor-extremer-waerme-schuetzen-a-9a0b26e5-f8ae-4fa5-a897-2f2b026f5226" target="_blank" rel="noopener">Hitze in Europa: Wie gut Stadtbäume vor extremer Wärme schützen</a>
+        <a href="https://github.com/jcscaptures/CityTreeCover" target="_blank" rel="noopener">CityTreeCover</a>
+        <a href="https://github.com/donrami/MATreeCover" target="_blank" rel="noopener">Quellcode auf GitHub</a>
+      </p>
+      <h3>Methode</h3>
+      <p>Der Baumanteil wird für jedes Gebäude aus dem durchschnittlichen Baumkronenanteil in seinem 60-m-Umkreis berechnet. Als Richtwert gelten rund 30 Prozent beschatteter Umkreis.</p>
+      <h3>Datenquellen</h3>
+      <p>Die Karte kombiniert Luftbilder (DOP20) des Landesamts für Geoinformation und Landentwicklung (LGL) mit der Stadtgrenze und den Stadtteilen der Stadt Mannheim (GDI-MA) und wiederverwendeten Modellgewichten aus dem Referenzprojekt CityTreeCover. <a href="attribution" target="_blank" rel="noopener">Details unter Datenquellen</a>.</p>
+      <h3>Genauigkeit</h3>
+      <p>Die Baumwerte entstehen aus einer automatischen Auswertung von Luftbildern. Die Erkennung ist nicht fehlerfrei: Flächen ohne Bäume können als Baumkronen erfasst werden, einzelne Bäume können übersehen werden. Die Werte sind eine grobe Übersicht, keine exakte Messung und keine rechtliche oder wissenschaftliche Messgrundlage.</p>
     </div>
   </div>
 

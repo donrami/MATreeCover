@@ -109,10 +109,10 @@ Crawlable content on the map page (FR-006). Implementation: a visible `<section>
 | Field | Rule |
 |-------|------|
 | content | Project story (SPIEGEL context, CityTreeCover reference, GitHub link), method (60-m radius, 30 % guideline), data sources, accuracy disclaimer (feature 010). |
-| visibility | In initial HTML, outside `hidden`, `display:none`, `[hidden]`, or other hidden containers; readable without interaction or JavaScript. |
-| single_copy | Story text exists in EXACTLY one DOM location — the visible section is the canonical copy (Clarifications 2026-08-09). |
+| visibility | Superseded (owner decision 2026-08-09): the story lives in the hidden modal; no visible-section criterion applies. |
+| single_copy | Story text exists in EXACTLY one DOM location — inside the modal (Clarifications 2026-08-09, final). |
 | self_contained | Must not reference "the map above" (non-JS crawlers see no map); explains itself. |
-| word_share | ≥ 80 % of informative words (story, method, sources, disclaimer) outside hidden containers (SC-004). |
+| word_share | Superseded (owner decision 2026-08-09): SC-004 no longer applies. |
 
 Validation: acceptance test extracts informative text, counts words inside vs outside hidden containers, asserts ≥ 80 % and exactly one occurrence of the story copy.
 
@@ -123,7 +123,7 @@ Feature 007 preservation (Clarifications 2026-08-09).
 | Field | Rule |
 |-------|------|
 | trigger | First visit opens the modal as today. |
-| content_source | Modal presents the visible section content — it opens/scrolls to the section instead of holding its own hidden copy. No second story text in the DOM. |
+| content_source | Modal holds the full story text itself (single copy). It shows over the map without scrolling; links open in new tabs. No second story text in the DOM. |
 | dismiss_persistence | Unchanged (dismiss → no modal on later visits). |
 | smoke | `tests/frontend/smoke_us5.md` updated to the new interaction; headless `scripts/smoke-verify.mjs` covers it. |
 

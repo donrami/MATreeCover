@@ -1,13 +1,14 @@
 """SEO metadata acceptance tests (feature 016).
 
 Raw-HTML assertions against ``dist/`` after ``make publish``. Covers the
-on-page metadata contract (FR-002/003/004), the visible-content contract
-(FR-006, single DOM copy, >= 80 % rule), the link-preview contract
-(FR-005), the structured-data contract (FR-007), and the crawler-files
-contract (FR-008/009). Every machine-checkable rule from the contracts is
-enforced here, never by documentation alone.
+on-page metadata contract (FR-002/003/004), the story-in-modal contract
+(FR-006, final Clarifications 2026-08-09: full story in the first-visit
+modal, single DOM copy, nothing under the map), the link-preview
+contract (FR-005), the structured-data contract (FR-007), and the
+crawler-files contract (FR-008/009). Every machine-checkable rule from
+the contracts is enforced here, never by documentation alone.
 
-Quickstart filters: ``-k "metadata or visible"``, ``-k og``,
+Quickstart filters: ``-k "metadata or story"``, ``-k og``,
 ``-k robots``, ``-k jsonld``.
 """
 
@@ -64,11 +65,10 @@ class PageParser(HTMLParser):
         self.jsonld: list[str] = []
         self.visible_parts: list[str] = []
         self.hidden_parts: list[str] = []
-        self.about_parts: list[str] = []
-        self.about_hidden: bool | None = None
+        self.modal_parts: list[str] = []
         self._title_buf: list[str] | None = None
         self._jsonld_buf: list[str] | None = None
-        self._in_about = False
+        self._in_modal = False
 
     def _is_hidden(self, attrs: list[tuple[str, str | None]]) -> bool:
         a = dict(attrs)
@@ -102,9 +102,8 @@ class PageParser(HTMLParser):
             self._title_buf = []
         elif tag == "script" and a.get("type") == "application/ld+json":
             self._jsonld_buf = []
-        elif tag == "section" and a.get("id") == "about":
-            self.about_hidden = any(h for _, h in self.stack)
-            self._in_about = True
+        elif tag == "div" and a.get("id") == "story-dialog":
+            self._in_modal = True
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "title" and self._title_buf is not None:
@@ -113,8 +112,8 @@ class PageParser(HTMLParser):
         if tag == "script" and self._jsonld_buf is not None:
             self.jsonld.append("".join(self._jsonld_buf).strip())
             self._jsonld_buf = None
-        if tag == "section" and self._in_about:
-            self._in_about = False
+        if tag == "div" and self._in_modal:
+            self._in_modal = False
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i][0] == tag:
                 del self.stack[i:]
@@ -131,8 +130,8 @@ class PageParser(HTMLParser):
             return
         if not data.strip():
             return
-        if self._in_about:
-            self.about_parts.append(data.strip())
+        if self._in_modal:
+            self.modal_parts.append(data.strip())
         if any(h for _, h in self.stack):
             self.hidden_parts.append(data.strip())
         else:
@@ -153,10 +152,6 @@ def _raw(name: str) -> str:
     if not path.exists():
         pytest.skip(f"dist/{name} missing; run make publish first")
     return path.read_text(encoding="utf-8")
-
-
-def _words(text: str) -> list[str]:
-    return WORD_RE.findall(text)
 
 
 @pytest.fixture(scope="module")
@@ -251,38 +246,28 @@ def test_link_preview_og_image_file() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Visible content (FR-006, quickstart Q4)
+# Story content in the first-visit modal (FR-006, quickstart Q4, final
+# Clarifications 2026-08-09: full story restored in the modal, nothing
+# under the map)
 # ---------------------------------------------------------------------------
 
 
-def test_visible_section_present_and_visible(map_page) -> None:
-    assert map_page.about_parts, "no visible informative <section id=about> found"
-    assert map_page.about_hidden is False, "informative section must not sit in a hidden container"
-    about = " ".join(map_page.about_parts)
-    assert "Genauigkeit" in about, "accuracy disclaimer missing from the visible section"
-    assert "Details unter Datenquellen" in about, "data-source link missing from the visible section"
-    assert "Quellcode auf GitHub" in about, "source-repository link missing"
+def test_no_visible_story_section(map_page) -> None:
+    raw = _raw("index.html")
+    assert '<section id="about"' not in raw, "no visible story section may exist under the map"
 
 
-def test_visible_informative_share_at_least_80_percent(map_page) -> None:
-    about_words = _words(" ".join(map_page.about_parts))
-    assert about_words, "informative section empty"
-    vocab = {w.lower() for w in about_words}
-    hidden_words = _words(" ".join(map_page.hidden_parts))
-    hidden_informative = sum(1 for w in hidden_words if w.lower() in vocab)
-    share = 1.0 - hidden_informative / len(vocab)
-    assert share >= 0.8, f"only {share:.0%} of informative words visible (need >= 80%)"
+def test_story_lives_in_modal(map_page) -> None:
+    assert map_page.modal_parts, "story content missing from the first-visit modal"
+    modal = " ".join(map_page.modal_parts)
+    assert "Genauigkeit" in modal, "accuracy disclaimer missing from the modal"
+    assert "Details unter Datenquellen" in modal, "data-source link missing from the modal"
+    assert "Quellcode auf GitHub" in modal, "source-repository link missing"
 
 
-def test_visible_single_story_copy(map_page) -> None:
+def test_story_single_dom_copy(map_page) -> None:
     raw = _raw("index.html")
     assert raw.count(STORY_PHRASE) == 1, "story copy must occur exactly once in the DOM"
-
-
-def test_visible_section_self_contained(map_page) -> None:
-    assert map_page.about_parts, "no visible informative <section id=about> found"
-    about = " ".join(map_page.about_parts).lower()
-    assert "oben" not in about, "visible section must not reference the map above"
 
 
 # ---------------------------------------------------------------------------

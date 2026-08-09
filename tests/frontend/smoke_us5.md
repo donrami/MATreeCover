@@ -2,8 +2,8 @@
 
 **Goal**: Verify the first-visit story modal. It must appear
 automatically once per browser, in German. It must show over the map
-without scrolling and contain only a link to the attribution page,
-which opens in a new tab; it holds no second copy of the story text.
+without scrolling and hold the full story text (feature 007 content
+restored); it is the single DOM copy of the story.
 It must dismiss via the close button or Escape, with no layout shift
 and no reload. Dismissal persists on-device and degrades gracefully
 when storage is blocked. The modal is fully keyboard- and
@@ -21,9 +21,10 @@ static server (nginx or equivalent). Open the served URL in a clean
 browser profile with no stored dismissal state and WebGL 2 enabled.
 
 The story wording is normative in
-`specs/007-first-visit-story/contracts/story-content.md` and lives in
-the visible `#about` section of `src/site/index.html` (single DOM
-copy, feature 016). The modal itself carries no story text.
+`specs/007-first-visit-story/contracts/story-content.md` and lives
+inside the first-visit story modal of `src/site/index.html` (single
+DOM copy, feature 016 final Clarifications 2026-08-09). No story
+text exists outside the modal.
 
 ## Checks
 
@@ -34,34 +35,31 @@ copy, feature 016). The modal itself carries no story text.
       (tiles continue loading behind the overlay).
 - [ ] The page and the modal copy are in German (`lang="de"`).
 
-### Scenario 2 — Modal over the map with an attribution link (feature 016, Clarifications 2026-08-09)
+### Scenario 2 — Modal over the map with the full story (feature 016, Clarifications 2026-08-09 final)
 
 - [ ] The modal opens centered over the map and the page does not
-      scroll (window.scrollY is unchanged by opening). The story
-      section `#about` below remains where it is; the modal never
-      scrolls to it.
-- [ ] The modal contains a single link to the attribution page with
-      `target="_blank" rel="noopener"`; activating it opens a new tab
-      resolving `https://abu-hamad.de/map/attribution` (HTTP 200).
-- [ ] The modal contains no story text of its own. The document has
-      exactly one story copy: the acceptance test
-      `test_visible_single_story_copy` asserts the SPIEGEL sentence
-      occurs exactly once in the raw HTML.
-- [ ] The visible `#about` section states the central value: buildings
-      are colored by the average tree cover in their 60-m
-      surroundings, matching the legend text "Durchschnittlicher
-      Baumanteil im 60-m-Umkreis".
-- [ ] All three story links in `#about` carry
-      `target="_blank" rel="noopener"` and the article title / project
-      name / "Quellcode auf GitHub" as link text (SPIEGEL: "Hitze in
-      Europa: Wie gut Stadtbäume vor extremer Wärme schützen";
-      CityTreeCover: the project name; source repository: "Quellcode
-      auf GitHub").
+      scroll (window.scrollY is unchanged by opening). No story
+      section exists under the map; the map is the only page content.
+- [ ] The modal holds the full story text (feature 007 content
+      restored): the opening paragraph, the SPIEGEL story paragraph,
+      the heatwave paragraph, the three links (SPIEGEL article,
+      CityTreeCover, "Quellcode auf GitHub"), plus the Methode,
+      Datenquellen, and Genauigkeit sections.
+- [ ] The modal contains exactly one DOM copy of the story. The
+      acceptance test `test_story_single_dom_copy` asserts the SPIEGEL
+      sentence occurs exactly once in the raw HTML.
+- [ ] All story links carry `target="_blank" rel="noopener"`
+      (SPIEGEL: "Hitze in Europa: Wie gut Stadtbäume vor extremer
+      Wärme schützen"; CityTreeCover: the project name; source
+      repository: "Quellcode auf GitHub"; attribution:
+      "Details unter Datenquellen").
 - [ ] Activating the SPIEGEL link opens a new tab resolving the
       article (HTTP 200); activating the CityTreeCover link opens a
       new tab resolving `github.com/jcscaptures/CityTreeCover`;
       activating the source-repository link opens a new tab resolving
-      `github.com/donrami/MATreeCover`.
+      `github.com/donrami/MATreeCover`; activating the
+      "Details unter Datenquellen" link opens a new tab resolving
+      `https://abu-hamad.de/map/attribution` (HTTP 200).
 - [ ] Returning to the map tab shows the map unchanged and fully
       usable.
 

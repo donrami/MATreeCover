@@ -39,14 +39,14 @@ curl -s https://abu-hamad.de/map/sitemap.xml
 
 Expected: `robots.txt` returns 200 `text/plain` with `Disallow:` for `buildings.pmtiles`, `trees.pmtiles`, `buildings.geojson` under `User-agent: *`, and no HTML disallow ([crawler-files.md](contracts/crawler-files.md)). `sitemap.xml` returns 200 XML listing exactly `https://abu-hamad.de/map/`, `/map/impressum`, `/map/attribution`, no `lastmod`, no data files or hashed assets. Open the assessment report and confirm the root-domain `Sitemap:` line and optional disallows are documented as owner-side actions.
 
-## Q4 — Visible content (US1, FR-006, SC-004/SC-010)
+## Q4 — Story in the first-visit modal (US1, FR-006, final Clarifications 2026-08-09)
 
 ```text
 curl -s https://abu-hamad.de/map/ | grep -c 'SPIEGEL\|CityTreeCover\|Datenquellen'
-.venv/bin/python -m pytest tests/acceptance/test_seo_metadata.py -q -k visible
+.venv/bin/python -m pytest tests/acceptance/test_seo_metadata.py -q -k story
 ```
 
-Expected: the informative text (story, method, sources, disclaimer) is in the raw HTML, outside hidden containers, >= 80 % of its words visible without JS ([visible-content.md](contracts/visible-content.md)). A distinctive story phrase occurs exactly once in the document (single DOM copy). The section reads standalone, without "the map above".
+Expected (final Clarifications 2026-08-09): the full story text (story, method, sources, disclaimer) exists exactly once in the raw HTML, inside the first-visit modal — there is no visible section under the map, the map is the only page content. A distinctive story phrase occurs exactly once in the document. The modal shows over the map without scrolling ([visible-content.md](contracts/visible-content.md)). Owner decision: the earlier >= 80 % visible-word and raw-HTML self-sufficiency criteria (SC-004/SC-010) are superseded.
 
 ## Q5 — Structured data and CSP (FR-007, SC-007)
 
@@ -90,10 +90,10 @@ Expected: every listed check reproduces its stated result (fetch page, inspect h
 | SC-001 report committed, checks reproduce | Q8 |
 | SC-002 one indexable URL per page | Q1 |
 | SC-003 titles/descriptions unique, no bare "Baumfläche" | Q1 |
-| SC-004 >= 80 % informative words visible | Q4 |
+| SC-004 (superseded, final Clarifications) | — |
 | SC-005 previews show title, description, image; og:image 1200×630 < 1 MB | Q2 |
 | SC-006 robots.txt + sitemap 200, correct types, 3 URLs, no data files; policy documented | Q3 |
 | SC-007 JSON-LD zero errors, only visible content marked up | Q5 |
 | SC-008 zero regressions, budgets hold | Q7 |
 | SC-009 server-side verification, no client tracking | Q8 |
-| SC-010 raw HTML self-sufficient for non-JS crawlers | Q4 |
+| SC-010 (superseded, final Clarifications) | — |

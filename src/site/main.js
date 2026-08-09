@@ -613,10 +613,10 @@ function wireStoryModal() {
     dialog.focus(); // FR-009: screen reader announces dialog from aria-labelledby
     document.addEventListener('keydown', onKeydown);
     closeButton.addEventListener('click', onCloseClick);
-    // Feature 016 (Clarifications 2026-08-09): the story copy lives in
-    // the visible #about section (single DOM copy). The modal shows over
-    // the map without scrolling and holds only an attribution-page link
-    // (new tab); no scrollIntoView, scroll position stays put.
+    // Feature 016 (Clarifications 2026-08-09, final): the story copy
+    // lives in this modal (single DOM copy, full feature 007 content).
+    // The modal shows over the map without scrolling; links open in
+    // new tabs; no scrollIntoView, scroll position stays put.
   }
 
   open();

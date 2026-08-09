@@ -634,46 +634,17 @@ html, body {
   }
 }
 
-/* Visible informative section (feature 016, FR-006): story, method,
- * data sources, accuracy disclaimer. Sits below the map in page flow,
- * readable without interaction and without JavaScript. */
-#about {
-  position: relative;
-  z-index: 1;
-  margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
-  max-width: 44rem;
-  background: var(--page-bg);
-  color: var(--text);
-  scroll-margin-top: 1rem;
-  scroll-margin-bottom: 1rem;
-}
-
-#about h2 {
-  font-size: 1.35rem;
-  margin: 0 0 0.75rem;
-}
-
-#about h3 {
+.story-modal h3 {
   font-size: 1rem;
-  margin: 1.5rem 0 0.4rem;
+  margin: 1.1rem 0 0.4rem;
   color: var(--subtle);
   font-weight: 600;
 }
 
-#about p {
-  margin: 0 0 0.75rem;
-  line-height: 1.6;
-}
-
-#about a {
-  color: #7fb3ff;
-}
-
 /* The mobile legend strip is fixed to the bottom of the viewport;
- * keep the section readable above it after scrolling down. */
+ * keep the modal body readable above it. */
 @media (max-width: 767.98px) {
-  #about {
+  .story-modal {
     padding-bottom: 6rem;
   }
 }
