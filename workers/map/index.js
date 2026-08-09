@@ -89,6 +89,15 @@ export default {
       return withSecurityHeaders(Response.redirect(CANONICAL_ORIGIN + "/map/", 301));
     }
 
+    // Plain-HTTP requests to the canonical form -> https (single 301,
+    // SC-002 / Clarifications 2026-08-09). The zone does not enable
+    // Cloudflare "Always Use HTTPS", so the worker enforces the scheme
+    // itself. Placed after the www and /map rules so every redirect
+    // chain stays a single hop; preserves path and query.
+    if (url.protocol === "http:") {
+      return withSecurityHeaders(Response.redirect(CANONICAL_ORIGIN + path + (url.search || ""), 301));
+    }
+
     // The production routes only ever send /map* here (contract
     // hosting-config.md §1); anything else falls through to the origin.
     if (!path.startsWith("/map/")) {

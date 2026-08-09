@@ -135,6 +135,19 @@ cmd_verify() {
   out=$(curl -s $edge -D - -o /dev/null "https://www.abu-hamad.de/map/" | grep -i '^location:' | tr -d '\r')
   [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "www /map/ -> canonical" || fail "www /map/ location: $out"
 
+  # SC-002 (feature 016, Clarifications 2026-08-09): plain-HTTP requests
+  # to the canonical form must 301 to https via the worker scheme
+  # redirect (zone-level Always Use HTTPS is not enabled).
+  # HTTP/1.1 responses carry "Location:" (capital), HTTP/2 "location:";
+  # normalize to lower case before comparing (same normalization the
+  # existing https checks rely on via HTTP/2).
+  out=$(curl -s -D - -o /dev/null "http://abu-hamad.de/map/" | grep -i '^location:' | tr -d '\r' | tr 'A-Z' 'a-z')
+  [ "$out" = "location: https://abu-hamad.de/map/" ] && pass "http /map/ -> https /map/ (single 301)" || fail "http /map/ location: $out"
+  out=$(curl -s -D - -o /dev/null "http://abu-hamad.de/map/impressum" | grep -i '^location:' | tr -d '\r' | tr 'A-Z' 'a-z')
+  [ "$out" = "location: https://abu-hamad.de/map/impressum" ] && pass "http /map/impressum -> https (single 301)" || fail "http /map/impressum location: $out"
+  out=$(curl -s -D - -o /dev/null "http://abu-hamad.de/map/robots.txt" | grep -i '^location:' | tr -d '\r' | tr 'A-Z' 'a-z')
+  [ "$out" = "location: https://abu-hamad.de/map/robots.txt" ] && pass "http /map/robots.txt -> https (single 301)" || fail "http /map/robots.txt location: $out"
+
   out=$(curl -s $edge -D - -o /dev/null -H 'Range: bytes=0-1023' "$base/map/buildings.pmtiles")
   local expected_size
   expected_size=$(stat -c %s "$DIST_DIR/buildings.pmtiles" 2>/dev/null || echo 0)
