@@ -109,6 +109,15 @@ html, body {
   height: 36px;
 }
 
+/* Focus/hover feedback (feature 017, US3): same visible indicator as the
+ * existing header controls (.surface-toggle uses outline: 2px solid
+ * var(--subtle); outline-offset: 2px). CSS-only, no script (FR-006). */
+.ko-fi:hover,
+.ko-fi:focus-visible {
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
 /* Expand/collapse toggle — chevron points up while collapsed
  * (tap to expand) and rotates to point down when expanded. */
 .surface-toggle {
