@@ -1,0 +1,32 @@
+{
+ "release_id": "2026.01",
+ "deployed_at": "2026-08-09T20:47:08.797Z",
+ "version_id": "c8758b44-71bf-4999-bca3-4637f1ff2d3a",
+ "bundle": {
+  "file_count": 16,
+  "total_bytes": 170905032
+ },
+ "sha256": {
+  "attribution.html": "00b443f9c4ba40b58b7ac78f6bb17a50d2313f394c3b406e175c01e4032cd43a",
+  "boundary-68c2df610dd0.geojson": "68c2df610dd03570fc14fb07e767a26a1dc2001ffd4450f158966ef2f9bacb48",
+  "buildings.geojson": "964dd8cac348ffebce1a7aadf6ac2c1c5cd0af21f234b722fcf4bc3c0f3dd988",
+  "buildings.pmtiles": "61e8666cfcf01677ede6ced837d917321953656f2797f71c02e952068dbe8894",
+  "favicon.svg": "81b0e43b57f0580b7bc4f14964dc28dcd7ad57397c9397bc7590217f2f2fc0d9",
+  "impressum.html": "2fb0470e1e165bf14196d801f068063a0ceaf05880c7e8e8442e52ff4ff68b7e",
+  "index.html": "de4f831d21428ae04b0691b9b0e97ef48b4ad6705898375e61d8511923987853",
+  "main-88037723ba86.js": "154499c63f3009a5ee8d2a9cfd3abe2a086c6604d8b1def74caeabafad5be2d4",
+  "manifest.json": "2d596db240a6c3d8fa0c0361fb2ad54bfb4fc63741c241debe4ddf6e7275c2bd",
+  "og-image.png": "ce6b9d5ef7138b3e6e9dbb1a518dece79c5a1f66766585727c999b0d827462e9",
+  "robots.txt": "476ab93503f588538110e5256b3c94741e0eb0596836fa8c15657b2a46a2ef1b",
+  "sitemap.xml": "300380d686b79dd10b99a397ba44dd97f5dc8e778f45d244956a9cd973a4fbfa",
+  "stadtteile-4830756ae3b5.geojson": "4830756ae3b54098aa982267bcb1c30796aa35ef23d4ded2e2665a95d0c2c02c",
+  "style-7e0eb1f1ecae.json": "8dec84ea3f74916eadb0b16eced1af2e380fc717881b5170f8acc97e77d4dfa5",
+  "style-9bde758153fa.css": "9bde758153fa17ab13cc4a5f176e0f4ec35d40f05c8372f23bccfec16314ba9a",
+  "trees.pmtiles": "27ad668cca325ab6903aa11ac6cbd4a68b7c1c4d5576fba0287806d33469b2ae"
+ },
+ "gates": {
+  "fr013": "PASS (17 checks incl. http->https scheme redirects)",
+  "fr014": "PASS",
+  "live_smoke": "PASS (ko-fi footer visible 768/1280/1920, collapsed-hidden, exact new-tab URL, 0 console errors)"
+ }
+}
