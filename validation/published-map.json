@@ -1,6 +1,6 @@
 {
   "release_id": "2026.01",
-  "generated_at": "2026-08-09T13:19:15+00:00",
+  "generated_at": "2026-08-09T13:46:53+00:00",
   "index_html": "index.html",
   "style": "style-7e0eb1f1ecae.json",
   "buildings": "buildings.geojson",
@@ -14,8 +14,8 @@
   ],
   "stadtteile": "stadtteile-4830756ae3b5.geojson",
   "hashed_assets": {
-    "main.js": "main-ae68b8c05774.js",
-    "style.css": "style-a7964fed5128.css",
+    "main.js": "main-88037723ba86.js",
+    "style.css": "style-ddf3e76a997c.css",
     "style.json": "style-7e0eb1f1ecae.json",
     "vendor/maplibre-gl.js": "vendor/maplibre-gl-aa49ba072cb2.js",
     "vendor/maplibre-gl.css": "vendor/maplibre-gl-43c1d886b5fd.css",
