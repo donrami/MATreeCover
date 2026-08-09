@@ -41,7 +41,7 @@ const DATA_KEYS = new Set([
 // (intersection), so they must stay identical.
 const SECURITY_HEADERS = {
   "Content-Security-Policy":
-    "default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org",
+    "default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de https://storage.ko-fi.com; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",

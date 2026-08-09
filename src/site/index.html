@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de https://storage.ko-fi.com; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://sgx.geodatenzentrum.de; worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org">
   <title>Baumfläche Mannheim: Baumanteil je Gebäude im 60-m-Umkreis</title>
   <meta name="description" content="Interaktive Karte des Baumanteils in Mannheim: Jedes Gebäude zeigt den Baumanteil in seinem 60-m-Umkreis. Mit Methode, Datenquellen und Genauigkeitshinweis.">
   <link rel="canonical" href="https://abu-hamad.de/map/">
@@ -56,6 +56,10 @@
           <input type="range" id="brightness-slider" min="5" max="100" value="65">
         </label>
       </div>
+      <a class="ko-fi" href="https://ko-fi.com/M4Q624RYOV" target="_blank" rel="noopener">
+        <img src="https://storage.ko-fi.com/cdn/kofi3.png?v=6" width="143" height="36"
+             alt="Baumfläche auf Ko-fi unterstützen">
+      </a>
       <button id="surface-toggle" type="button" class="surface-toggle"
         aria-expanded="false" aria-controls="surface-body" aria-label="Legende einblenden">
         <span class="surface-toggle-chevron" aria-hidden="true"></span>

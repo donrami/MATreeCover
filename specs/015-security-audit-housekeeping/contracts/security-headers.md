@@ -27,7 +27,7 @@ Reference implementation pattern: Cloudflare's documented Workers example ([set 
 Source of truth: the `<meta http-equiv="Content-Security-Policy">` tag in `src/site/index.html`. The Worker header mirrors it byte-for-byte. Policy:
 
 ```text
-default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de;
+default-src 'self'; img-src 'self' data: https://sgx.geodatenzentrum.de https://storage.ko-fi.com;
 style-src 'self' 'unsafe-inline'; script-src 'self';
 connect-src 'self' https://sgx.geodatenzentrum.de;
 worker-src 'self' blob:; font-src 'self' https://demotiles.maplibre.org
@@ -38,6 +38,7 @@ Required allowlist (any tightening that removes these breaks the map — spec ed
 | Directive | Origin | Why |
 |-----------|--------|-----|
 | `img-src` / `connect-src` | `sgx.geodatenzentrum.de` | LGL basemap raster tiles |
+| `img-src` | `storage.ko-fi.com` | Ko-fi donation button image (feature 017) |
 | `worker-src` | `blob:` | MapLibre/PMTiles worker instantiation |
 | `style-src` | `'unsafe-inline'` | feature-014 inlined styles |
 | `font-src` | `demotiles.maplibre.org` | glyphs URL in `src/site/style.json` (accepted risk, see vendored-provenance.md) |
