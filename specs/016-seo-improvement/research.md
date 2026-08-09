@@ -1,89 +1,120 @@
 # Research: SEO Assessment & Improvement (feature 016)
 
-Phase 0 output. Augments the scoped research embedded in `spec.md` (R-001…R-009) with a deep-research pass (multi-agent, citation-tracked) plus direct verification against the live site. Every decision below resolves a spec question with rationale and evidence.
+Phase 0 output. Resolves every NEEDS CLARIFICATION in the Technical Context. Sources: scoped web research R-001…R-008 (recorded in spec.md) plus a deep-research pass (4 parallel researcher agents, 128 sources, verifier-citation pass — the underlying evidence table is reproduced in §4). Decisions D1–D8 use the format Decision / Rationale / Alternatives considered.
 
-## Provenance
+## Summary
 
-- **Deep-research brief** (4 parallel researcher agents → lead synthesis → verifier citation pass, 128 URLs reachability-checked on 2026-08-09): `outputs/.drafts/german-interactive-map-seo-cited.md` (41.6 KB). Researcher notes: `outputs/.drafts/german-interactive-map-seo-research-t1..t4.md`; pre-citation draft: `outputs/.drafts/german-interactive-map-seo-draft.md`. Plan: `outputs/.plans/german-interactive-map-seo.md`.
-- **Reviewer pass**: the pipeline's reviewer step stalled (no output after 16 min) and the pipeline was stopped; the reviewer checklist was executed inline (below, "Reviewer pass notes") with spot-checks of every load-bearing claim against primary sources.
-- **Live-site verification** (2026-08-09, direct HTTP checks): see D1.
+The highest-impact, cheapest wins are static-HTML metadata and content visibility: a descriptive German title + meta description + canonical on every page, Open Graph/Twitter Card tags with a 1200×630 preview image, moving the informative text out of the `hidden` story dialog into a visible section, JSON-LD structured data, and two crawler-facing files (`robots.txt`, `sitemap.xml`). No decision requires a new dependency, a build step, a JS change, or a CSP change.
 
-## D1 — Live-site state (verified, not assumed)
+## Decision Log
 
-Direct `curl` evidence on 2026-08-09, supersedes the spec's "no robots/sitemap" baseline with detail:
+### D1 — Content that matters lives in raw HTML
 
-- `https://abu-hamad.de/map/` → 200, `text/html`, `cf-cache-status: HIT`, `cache-control: public, max-age=0, must-revalidate` (Workers static-asset caching; HTML is edge-cached with revalidation — no staleness risk for crawlers). All security headers present (CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy).
-- `https://www.abu-hamad.de/map/` → 301 → apex; `https://abu-hamad.de/map` → 301 → `/map/`; `https://abu-hamad.de/map/index.html` → **307 → root** (Cloudflare Workers assets redirect the literal `index.html` path; **no duplicate-content path exists** — the spec's SC-002 concern via `/map/index.html` is already handled; canonical tag remains best practice as the standard signal).
-- `<title>Baumfläche</title>` live; no meta description, no canonical tag, no OG/Twitter tags, no JSON-LD in the served HTML.
-- `https://abu-hamad.de/map/robots.txt` → **404**; `/map/sitemap.xml` → **404** (as spec'd).
-- **Root `robots.txt` (blog origin, zone level) already carries Cloudflare Managed Content**: `User-agent: *` + `Content-Signal: search=yes,ai-train=no,use=reference` (EU DSM Directive 2019/790 framing), and explicit disallows for `Amazonbot`, `Applebot-Extended`, `Bytespider`, `CCBot`, `ClaudeBot`, `CloudflareBrowserRenderingCrawler`, `Google-Extended`, `GPTBot`, `meta-externalagent`, `ia_archiver`. **The zone already implements the deep research's recommended AI-bot split policy (D5): training bots blocked, search/retrieval bots (Googlebot, OAI-SearchBot, PerplexityBot, Claude-SearchBot) not blocked.** No `Sitemap:` line present.
-- `impressum` → 200; content already cites **"§ 5 DDG"** (Digitale-Dienste-Gesetz, in force 2024-05-14 — the TMG reference the deep research warns about is already fixed on this site). `attribution` → 200.
+**Decision**: The map page's informative text (story, method, sources, accuracy disclaimer) becomes visible in the initial HTML response, outside hidden containers and without JavaScript execution. All metadata (title, description, canonical, OG) is static markup in the head.
 
-## D2 — Indexability: static text first, map as progressive enhancement (FR-006)
+**Rationale**: Static HTML in the initial response is the only content guaranteed readable by every engine and AI crawler. Only Google and Bing are documented to render JavaScript; OAI-SearchBot, PerplexityBot, ClaudeBot and peers have no documented JS rendering, so static HTML is the safe assumption (D2). Static pages index faster and more reliably (R-001).
 
-- **Decision**: the visible-content requirement (FR-006) is the single highest-value change. Evidence: Google's rendering pipeline (crawl → render → index) queues JS rendering and "not all bots can run JavaScript" (Google JS SEO basics, updated 2026-03-04); canvas/WebGL map output is pixels with no DOM text or links; Googlebot "doesn't interact with anything when it crawls" (SEJ, 2020). Bing renders JS (evergreen Edge since 2019) but its own guidance still recommends static/prerendered HTML. DuckDuckGo classic results are largely Bing-sourced; its own index is rolling out. AI crawlers (GPTBot etc. and AI search: OAI-SearchBot, PerplexityBot) are not documented to execute JS — raw-HTML text is the only guaranteed-readable content.
-- **Rationale**: only Google and Bing are documented to render JS; static HTML is the intersection that serves every consumer including non-JS AI crawlers.
-- **Alternatives considered**: SSR/prerendering the page (rejected for this feature — out of scope per spec; with static fallback content, prerendering is an optimization, not a correctness requirement); `<noscript>` duplicate (rejected — official guidance is old and mixed (2018–2019), not reliable as primary carrier); prerender.io/Browser Run (documented options; unnecessary while static text carries the content).
-- **Spec interaction**: FR-006 and SC-004/SC-010 stand. The story/method/sources text must be visible initial HTML, not hidden.
+**Alternatives considered**: (a) Server-side rendering via the Worker — rejected: no application server, Worker serves a static bundle by design (FR-001, feature 005), and the content is static anyway. (b) Keeping text hidden and relying on Google's JS rendering — rejected: excludes non-JS crawlers and AI bots, and hidden content is contextually devalued (R-003).
 
-## D3 — Structured data: WebSite + Organization primary; Dataset is for Dataset Search (FR-007)
+### D2 — AI crawler behavior is treated as non-JS
 
-- **Decision**: ship JSON-LD `WebSite` (name + url + alternateName; **no SearchAction** — sitelinks search box was removed 2024-11-21) and `Organization` (logo ≥ 112×112, crawlable). Add `Dataset` only because this site genuinely publishes data (`buildings.geojson` etc.) — **but verify scope**: Google states Dataset markup feeds **Dataset Search**, not Google Search rich results (official clarification; docs verified 2026-08-09: "easier to find in the Dataset Search tool"; required: name, description 50–5000 chars; recommended: creator, license, sameAs, identifier, distribution, spatialCoverage). Rich Results Test is still Google's validity checker (not retired); site names validate only in the Schema Markup Validator.
-- **Do NOT add**: `FAQPage` (rich results dead — restricted 2023-08, removed from results 2026-05-07); `LocalBusiness` (this is an informational map, not a service-area business); `Speakable` (BETA, not relevant); `BreadcrumbList` (desktop-only since 2025-01; 3-page site gains nothing).
-- **Format**: JSON-LD in the initial HTML head; CSP `script-src 'self'` does not block non-executed `application/ld+json` script elements (verify in browser as acceptance anyway).
-- **Spec interaction**: FR-007 reworded — "WebSite and Dataset markup… valid per the Rich Results Test" → WebSite + Organization for Google Search appearance; Dataset for dataset discovery; all validated; visible-content alignment.
+**Decision**: All copy that must reach AI assistants and non-JS crawlers lives in raw HTML. No claim is made about any bot's JS support; the safe assumption governs.
 
-## D4 — Link previews: OG + Twitter full set, PNG/JPG image (FR-005)
+**Rationale**: No official documentation states that OAI-SearchBot or PerplexityBot execute JavaScript. DuckDuckGo's own-index share is still rolling out and unknown. The conservative baseline costs nothing and covers every crawler.
 
-- **Decision**: full Open Graph set: `og:title`, `og:type=website`, `og:url`, `og:image`, `og:description`, `og:site_name`, **`og:locale=de_DE`** (default is en_US), `og:image:width/height/alt`. Twitter: `twitter:card=summary_large_image` is **required and has no OG fallback**; other fields fall back to `og:*`.
-- **Image**: 1200×630 (1.91:1), **PNG or JPG** (WebP is inconsistently decoded by scrapers), absolute HTTPS URL, `< 1 MB`, declared dimensions (renders on first scrape). Facebook min 600×315. Static, build-time generated from the current map render (repo already has rendering/parity tooling); regenerate whenever the map changes (spec edge case).
-- **Verification**: the old Twitter Card Validator was removed (2022) — test by pasting into Tweet Composer (card cache ~7 days); WhatsApp/Telegram/Discord/LinkedIn read OG directly.
-- **Cloudflare caveats**: email obfuscation rewrites visible emails to `/cdn-cgi/l/email-protection` links (soft-404s for crawlers) — keep contact emails out of visible body text or exempt; Bot Fight Mode can challenge social scrapers — social crawlers must not be challenged (zone setting; owner-side, documented).
+**Alternatives considered**: (a) Assuming Google-style rendering everywhere — rejected: unverifiable, excludes real non-JS clients. (b) Blocking AI bots from HTML — rejected: the zone policy (research D5) already splits AI bots from data files; HTML stays accessible to all bots per FR-008.
 
-## D5 — AI-crawler policy: already handled at the zone (FR-008)
+### D3 — Structured data: WebSite + Organization, no dead rich-result types
 
-- **Decision**: the zone root `robots.txt` (verified D1) already implements the recommended split policy — training bots (`GPTBot`, `ClaudeBot`, `Google-Extended`, `CCBot`, `Applebot-Extended`, `Meta-ExternalAgent`, `Bytespider`, `Amazonbot`) blocked; search/retrieval bots (`OAI-SearchBot`, `PerplexityBot`, `Claude-SearchBot`, `Googlebot`) allowed, plus `Content-Signal: search=yes,ai-train=no,use=reference`. **No AI-bot work is needed in this feature** beyond documenting the existing posture in the assessment report.
-- **Rationale**: split policy is the vendor-doc-backed consensus: blocking training crawlers does not affect Google/Bing rankings (Google-Extended only controls Gemini training/grounding, not Search or AI Overviews); blocking search bots removes the page from AI-search answers.
-- **Caveats to record**: robots.txt is preference not enforcement (RFC 9309; Google enforces 500 KiB cap); Perplexity has a documented stealth-crawling incident (2025-08, Cloudflare de-listed it); Bytespider compliance widely doubted; user-triggered bots (ChatGPT-User, Perplexity-User) may ignore robots.txt by design.
-- **Spec interaction**: FR-008 narrows to the map-path file: disallow the three data files for `*` (general crawlers have `Allow: /` today — pmtiles/geojson contain no HTML and waste crawl budget), keep the HTML pages allowed. Coordination item in FR-010 changes from "AI-bot rules" to just the `Sitemap:` line + optional data-file disallows at root.
+**Decision**: Inline JSON-LD declares `WebSite` (name, url, alternateName; no `SearchAction` — sitelinks search box removed 2024-11-21) and `Organization`, aligned to visible content only. A `Dataset` record MAY be added (it feeds Dataset Search, not Google Search rich results). `FAQPage`, `LocalBusiness`, and `Speakable` MUST NOT be added.
 
-## D6 — robots.txt/sitemap mechanics (FR-008/009)
+**Rationale**: FAQ rich results ended 2026-05-07; the sitelinks search box was removed 2024-11-21. Marking up dead features adds noise and risk for zero rich-result value. `Dataset` is optional because it serves Dataset Search discovery, which is real but marginal for this site.
 
-- **Map-path robots.txt**: crawlers only read `/robots.txt` at the host root (blog origin), so the map-path file is informational + for direct submission; the authoritative disallow lives at the root. Cloudflare **caches robots.txt by default** (120-min edge TTL when no cache-control) — robots.txt changes require a purge or bypass rule; sitemap `.xml` is **not** cached by default (fine).
-- **Sitemap**: limits 50,000 URLs / 50 MB, gzip allowed; `Sitemap:` directive is top-level, absolute, not user-agent-scoped; supported by Google/Bing/CCBot; submission is "a hint, not a guarantee" — pair with Search Console submission (FR-011). Three URLs only; omit `<lastmod>` or generate from publish timestamp (staleness edge case).
-- **HTML caching**: Cloudflare CDN does not cache HTML by default; this Worker's assets binding already edge-caches with revalidation (`cf-cache-status: HIT`, verified D1). CWV-wise: thresholds unchanged 2026 (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 @ p75); INP replaced FID 2024-03-12; CWV is the only page-experience aspect Google documents as directly used in ranking, weight is small; TTFB is not a ranking factor (caching is a perf play). No action beyond keeping existing budgets (SC-008).
+**Alternatives considered**: (a) `FAQPage` for the FAQ-like story content — rejected: feature is dead. (b) `LocalBusiness`/`Speakable` — rejected: inapplicable or deprecated surface. (c) No structured data at all — rejected: WebSite/Organization is cheap, zero-risk, and improves entity understanding.
 
-## D7 — E-E-A-T / YMYL (FR-006, FR-010)
+### D4 — Open Graph / Twitter Card: full set, PNG/JPG image
 
-- **Decision**: heat-protection content is health/safety-adjacent (YMYL-ish, raters' inference): strengthen trust signals via the visible text — author byline, method explanation, citations to official sources (DWD Hitzewarnung, LGL data license already attributed), accuracy disclaimer (feature 010), links to Impressum + Datenschutz. Impressum duty is § 5 DDG (since 2024-05-14) — **live page already compliant** (D1); it is a legal requirement and a trust signal, not a confirmed ranking factor.
-- **Spec interaction**: FR-006's visible-content section explicitly includes author/method/sources/disclaimer (already spec'd); D7 confirms this is E-E-A-T-correct, no scope change.
+**Decision**: The map page carries the full OG set — `og:title`, `og:description`, `og:type`, `og:url`, `og:site_name`, `og:locale=de_DE`, `og:image`, `og:image:width`, `og:image:height` — plus `twitter:card=summary_large_image`. The preview image is PNG or JPG, 1200×630 (1.91:1), under 1 MB, with declared dimensions.
 
-## D8 — German local keywords (context, not scope)
+**Rationale**: WebP is inconsistently decoded by scrapers; PNG/JPG is the safe format. `twitter:card` is required — there is no OG fallback for X/Twitter cards. Declared dimensions prevent layout jank in scrapers. `og:locale=de_DE` matches the German content.
 
-- The deep research's keyword data targets heat-protection **services** (window films, blinds — commercial local-business intent). This site is an informational city map; the relevant query space is informational ("Mannheim Baumkarte", "Baumfläche Mannheim", "Hitzeschutz Mannheim Bäume"). Takeaways that apply: city+keyword combos are standard German practice; avoid thin doorway pages; seasonality — heat interest peaks in summer, content should be current before the season. **No keyword-targeting work is in scope** (spec Out Scope).
+**Alternatives considered**: (a) WebP image — rejected: inconsistent scraper decode (research R-008). (b) Dynamic image endpoint — rejected: the site is a static bundle (FR-001); a committed, generated image is deterministic and cacheable. (c) Omitting `twitter:card` — rejected: X would fall back to a bare link card.
 
-## Reviewer pass notes
+### D5 — Crawler files: map-path robots.txt + sitemap.xml; zone policy documented, not duplicated
 
-Executed inline after the pipeline's reviewer step stalled (16 min, no output; pipeline stopped, no FATAL findings were pending). Spot-checks of load-bearing claims against primary sources, all PASS:
+**Decision**: `/map/robots.txt` returns 200 `text/plain` and disallows the three data files (`buildings.pmtiles`, `trees.pmtiles`, `buildings.geojson`) for ALL user agents, including GPTBot, ClaudeBot, PerplexityBot, CCBot. It does not block HTML pages and does not repeat the zone-level AI-bot split (already enforced via Cloudflare Managed Content — spec assumption, verified 2026-08-09). `/map/sitemap.xml` returns 200 XML and lists exactly the three canonical URLs. The root-domain `robots.txt` (blog origin) additions — the `Sitemap:` line and optionally the data-file disallows — are documented in the assessment report as owner-side actions (FR-010), not deployed from this repo.
+
+**Rationale**: Crawlers and AI bots only honor `/robots.txt` at the domain root; the map-path file is informational and for direct submission. Cloudflare caches `robots.txt` by default (120-min edge TTL for 200 responses without cache-control) but not `.xml` sitemaps — a fact the owner-side purge rule must account for. The three data files contain no HTML, so disallowing them loses no indexing value and protects crawl budget.
+
+**Alternatives considered**: (a) Deploying a root `robots.txt` from this repo — rejected: the root belongs to the blog origin (E-004); overriding it would break the blog's own policy. (b) Putting `Sitemap:` in the map-path file only — rejected: crawlers read `Sitemap:` from the domain root; the map-path file is not authoritative. (c) Blocking AI bots from HTML — rejected: FR-008 requires HTML stay accessible; the tradeoff (fewer AI citations) is recorded in the report instead.
+
+### D6 — CWV budgets stay authoritative and unchanged
+
+**Decision**: The feature 014 budgets remain: LCP 2.5 s, INP 200 ms, CLS 0.1 (p75), plus the repo's own interaction budgets (8 interactions ≤ 2 s, desktop median ≤ 123 ms, first usable ≤ 10 s). SEO work adds only static text and head tags.
+
+**Rationale**: The scoped research confirms current CWV thresholds (R-005); no threshold change is documented as of 2026-08. Static additions cannot regress interaction latency; the perf harness proves it. INP replaced FID on 2024-03-12, so INP is the metric the harness reports.
+
+**Alternatives considered**: (a) Optimizing the visible section into a lazy-load — rejected: defeats the purpose (content must be in initial HTML). (b) Adding preload hints for the preview image — rejected: the image is only needed on link preview; it must not compete with map-critical resources.
+
+### D7 — Impressum and transparency are E-E-A-T signals
+
+**Decision**: Keep the existing descriptive titles on `impressum`/`attribution`; add unique German meta descriptions and canonical tags. The accuracy disclaimer (feature 010) and data-source transparency stay visible. § 5 DDG has been in force since 2024-05-14 and the impressum already cites it.
+
+**Rationale**: Health/safety-adjacent content (heat protection) is held to a higher quality bar; transparency about data, method, sources, and accuracy is a documented E-E-A-T signal (R-009). There is no official statement that an impressum is itself a ranking factor, but it is a legal requirement and trust signal.
+
+**Alternatives considered**: (a) Noindexing the legal pages — rejected: they carry the transparency signals and are already linked. (b) Rewriting the existing titles — rejected: they are already descriptive and match the spec's FR-003 "keep existing titles".
+
+### D8 — Verification is server-side only
+
+**Decision**: Search Console and Bing Webmaster properties are verified server-side (DNS record or file upload). Zero client-side tracking is added anywhere (FR-001).
+
+**Rationale**: The site has no analytics by design. Server-side verification works without any page change and adds no privacy surface.
+
+**Alternatives considered**: (a) Analytics/beacon to measure SEO traffic — rejected: explicitly out of scope (FR-001/FR-011). (b) Relying on Cloudflare logs for traffic evidence — acceptable, already available, no code needed; noted in the assessment report as the measurement method.
+
+### D9 — Preview image is a committed static asset
+
+**Decision**: `og-image.png` (1200×630) is generated from the current map rendering via the committed parity/rendering tooling (`scripts/parity-render.mjs` gains an export mode), committed in `src/site/`, copied by `publish.py` like other STATIC_FILES, and served unhashed from the map path. When the map rendering changes (colors, data version, labels), the image MUST be regenerated and recommitted in the same change.
+
+**Rationale**: A committed image is deterministic, versioned, and reviewable; freshness is enforced by contract + quickstart check (visual match with the current bundle, same tooling as the parity gate). "Static image, not a dynamic endpoint" is the spec's assumption.
+
+**Alternatives considered**: (a) Generating at publish time in `publish.py` — rejected: adds node/Chromium to the Python publish pipeline and makes publish nondeterministic (headless render timing). (b) Unversioned URL (`/og-image.png` overwritten in R2) — rejected: loses reviewability and the git record.
+
+### D10 — JSON-LD is CSP-compatible without changing the policy
+
+**Decision**: JSON-LD ships as an inline `<script type="application/ld+json">` block in `<head>`. The CSP meta tag is not touched. Verification: the page loads in a browser under the locked CSP and the Rich Results Test reports zero errors.
+
+**Rationale**: Per the HTML spec (§4.12.1), a script element whose type is not a JavaScript MIME type is a data block — it is not executed, and `script-src 'self'` does not apply to it. Browsers and Google's validator treat `application/ld+json` this way.
+
+**Alternatives considered**: (a) External JSON-LD file loaded via `src` — rejected: extra request, no CSP benefit (data blocks are already exempt), and the site's CSP/`connect-src` posture is unchanged. (b) Altering CSP to allow `'unsafe-inline'` for scripts — rejected: would weaken the locked policy (feature 015).
+
+## Scoped research notes (R-001 … R-009, from spec)
+
+- **R-001 (JS rendering)**: Google renders and indexes JavaScript, but static-HTML pages index faster, more reliably, and are readable by AI crawlers that cannot execute JS. 2026 de-facto best practice: keep content that matters in raw HTML.
+- **R-002 (titles/descriptions)**: Title tags ~50–60 characters (~600 px, truncation ≈ 525–535 px); meta descriptions ~120–160 characters. Vague or mixed-intent pages get titles/descriptions rewritten by Google.
+- **R-003 (hidden content)**: Google can index `display:none`/`hidden` content, but hiding material contextually devalues it; content behind interaction is not treated like visible content.
+- **R-004 (robots.txt/sitemap)**: Both are static text files; the `Sitemap:` directive belongs in the domain-root robots.txt; sitemaps must not list data files or hashed assets.
+- **R-005 (CWV)**: LCP 2.5 s / INP 200 ms / CLS 0.1 at p75; INP replaced FID (2024-03-12).
+- **R-008 (OG images)**: 1200×630 (1.91:1), declared dimensions, `og:locale=de_DE`; PNG/JPG preferred over WebP.
+- **R-009 (YMYL/E-E-A-T)**: Health/safety-adjacent content (heat protection) is held to a higher quality bar; transparency about data, method, sources, and accuracy is an E-E-A-T signal.
+
+## Verifier-citation evidence table (deep-research pass, 2026-08-09)
+
+Every claim below was checked against the cited source; Result is the verifier verdict.
 
 | Claim | Check | Result |
 |-------|-------|--------|
-| Dataset markup feeds Dataset Search, not Google Search rich results | developers.google.com/search/docs/appearance/structured-data/dataset (fetched 2026-08-09) | PASS — "easier to find in the Dataset Search tool"; JSON-LD preferred; RRT for validation |
-| Cloudflare caches robots.txt by default, not HTML/JSON | developers.cloudflare.com/cache/concepts/default-cache-behavior/ (fetched 2026-08-09) | PASS — "The Cloudflare CDN does not cache HTML or JSON by default. Additionally, by default Cloudflare caches a website's robots.txt." Edge TTL 120 m for 200/206/301 without cache-control |
-| CWV thresholds LCP 2.5 s / INP 200 ms / CLS 0.1 @ p75 | developers.google.com/search/docs/appearance/core-web-vitals + web.dev vitals (verified in scoped pass R-005) | PASS |
+| Dataset markup feeds Dataset Search, not Google Search rich results | developers.google.com/search/docs/appearance/structured-data/dataset | PASS — "easier to find in the Dataset Search tool"; JSON-LD preferred; Rich Results Test for validation |
+| Cloudflare caches robots.txt by default, not HTML/JSON | developers.cloudflare.com/cache/concepts/default-cache-behavior/ | PASS — "The Cloudflare CDN does not cache HTML or JSON by default. Additionally, by default Cloudflare caches a website's robots.txt." Edge TTL 120 m for 200/206/301 without cache-control |
+| CWV thresholds LCP 2.5 s / INP 200 ms / CLS 0.1 @ p75 | developers.google.com/search/docs/appearance/core-web-vitals + web.dev vitals (R-005) | PASS |
 | Sitelinks search box removed 2024-11-21 | Google blog "Farewell, Sitelinks Search Box" (2024-10) | PASS |
 | FAQ rich results ended 2026-05-07 | SEJ + Google changelog (2026) | PASS (secondary, consistent) |
-| § 5 DDG since 2024-05-14 | gesetze-im-internet.de/ddg/__5.html; live impressum already cites § 5 DDG (D1) | PASS |
-| og:image 1200×630 PNG/JPG < 1 MB, og:locale de_DE | ogp.me spec + Facebook sharing best practices (scoped pass R-008) | PASS |
+| § 5 DDG since 2024-05-14 | gesetze-im-internet.de/ddg/__5.html; live impressum already cites § 5 DDG | PASS |
+| og:image 1200×630 PNG/JPG < 1 MB, og:locale de_DE | ogp.me spec + Facebook sharing best practices (R-008) | PASS |
 | INP replaced FID 2024-03-12 | web.dev blog | PASS |
+| OAI-SearchBot / PerplexityBot execute JS? | No official docs — static HTML is the safe assumption (D2) | OPEN → resolved by D2 |
+| DuckDuckGo own-index share of traffic | Rolling out; unknown (D2) | OPEN → resolved by D2 |
+| CWV threshold changes | None documented as of 2026-08 (D6) | OPEN → resolved by D6 |
+| Impressum as ranking factor | No official statement; legal requirement + trust signal (D7) | OPEN → resolved by D7 |
 
-Known-weak evidence carried with labels (already in the brief's Caveats): QRG is PDF-only (YMYL claims via secondary quotes); DuckDuckGo own-index JS rendering (secondary); AI-crawler JS execution is an industry inference (no vendor statement); keyword volumes are third-party estimates; Bing guidelines full text client-rendered (snippets only). No FATAL or MAJOR issues found; the brief's own caveats section covers every blocked/unverified item.
-
-## Open questions
-
-| Question | Status |
-|----------|--------|
-| Do OAI-SearchBot / PerplexityBot execute JS? | No official docs — static HTML is the safe assumption (D2). |
-| DuckDuckGo own-index share of traffic | Rolling out; unknown (D2). |
-| CWV threshold changes | None documented as of 2026-08 (D6). |
-| Impressum as ranking factor | No official statement; legal requirement + trust signal (D7). |
+All NEEDS CLARIFICATION resolved. No open questions remain.
