@@ -91,6 +91,24 @@ html, body {
   cursor: pointer;
 }
 
+/* Ko-fi donation button (feature 017): plain external link to the
+ * owner's Ko-fi page (FR-008), official brand image at natural size.
+ * The 4px vertical padding enlarges the hit area to 44px without
+ * changing the 36px visual (R-3, FR-004). Additive .ko-fi rules only
+ * — no rule owned by features 012/014 is modified. */
+.ko-fi {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 4px 0;
+}
+
+.ko-fi img {
+  display: block;
+  width: 143px;
+  height: 36px;
+}
+
 /* Expand/collapse toggle — chevron points up while collapsed
  * (tap to expand) and rotates to point down when expanded. */
 .surface-toggle {

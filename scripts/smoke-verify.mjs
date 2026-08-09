@@ -111,6 +111,42 @@ try {
   // trees toggle
   results.treesToggle = await evalJs(`(() => { const b = document.querySelector('#baeume'); const a0 = b.getAttribute('aria-pressed'); b.click(); const a1 = b.getAttribute('aria-pressed'); b.click(); const a2 = b.getAttribute('aria-pressed'); return a0 === 'false' && a1 === 'true' && a2 === 'false'; })()`);
 
+  // ---- ko-fi donation button (feature 017, US1): desktop viewports, button
+  // visible in the surface header, click opens the exact Ko-fi URL in a new
+  // tab, the map page stays open and interactive in the original tab ----
+  const koFi = { widths: {} };
+  for (const width of [768, 1280, 1920]) {
+    const w = {};
+    await send('Emulation.setDeviceMetricsOverride', { width, height: 800, deviceScaleFactor: 1, mobile: false });
+    await send('Page.navigate', { url: URL });
+    await new Promise((resolve) => {
+      const onNav = (ev) => {
+        const msg = JSON.parse(ev.data);
+        if (msg.method === 'Page.loadEventFired' && msg.sessionId === sessionId) { ws.removeEventListener('message', onNav); resolve(); }
+      };
+      ws.addEventListener('message', onNav);
+    });
+    await sleep(5000);
+    // dismiss the first-visit story modal so it cannot intercept the click
+    await evalJs(`document.querySelector('#story-close')?.click(); true`);
+    await sleep(300);
+    w.visibleInHeader = await evalJs(`(() => { const a = document.querySelector('.ko-fi'); if (!a) return false; const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= window.innerHeight; })()`);
+    const koFiPos = await evalJs(`(() => { const a = document.querySelector('.ko-fi'); const r = a.getBoundingClientRect(); return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + r.height / 2) }; })()`);
+    await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: koFiPos.x, y: koFiPos.y, button: 'left', clickCount: 1 });
+    await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: koFiPos.x, y: koFiPos.y, button: 'left', clickCount: 1 });
+    let koFiTarget = null;
+    for (let i = 0; i < 25 && !koFiTarget; i++) {
+      await sleep(200);
+      const targets = (await cdp('Target.getTargets')).targetInfos;
+      koFiTarget = targets.find(t => t.type === 'page' && t.url.startsWith('https://ko-fi.com/M4Q624RYOV'));
+    }
+    w.newTabUrl = koFiTarget ? koFiTarget.url : null;
+    w.openedExactUrl = !!koFiTarget && (koFiTarget.url === 'https://ko-fi.com/M4Q624RYOV' || koFiTarget.url === 'https://ko-fi.com/M4Q624RYOV/');
+    w.mapPageStillOpen = await evalJs(`document.querySelector('#map canvas') !== null && document.readyState === 'complete'`);
+    koFi.widths[width] = w;
+  }
+  results.koFi = koFi;
+
   results.consoleErrors = consoleErrors;
   console.log(JSON.stringify(results, null, 2));
 } catch (err) {
