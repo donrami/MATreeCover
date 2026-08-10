@@ -312,6 +312,12 @@ html, body {
   border-radius: 4px;
   text-decoration: none;
 }
+.legal-link + .legal-link {
+  /* Second link sits next to the first when both are present (FR-005).
+   * Same anchor, shifted right by ~Impressum width + 1-space gap. Without
+   * this the second `.legal-link` stacks on top of the first. */
+  left: calc(4px + 7em);
+}
 
 .legal-link:hover,
 .legal-link:focus-visible {
@@ -556,6 +562,12 @@ html, body {
     left: 8px;
     bottom: auto;
     right: auto;
+  }
+
+  .legal-link + .legal-link {
+    /* Mobile: second link clears the first under the new mobile
+     * anchor (top:8 / left:8). */
+    left: calc(8px + 7em);
   }
 
   .maplibregl-ctrl-bottom-right {
