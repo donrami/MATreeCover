@@ -9,9 +9,38 @@ the supply chain without trusting a claim. Contract:
 
 - License: BSD-3-Clause
 - Source: https://github.com/maplibre/maplibre-gl-js
-- Vendored files:
-  - `src/site/vendor/maplibre-gl.js` — sha256 `aa49ba072cb2d4621c365e501867cbc0ffead0d4a42dd79cb8f182525082451a`
+  - `src/site/vendor/maplibre-gl.js` — sha256 `22bcaea5f73befb89cbe0dc9e896ad2463966b7bdf68e1af88b7226bc10e7afe` (locally patched; see Patch below)
   - `src/site/vendor/maplibre-gl.css` — sha256 `43c1d886b5fdf0aac4e7135bd6f84b823d9f48283a648012665f9be52c01389f`
+
+### Patch: suppress Firefox WebGL warning on ImageBitmap uploads
+
+The upstream `5.7.1` build emits the Firefox console warning
+`WebGL warning: texImage: Alpha-premult and y-flip are deprecated for non-DOM-Element uploads`
+once per ImageBitmap upload (PMTiles decode path). The warning fires because
+`Texture.update()` calls `pixelStoreUnpackFlipY.set(false)` and
+`pixelStoreUnpackPremultiplyAlpha.set(...)` before `texImage2D`/`texSubImage2D`,
+even when the source is an ImageBitmap, where those flags are no-ops and
+no longer needed (the ImageBitmap upload path always uses the GL defaults:
+`premult=false`, `flipY=false`).
+
+Local edit, single site in `class hl` `update()`:
+
+```js
+// before
+o.bindTexture(o.TEXTURE_2D,this.texture),a.pixelStoreUnpackFlipY.set(!1),a.pixelStoreUnpack.set(1),a.pixelStoreUnpackPremultiplyAlpha.set(this.format===o.RGBA&&(!e||!1!==e.premultiply)),s)
+// after
+o.bindTexture(o.TEXTURE_2D,this.texture),Y(t)||(a.pixelStoreUnpackFlipY.set(!1),a.pixelStoreUnpack.set(1),a.pixelStoreUnpackPremultiplyAlpha.set(this.format===o.RGBA&&(!e||!1!==e.premultiply))),s)
+```
+
+`Y(t)` is the existing `ImageBitmap` predicate already used in the
+`texImage2D` branch of the same function. When `t` is an ImageBitmap,
+the three `set()` calls are skipped, the GL defaults are used, and the
+upload proceeds silently. When `t` is a DOM element, behavior is
+byte-identical to the upstream build.
+
+Upstream fix tracked in maplibre-gl-js#2030 / PR #7128. This patch is a
+strict superset shrink: identical rendering, fewer console warnings.
+Upstream upgrade to a build that includes PR #7128 supersedes this edit.
 
 ## pmtiles 4.4.0
 

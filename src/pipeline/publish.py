@@ -34,7 +34,7 @@ REQUIRED_INPUTS = [
 DERIVED_BUILDINGS = "buildings.geojson"  # workspace-relative, values-joined
 DERIVED_TREES = "trees.pmtiles"
 DERIVED_STADTTEILE = "stadtteile.geojson"  # dist-relative, publish-derived
-STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "favicon.svg", "attribution.html", "impressum.html", "og-image.png", "robots.txt", "sitemap.xml")
+STATIC_FILES = ("index.html", "style.css", "main.js", "style.json", "favicon.svg", "attribution.html", "impressum.html", "datenschutz.html", "og-image.png", "robots.txt", "sitemap.xml")
 
 # Assets that get content-hashed filenames at publish time (feature 014,
 # contracts/hashed-bundle.md). Value: (dist-relative hashed stem, suffix).

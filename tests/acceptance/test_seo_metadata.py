@@ -31,11 +31,16 @@ CANONICALS = {
     "index.html": "https://abu-hamad.de/map/",
     "impressum.html": "https://abu-hamad.de/map/impressum",
     "attribution.html": "https://abu-hamad.de/map/attribution",
+    "datenschutz.html": "https://abu-hamad.de/map/datenschutz",  # feature 018
 }
 KEPT_TITLES = {
     "impressum.html": "Impressum – Mannheim Baumfläche",
     "attribution.html": "Datenquellen – Mannheim Baumfläche",
+    "datenschutz.html": "Datenschutzerklärung – Mannheim Baumfläche",  # feature 018
 }
+# ISO date the Datenschutzerklärung was last edited; mirrors the page's
+# "Stand" footer and the <lastmod> in src/site/sitemap.xml (data-model E4).
+DATENSCHUTZ_LASTMOD = "2026-08-10"
 SITE_NAME = "Baumfläche Mannheim"
 OG_IMAGE_URL = "https://abu-hamad.de/map/og-image.png"
 # Distinctive phrase of the story copy; must occur exactly once in the
@@ -165,6 +170,11 @@ def impressum_page() -> PageParser:
 
 
 @pytest.fixture(scope="module")
+def datenschutz_page() -> PageParser:
+    return _parse("datenschutz.html")
+
+
+@pytest.fixture(scope="module")
 def attribution_page() -> PageParser:
     return _parse("attribution.html")
 
@@ -174,8 +184,15 @@ def attribution_page() -> PageParser:
 # ---------------------------------------------------------------------------
 
 
-def test_metadata_single_title_per_page(map_page, impressum_page, attribution_page) -> None:
-    for parser, name in ((map_page, "index.html"), (impressum_page, "impressum.html"), (attribution_page, "attribution.html")):
+def test_metadata_single_title_per_page(
+    map_page, impressum_page, attribution_page, datenschutz_page
+) -> None:
+    for parser, name in (
+        (map_page, "index.html"),
+        (impressum_page, "impressum.html"),
+        (attribution_page, "attribution.html"),
+        (datenschutz_page, "datenschutz.html"),
+    ):
         assert len(parser.titles) == 1, f"{name}: expected exactly one <title>"
 
 
@@ -186,25 +203,44 @@ def test_metadata_map_title_descriptive(map_page) -> None:
     assert title == "Baumfläche Mannheim: Baumanteil je Gebäude im 60-m-Umkreis"
 
 
-def test_metadata_legal_page_titles_kept(impressum_page, attribution_page) -> None:
+def test_metadata_legal_page_titles_kept(impressum_page, attribution_page, datenschutz_page) -> None:
     assert impressum_page.titles[0] == KEPT_TITLES["impressum.html"]
     assert attribution_page.titles[0] == KEPT_TITLES["attribution.html"]
+    assert datenschutz_page.titles[0] == KEPT_TITLES["datenschutz.html"]
 
 
-def test_metadata_single_description_per_page(map_page, impressum_page, attribution_page) -> None:
-    for parser, name in ((map_page, "index.html"), (impressum_page, "impressum.html"), (attribution_page, "attribution.html")):
+def test_metadata_single_description_per_page(
+    map_page, impressum_page, attribution_page, datenschutz_page
+) -> None:
+    for parser, name in (
+        (map_page, "index.html"),
+        (impressum_page, "impressum.html"),
+        (attribution_page, "attribution.html"),
+        (datenschutz_page, "datenschutz.html"),
+    ):
         assert len(parser.descriptions) == 1, f"{name}: expected exactly one meta description"
 
 
-def test_metadata_descriptions_unique_and_in_range(map_page, impressum_page, attribution_page) -> None:
-    descriptions = [p.descriptions[0] for p in (map_page, impressum_page, attribution_page)]
+def test_metadata_descriptions_unique_and_in_range(
+    map_page, impressum_page, attribution_page, datenschutz_page
+) -> None:
+    descriptions = [
+        p.descriptions[0] for p in (map_page, impressum_page, attribution_page, datenschutz_page)
+    ]
     for desc in descriptions:
         assert 100 <= len(desc) <= 160, f"description {len(desc)} chars, need 100-160"
-    assert len(set(descriptions)) == 3, "descriptions must be pairwise distinct (FR-003)"
+    assert len(set(descriptions)) == 4, "descriptions must be pairwise distinct (FR-003)"
 
 
-def test_metadata_canonical_per_page(map_page, impressum_page, attribution_page) -> None:
-    for parser, name in ((map_page, "index.html"), (impressum_page, "impressum.html"), (attribution_page, "attribution.html")):
+def test_metadata_canonical_per_page(
+    map_page, impressum_page, attribution_page, datenschutz_page
+) -> None:
+    for parser, name in (
+        (map_page, "index.html"),
+        (impressum_page, "impressum.html"),
+        (attribution_page, "attribution.html"),
+        (datenschutz_page, "datenschutz.html"),
+    ):
         assert len(parser.canonicals) == 1, f"{name}: expected exactly one canonical tag"
         assert parser.canonicals[0] == CANONICALS[name], f"{name}: canonical mismatch"
 
@@ -339,16 +375,26 @@ def test_robots_txt_rules() -> None:
         assert ".html" not in line and "/map/" not in line, "no HTML path may be disallowed"
 
 
-def test_sitemap_xml_lists_exactly_three_canonical_urls() -> None:
+def test_sitemap_xml_lists_exactly_four_canonical_urls() -> None:
+    """Feature 018: sitemap grows from 3 to 4 URLs with the new
+    Datenschutzerklärung. Its <lastmod> is the page's "Stand" date; the
+    other three pages keep no lastmod (staleness-edge-case contract)."""
     root = ET.fromstring(_raw("sitemap.xml"))
     ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    locs = [el.text for el in root.findall(".//s:loc", ns)]
+    url_els = list(root.findall("s:url", ns))
+    locs = [el.findtext("s:loc", namespaces=ns) for el in url_els]
     assert locs == [
         CANONICALS["index.html"],
         CANONICALS["impressum.html"],
         CANONICALS["attribution.html"],
-    ], f"sitemap must list exactly the three canonical URLs: {locs}"
-    assert root.findall(".//s:lastmod", ns) == [], "no lastmod allowed (staleness edge case)"
+        CANONICALS["datenschutz.html"],
+    ], f"sitemap must list exactly the four canonical URLs in order: {locs}"
+    lastmods = [el.find("s:lastmod", ns) for el in url_els]
+    assert lastmods[:3] == [None, None, None], "index/impressum/attribution must omit lastmod"
+    assert lastmods[3] is not None, "datenschutz must carry a lastmod date"
+    assert lastmods[3].text == DATENSCHUTZ_LASTMOD, (
+        f"datenschutz lastmod must equal page Stand date {DATENSCHUTZ_LASTMOD}"
+    )
     xml = _raw("sitemap.xml")
     assert "og-image" not in xml, "og-image must not appear in the sitemap"
     assert ".pmtiles" not in xml and ".geojson" not in xml, "no data files in the sitemap"

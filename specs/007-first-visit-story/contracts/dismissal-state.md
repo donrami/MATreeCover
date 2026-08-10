@@ -65,3 +65,7 @@ private or sandboxed contexts). On failure:
 - Devtools "Block storage" (or private mode): modal appears and
   dismisses for the visit; reappears on reload (quickstart
   Scenario 4).
+
+## § 25(2) Nr. 2 TDDDG exemption (FR-010, feature 018)
+
+The `localStorage` write above is justified under § 25(2) Nr. 2 TDDDG (strictly necessary storage). The write happens only on explicit user action — clicking the close button or pressing Escape. No key is written on page load, on show, or on background. Without the key, the user's expressed dismissal intent cannot survive reloads, so the story modal would reappear on every visit and the dismissal could not be honored. No privacy-friendly alternative exists: a server-side preference would itself require per-visitor tracking, which is strictly worse. The key is therefore strictly necessary to deliver the documented "modal appears once" behavior.
